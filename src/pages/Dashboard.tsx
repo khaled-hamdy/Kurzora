@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import WinRateGauge from '../components/dashboard/WinRateGauge';
@@ -11,6 +12,7 @@ import { TrendingUp, DollarSign, Target, Bell } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,10 +29,10 @@ const Dashboard: React.FC = () => {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Welcome back, {user.name}!
+            {t('dashboard.welcome')}, {user.name}!
           </h1>
           <p className="text-slate-400">
-            Here's your trading performance overview for today.
+            {t('dashboard.overview')}
           </p>
         </div>
 
@@ -38,7 +40,7 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Today's P&L</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.todayPnl')}</CardTitle>
               <DollarSign className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
@@ -49,7 +51,7 @@ const Dashboard: React.FC = () => {
 
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Active Signals</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.activeSignals')}</CardTitle>
               <Bell className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
@@ -60,7 +62,7 @@ const Dashboard: React.FC = () => {
 
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Portfolio Value</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.portfolioValue')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
@@ -71,7 +73,7 @@ const Dashboard: React.FC = () => {
 
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Success Rate</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.successRate')}</CardTitle>
               <Target className="h-4 w-4 text-yellow-400" />
             </CardHeader>
             <CardContent>
@@ -99,7 +101,7 @@ const Dashboard: React.FC = () => {
         {/* Recent Activity */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
           <CardHeader>
-            <CardTitle className="text-lg text-white">Recent Trade Activity</CardTitle>
+            <CardTitle className="text-lg text-white">{t('dashboard.recentActivity')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

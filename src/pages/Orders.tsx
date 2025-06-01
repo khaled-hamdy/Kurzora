@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -16,6 +17,7 @@ interface OrderDetails {
 
 const Orders: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
@@ -57,10 +59,10 @@ const Orders: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Order Management
+            {t('orders.title')}
           </h1>
           <p className="text-slate-400">
-            Review and place your trading orders
+            {t('orders.subtitle')}
           </p>
         </div>
 
@@ -71,7 +73,7 @@ const Orders: React.FC = () => {
               <CardHeader>
                 <CardTitle className="text-lg text-white flex items-center space-x-2">
                   <ShoppingCart className="h-5 w-5 text-emerald-400" />
-                  <span>Available Orders</span>
+                  <span>{t('orders.available')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -94,7 +96,7 @@ const Orders: React.FC = () => {
                           setSelectedOrder(order);
                         }}
                       >
-                        View
+                        {t('orders.view')}
                       </Button>
                     </div>
                   ))}
@@ -109,7 +111,7 @@ const Orders: React.FC = () => {
               <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
                 <CardHeader>
                   <CardTitle className="text-lg text-white">
-                    Order Details - {selectedOrder.symbol}
+                    {t('orders.details')} - {selectedOrder.symbol}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -117,7 +119,7 @@ const Orders: React.FC = () => {
                     <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <DollarSign className="h-4 w-4 text-emerald-400" />
-                        <span className="text-slate-300">Entry Price</span>
+                        <span className="text-slate-300">{t('orders.entryPrice')}</span>
                       </div>
                       <span className="text-white font-semibold">${selectedOrder.entryPrice.toFixed(2)}</span>
                     </div>
@@ -125,7 +127,7 @@ const Orders: React.FC = () => {
                     <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <TrendingDown className="h-4 w-4 text-red-400" />
-                        <span className="text-slate-300">Stop Loss</span>
+                        <span className="text-slate-300">{t('orders.stopLoss')}</span>
                       </div>
                       <span className="text-red-400 font-semibold">${selectedOrder.stopLoss.toFixed(2)}</span>
                     </div>
@@ -133,7 +135,7 @@ const Orders: React.FC = () => {
                     <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <TrendingUp className="h-4 w-4 text-emerald-400" />
-                        <span className="text-slate-300">Take Profit</span>
+                        <span className="text-slate-300">{t('orders.takeProfit')}</span>
                       </div>
                       <span className="text-emerald-400 font-semibold">${selectedOrder.takeProfit.toFixed(2)}</span>
                     </div>
@@ -142,7 +144,7 @@ const Orders: React.FC = () => {
                       onClick={() => handlePlaceOrder(selectedOrder)}
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3"
                     >
-                      Place Order
+                      {t('orders.placeOrder')}
                     </Button>
                   </div>
                 </CardContent>
@@ -150,7 +152,7 @@ const Orders: React.FC = () => {
             ) : (
               <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
                 <CardContent className="flex items-center justify-center h-64">
-                  <p className="text-slate-400">Select an order to view details</p>
+                  <p className="text-slate-400">{t('orders.selectOrder')}</p>
                 </CardContent>
               </Card>
             )}
