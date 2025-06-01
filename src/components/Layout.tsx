@@ -25,7 +25,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="hidden md:flex space-x-6 ml-8">
                   <a href="/dashboard" className="text-slate-300 hover:text-white transition-colors">Dashboard</a>
                   <a href="/signals" className="text-slate-300 hover:text-white transition-colors">Signals</a>
+                  <a href="/orders" className="text-slate-300 hover:text-white transition-colors">Orders</a>
                   <a href="/performance" className="text-slate-300 hover:text-white transition-colors">Performance</a>
+                  <a href="/admin" className="text-slate-300 hover:text-white transition-colors">Admin</a>
                 </div>
               </div>
               
