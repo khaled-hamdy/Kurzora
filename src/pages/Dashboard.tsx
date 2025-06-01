@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import WinRateGauge from '../components/dashboard/WinRateGauge';
 import PerformanceChart from '../components/dashboard/PerformanceChart';
@@ -10,12 +11,13 @@ import { TrendingUp, DollarSign, Target, Bell } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
-      window.location.href = '/';
+      navigate('/');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   if (!user) return null;
 

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -17,11 +17,12 @@ interface OrderDetails {
 const Orders: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
 
   useEffect(() => {
     if (!user) {
-      window.location.href = '/';
+      navigate('/');
     }
     
     // Check if we have a selected stock from navigation
@@ -35,7 +36,7 @@ const Orders: React.FC = () => {
       };
       setSelectedOrder(orderDetails);
     }
-  }, [user, location.state]);
+  }, [user, location.state, navigate]);
 
   if (!user) return null;
 
