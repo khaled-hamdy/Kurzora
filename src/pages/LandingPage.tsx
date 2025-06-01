@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 import { BarChart3, TrendingUp, Shield, Zap, Users, Award } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import LoginForm from '../components/auth/LoginForm';
@@ -9,12 +10,21 @@ import TestimonialCarousel from '../components/testimonials/TestimonialCarousel'
 import PricingSection from '../components/pricing/PricingSection';
 
 const LandingPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [showAuth, setShowAuth] = useState<'login' | 'signup' | null>(null);
 
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  // Redirect if user is logged in
   if (user) {
-    window.location.href = '/dashboard';
-    return null;
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (showAuth) {
