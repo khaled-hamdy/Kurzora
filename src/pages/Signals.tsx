@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,9 +12,9 @@ const Signals: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-      window.location.href = '/';
+      navigate('/');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   if (!user) return null;
 
