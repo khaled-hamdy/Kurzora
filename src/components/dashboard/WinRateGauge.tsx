@@ -44,7 +44,7 @@ const WinRateGauge: React.FC<WinRateGaugeProps> = ({ winRate, totalTrades, winni
           <TrendingUp className="h-5 w-5 text-emerald-400" />
           <span>Win Rate</span>
           {winRate >= 70 && (
-            <Award className="h-5 w-5 text-yellow-400" title="High Performance Badge" />
+            <Award className="h-5 w-5 text-yellow-400" />
           )}
         </CardTitle>
       </CardHeader>
