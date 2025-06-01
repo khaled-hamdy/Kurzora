@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import { LogOut, BarChart3, User, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -23,11 +24,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <span className="text-xl font-bold text-white">SignalPro</span>
                 </div>
                 <div className="hidden md:flex space-x-6 ml-8">
-                  <a href="/dashboard" className="text-slate-300 hover:text-white transition-colors">Dashboard</a>
-                  <a href="/signals" className="text-slate-300 hover:text-white transition-colors">Signals</a>
-                  <a href="/orders" className="text-slate-300 hover:text-white transition-colors">Orders</a>
-                  <a href="/performance" className="text-slate-300 hover:text-white transition-colors">Performance</a>
-                  <a href="/admin" className="text-slate-300 hover:text-white transition-colors">Admin</a>
+                  <Link to="/dashboard" className="text-slate-300 hover:text-white transition-colors">Dashboard</Link>
+                  <Link to="/signals" className="text-slate-300 hover:text-white transition-colors">Signals</Link>
+                  <Link to="/orders" className="text-slate-300 hover:text-white transition-colors">Orders</Link>
+                  <Link to="/performance" className="text-slate-300 hover:text-white transition-colors">Performance</Link>
+                  <Link to="/admin" className="text-slate-300 hover:text-white transition-colors">Admin</Link>
                 </div>
               </div>
               
