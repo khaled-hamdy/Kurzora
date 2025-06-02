@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -23,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center">
                 <div className="logo-container">
                   <img 
-                    src="/lovable-uploads/f1c331b0-1e71-4869-8cfa-93c68febadda.png" 
+                    src="/lovable-uploads/684992a8-5003-43e9-b064-314ae1a0ba53.png" 
                     alt="Kurzora Logo" 
                     className="logo-image"
                   />
