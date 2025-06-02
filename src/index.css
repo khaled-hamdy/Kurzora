@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,13 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Logo responsive styles */
+@media (max-width: 768px) {
+  .logo-container img {
+    height: 40px !important;
+    max-height: 44px !important;
   }
 }
