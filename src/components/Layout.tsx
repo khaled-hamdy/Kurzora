@@ -21,13 +21,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-blue-800/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20 lg:h-24">
-              <div className="flex items-center space-x-6 lg:space-x-8">
-                <div className="flex items-center">
-                  {/* Kurzora Logo with improved sizing and spacing */}
+              <div className="flex items-center space-x-8 lg:space-x-12">
+                <div className="flex items-center p-2">
+                  {/* Kurzora Logo with proper sizing and breathing room */}
                   <img 
                     src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" 
                     alt="Kurzora Logo" 
-                    className="h-12 w-auto sm:h-14 lg:h-16 object-contain" 
+                    className="h-14 w-auto sm:h-16 lg:h-[60px] object-contain max-h-[60px]" 
+                    style={{ padding: '6px' }}
                   />
                 </div>
                 <div className="hidden lg:flex space-x-6 xl:space-x-8">
