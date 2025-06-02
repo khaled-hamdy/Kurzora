@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -57,9 +56,9 @@ const LandingPage: React.FC = () => {
       {/* Navigation */}
       <nav className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-2">
-              <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-10 w-auto" />
+              <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-14 w-auto md:h-16" />
             </div>
             
             <div className="hidden md:flex space-x-6">
@@ -238,18 +237,15 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-8 w-auto" />
+                <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-12 w-auto md:h-14" />
               </div>
               <p className="text-slate-400 text-sm">
                 Professional AI-powered swing trading signals with institutional-grade analysis.
               </p>
-              <div className="flex items-center mt-4 space-x-2">
+              <div className="flex items-center mt-4">
                 <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full flex items-center">
                   <Shield className="h-3 w-3 mr-1" />
                   Shariah Compliant
-                </span>
-                <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">
-                  98.2% Uptime
                 </span>
               </div>
             </div>
