@@ -16,15 +16,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { t, language } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
       {user && (
-        <nav className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
+        <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-blue-800/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  {/* SwingTrader Logo - Increased size significantly */}
-                  <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-16 w-auto md:h-20" />
+                  {/* Kurzora Logo */}
+                  <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-16 w-auto md:h-20" />
                 </div>
                 <div className="hidden lg:flex space-x-6 ml-8">
                   <Link to="/dashboard" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.dashboard')}</Link>
@@ -38,8 +38,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               
               <div className="flex items-center space-x-3">
                 <div className="flex items-center mr-2">
-                  <Shield className="h-4 w-4 text-green-400 mr-1" />
-                  <span className="text-xs text-green-400 hidden sm:block">{t('legal.shariahCompliant')}</span>
+                  <Shield className="h-4 w-4 text-emerald-400 mr-1" />
+                  <span className="text-xs text-emerald-400 hidden sm:block">{t('legal.shariahCompliant')}</span>
                 </div>
                 <LanguageToggle />
                 <div className="text-sm text-slate-300 hidden md:block">
@@ -71,18 +71,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
       
-      <footer className="bg-slate-900/50 border-t border-slate-700 mt-20">
+      <footer className="bg-slate-950/50 border-t border-blue-800/30 mt-20">
         <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="SwingTrader Logo" className="h-16 w-auto md:h-20" />
+                <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-16 w-auto md:h-20" />
               </div>
               <p className="text-slate-400 text-sm mb-4">
                 {t('footer.description')}
               </p>
               <div className="flex items-center mt-4">
-                <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full flex items-center">
+                <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full flex items-center">
                   <Shield className="h-3 w-3 mr-1" />
                   {t('legal.shariahCompliant')}
                 </span>
@@ -109,7 +109,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <ul className="space-y-2 text-sm text-slate-400">
                 <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors">{t('nav.contact')}</Link></li>
-                <li><a href="https://t.me/swingtrader" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a></li>
+                <li><a href="https://t.me/kurzora" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a></li>
                 <li><Link to="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link></li>
               </ul>
             </div>
@@ -125,10 +125,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
           
-          <div className="border-t border-slate-700 pt-8 mt-8">
+          <div className="border-t border-blue-800/30 pt-8 mt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-center text-slate-400 text-sm">
-                {t('footer.copyright')}
+                {t('footer.copyright').replace('SwingTrader', 'Kurzora')}
               </p>
               <div className="flex space-x-4 text-xs text-slate-400">
                 <Link to="/gdpr" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>

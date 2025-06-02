@@ -31,7 +31,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     
     try {
       await signup(formData.email, formData.password, formData.name);
-      toast.success('Account created successfully! Welcome to SignalPro.');
+      toast.success('Account created successfully! Welcome to Kurzora.');
     } catch (error) {
       toast.error('Signup failed. Please try again.');
     }
@@ -45,8 +45,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <Card className="w-full max-w-md bg-slate-800/50 backdrop-blur-sm border-slate-700">
+    <Card className="w-full max-w-md bg-slate-900/50 backdrop-blur-sm border-blue-800/30">
       <CardHeader className="space-y-1">
+        <div className="flex justify-center mb-4">
+          <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-12 w-auto" />
+        </div>
         <CardTitle className="text-2xl text-center text-white">Create account</CardTitle>
         <CardDescription className="text-center text-slate-400">
           Join thousands of successful traders
@@ -65,7 +68,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 bg-slate-800/50 border-blue-800/30 text-white placeholder-slate-400"
                 required
               />
             </div>
@@ -82,7 +85,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 bg-slate-800/50 border-blue-800/30 text-white placeholder-slate-400"
                 required
               />
             </div>
@@ -99,7 +102,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 bg-slate-800/50 border-blue-800/30 text-white placeholder-slate-400"
                 required
               />
             </div>
@@ -116,7 +119,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                className="pl-10 bg-slate-800/50 border-blue-800/30 text-white placeholder-slate-400"
                 required
               />
             </div>
@@ -124,7 +127,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           
           <Button 
             type="submit" 
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             disabled={loading}
           >
             {loading ? (
@@ -140,15 +143,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
         
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-600" />
+            <span className="w-full border-t border-blue-800/30" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-slate-800 px-2 text-slate-400">Or continue with</span>
+            <span className="bg-slate-900 px-2 text-slate-400">Or continue with</span>
           </div>
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="bg-slate-700/50 border-slate-600 text-slate-300 hover:bg-slate-600">
+          <Button variant="outline" className="bg-slate-800/50 border-blue-800/30 text-slate-300 hover:bg-slate-700">
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -157,7 +160,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
             </svg>
             Google
           </Button>
-          <Button variant="outline" className="bg-slate-700/50 border-slate-600 text-slate-300 hover:bg-slate-600">
+          <Button variant="outline" className="bg-slate-800/50 border-blue-800/30 text-slate-300 hover:bg-slate-700">
             <Github className="mr-2 h-4 w-4" />
             GitHub
           </Button>
@@ -167,7 +170,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           <span className="text-slate-400">Already have an account? </span>
           <button 
             onClick={onSwitchToLogin}
-            className="text-emerald-400 hover:text-emerald-300 font-medium"
+            className="text-blue-400 hover:text-blue-300 font-medium"
           >
             Sign in
           </button>
@@ -175,9 +178,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
         
         <div className="text-center text-xs text-slate-400">
           By creating an account, you agree to our{' '}
-          <a href="#" className="text-emerald-400 hover:text-emerald-300">Terms of Service</a>
+          <a href="#" className="text-blue-400 hover:text-blue-300">Terms of Service</a>
           {' '}and{' '}
-          <a href="#" className="text-emerald-400 hover:text-emerald-300">Privacy Policy</a>
+          <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
         </div>
       </CardContent>
     </Card>

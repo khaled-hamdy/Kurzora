@@ -12,22 +12,22 @@ const About: React.FC = () => {
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-white mb-4">
-            {language === 'ar' ? 'حول SwingTrader' : language === 'de' ? 'Über SwingTrader' : 'About SwingTrader'}
+            {language === 'ar' ? 'حول Kurzora' : language === 'de' ? 'Über Kurzora' : 'About Kurzora'}
           </h1>
           <p className="text-slate-400 text-lg max-w-3xl mx-auto">
             {language === 'ar' ? 
-              'نحن منصة تداول ذكية مدعومة بالذكاء الاصطناعي تهدف إلى إضفاء الطابع الديمقراطي على الوصول إلى إشارات التداول المؤسسية عالية الجودة.' :
+              'نحن منصة ذكاء تداول مدعومة بالذكاء الاصطناعي تقدم إشارات متعددة الاستراتيجيات في الوقت الفعلي للمتداولين الذين يريدون الوضوح والثقة والتفوق في كل حالة سوق.' :
               language === 'de' ? 
-              'Wir sind eine KI-gestützte intelligente Handelsplattform, die darauf abzielt, den Zugang zu hochwertigen institutionellen Handelssignalen zu demokratisieren.' :
-              'We are an AI-powered intelligent trading platform aimed at democratizing access to high-quality institutional trading signals.'
+              'Wir sind eine KI-gestützte Trading-Intelligence-Plattform, die Echtzeit-Multi-Strategie-Signale für Trader liefert, die Klarheit, Vertrauen und Vorsprung in jeder Marktlage wollen.' :
+              'Kurzora is an AI-powered trading intelligence platform delivering real-time, multi-strategy signals for retail traders who want clarity, confidence, and edge in every market condition.'
             }
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <div className="text-center">
-            <div className="p-4 bg-emerald-600/20 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Target className="h-8 w-8 text-emerald-400" />
+            <div className="p-4 bg-blue-600/20 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <Target className="h-8 w-8 text-blue-400" />
             </div>
             <h3 className="text-white font-semibold mb-2">
               {language === 'ar' ? 'مهمتنا' : language === 'de' ? 'Unsere Mission' : 'Our Mission'}
@@ -60,8 +60,8 @@ const About: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <div className="p-4 bg-emerald-600/20 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Shield className="h-8 w-8 text-emerald-400" />
+            <div className="p-4 bg-amber-600/20 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <Shield className="h-8 w-8 text-amber-400" />
             </div>
             <h3 className="text-white font-semibold mb-2">
               {language === 'ar' ? 'الشفافية' : language === 'de' ? 'Transparenz' : 'Transparency'}
@@ -94,17 +94,17 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-8">
+        <div className="bg-slate-900/50 backdrop-blur-sm border border-blue-800/30 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
             {language === 'ar' ? 'قصتنا' : language === 'de' ? 'Unsere Geschichte' : 'Our Story'}
           </h2>
           <div className="prose prose-invert max-w-none text-slate-300">
             <p className="mb-4">
               {language === 'ar' ? 
-                'تأسست SwingTrader في عام 2023 من قبل فريق من المتداولين المحترفين ومهندسي الذكاء الاصطناعي الذين أرادوا سد الفجوة بين التداول المؤسسي والتداول الفردي.' :
+                'تأسست Kurzora في عام 2023 من قبل فريق من المتداولين المحترفين ومهندسي الذكاء الاصطناعي الذين أرادوا سد الفجوة بين التداول المؤسسي والتداول الفردي.' :
                 language === 'de' ? 
-                'SwingTrader wurde 2023 von einem Team professioneller Trader und KI-Ingenieure gegründet, die die Lücke zwischen institutionellem und privatem Trading schließen wollten.' :
-                'SwingTrader was founded in 2023 by a team of professional traders and AI engineers who wanted to bridge the gap between institutional and retail trading.'
+                'Kurzora wurde 2023 von einem Team professioneller Trader und KI-Ingenieure gegründet, die die Lücke zwischen institutionellem und privatem Trading schließen wollten.' :
+                'Kurzora was founded in 2023 by a team of professional traders and AI engineers who wanted to bridge the gap between institutional and retail trading.'
               }
             </p>
             <p className="mb-4">

@@ -32,13 +32,13 @@ const Dashboard: React.FC = () => {
             {t('dashboard.welcome')}, {user.name}!
           </h1>
           <p className="text-slate-400">
-            {t('dashboard.overview')}
+            Welcome to your Kurzora trading intelligence dashboard
           </p>
         </div>
 
         {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30 hover:bg-slate-900/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.todayPnl')}</CardTitle>
               <DollarSign className="h-4 w-4 text-emerald-400" />
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30 hover:bg-slate-900/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.activeSignals')}</CardTitle>
               <Bell className="h-4 w-4 text-blue-400" />
@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30 hover:bg-slate-900/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.portfolioValue')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-emerald-400" />
@@ -71,13 +71,13 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30 hover:bg-slate-900/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.successRate')}</CardTitle>
-              <Target className="h-4 w-4 text-yellow-400" />
+              <Target className="h-4 w-4 text-amber-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-400">84%</div>
+              <div className="text-2xl font-bold text-amber-400">84%</div>
               <p className="text-xs text-slate-400">Last 30 days</p>
             </CardContent>
           </Card>
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Recent Activity */}
-        <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30">
           <CardHeader>
             <CardTitle className="text-lg text-white">{t('dashboard.recentActivity')}</CardTitle>
           </CardHeader>
@@ -111,7 +111,7 @@ const Dashboard: React.FC = () => {
                 { time: '32 min ago', action: 'BUY', symbol: 'NVDA', price: '$750.12', result: '+$825', status: 'profit' },
                 { time: '1 hour ago', action: 'SELL', symbol: 'META', price: '$325.89', result: '-$156', status: 'loss' },
               ].map((trade, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
                   <div className="flex items-center space-x-4">
                     <div className={`px-2 py-1 rounded text-xs font-medium ${
                       trade.action === 'BUY' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'

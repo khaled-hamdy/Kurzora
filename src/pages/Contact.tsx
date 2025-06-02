@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Layout from '../components/Layout';
@@ -56,14 +57,14 @@ const Contact: React.FC = () => {
             
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="p-3 bg-emerald-600/20 rounded-lg">
-                  <Mail className="h-6 w-6 text-emerald-400" />
+                <div className="p-3 bg-blue-600/20 rounded-lg">
+                  <Mail className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">
                     {language === 'ar' ? 'البريد الإلكتروني' : language === 'de' ? 'E-Mail' : 'Email'}
                   </h3>
-                  <p className="text-slate-400">support@swingtrader.com</p>
+                  <p className="text-slate-400">support@kurzora.com</p>
                 </div>
               </div>
 
@@ -73,13 +74,13 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">Telegram</h3>
-                  <p className="text-slate-400">@SwingTraderSupport</p>
+                  <p className="text-slate-400">@KurzoraSupport</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="p-3 bg-emerald-600/20 rounded-lg">
-                  <Phone className="h-6 w-6 text-emerald-400" />
+                <div className="p-3 bg-amber-600/20 rounded-lg">
+                  <Phone className="h-6 w-6 text-amber-400" />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">
@@ -93,8 +94,8 @@ const Contact: React.FC = () => {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="p-3 bg-emerald-600/20 rounded-lg">
-                  <MapPin className="h-6 w-6 text-emerald-400" />
+                <div className="p-3 bg-blue-600/20 rounded-lg">
+                  <MapPin className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">
@@ -113,7 +114,7 @@ const Contact: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+          <div className="bg-slate-900/50 backdrop-blur-sm border border-blue-800/30 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-white mb-6">
               {language === 'ar' ? 'أرسل رسالة' : language === 'de' ? 'Nachricht senden' : 'Send a Message'}
             </h2>
@@ -129,7 +130,7 @@ const Contact: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 bg-slate-800 border border-blue-800/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -143,7 +144,7 @@ const Contact: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 bg-slate-800 border border-blue-800/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -157,7 +158,7 @@ const Contact: React.FC = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 bg-slate-800 border border-blue-800/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -171,13 +172,13 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 bg-slate-800 border border-blue-800/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <Button 
                 type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               >
                 {language === 'ar' ? 'إرسال الرسالة' : language === 'de' ? 'Nachricht senden' : 'Send Message'}
               </Button>
