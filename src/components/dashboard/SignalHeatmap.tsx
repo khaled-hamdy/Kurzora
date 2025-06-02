@@ -8,6 +8,7 @@ import { Slider } from '../ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 interface Signal {
   ticker: string;
@@ -83,15 +84,16 @@ const mockSignals: Signal[] = [
 
 const SignalHeatmap: React.FC = () => {
   const { t, language } = useLanguage();
+  const navigate = useNavigate();
   const [timeFilter, setTimeFilter] = useState('1D');
   const [scoreThreshold, setScoreThreshold] = useState([70]);
   const [sectorFilter, setSectorFilter] = useState('all');
 
   const getSignalColor = (score: number) => {
-    if (score >= 90) return 'bg-emerald-500 text-white'; // Strong
-    if (score >= 80) return 'bg-emerald-400 text-white'; // Valid
-    if (score >= 70) return 'bg-yellow-500 text-black'; // Weak
-    return 'bg-gray-600 text-gray-400'; // Below threshold
+    if (score >= 90) return 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg border border-emerald-400'; // Strong - Vivid green
+    if (score >= 80) return 'bg-teal-400 hover:bg-teal-500 text-white shadow-md border border-teal-300'; // Valid - Mint green/teal
+    if (score >= 70) return 'bg-yellow-500 hover:bg-yellow-600 text-black shadow-sm border border-yellow-400'; // Weak - Yellow
+    return 'bg-gray-600 text-gray-400 opacity-50'; // Below threshold
   };
 
   const getSignalIcon = (score: number) => {
@@ -99,6 +101,20 @@ const SignalHeatmap: React.FC = () => {
     if (score >= 80) return '✅';
     if (score >= 70) return '⚠️';
     return '';
+  };
+
+  const getTooltipText = (signal: Signal, timeframe: string, score: number) => {
+    return `${signal.ticker} ${timeframe}: ${score}% confidence\nRSI: 28, MACD > 0, Volume: 2.1x`;
+  };
+
+  const handleViewSignal = (signal: Signal, timeframe: string) => {
+    navigate(`/signals/${signal.ticker}`, { 
+      state: { 
+        selectedStock: signal,
+        timeframe: timeframe,
+        score: signal.signals[timeframe as keyof typeof signal.signals]
+      }
+    });
   };
 
   const filteredSignals = mockSignals.filter(signal => {
@@ -116,7 +132,7 @@ const SignalHeatmap: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
           <CardTitle className="text-lg text-white flex items-center space-x-2">
             <Activity className="h-5 w-5 text-emerald-400" />
-            <span>BUY Signal Heatmap</span>
+            <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
           </CardTitle>
           
           {/* Filters */}
@@ -124,7 +140,11 @@ const SignalHeatmap: React.FC = () => {
             {/* Score Threshold */}
             <div className="flex items-center space-x-2 min-w-[180px]">
               <Filter className="h-4 w-4 text-slate-400" />
-              <Label className="text-slate-300 text-sm whitespace-nowrap">Min Score: {scoreThreshold[0]}%</Label>
+              <Label className="text-slate-300 text-sm whitespace-nowrap">
+                {language === 'ar' ? `الحد الأدنى: ${scoreThreshold[0]}%` : 
+                 language === 'de' ? `Min Score: ${scoreThreshold[0]}%` : 
+                 `Min Score: ${scoreThreshold[0]}%`}
+              </Label>
               <Slider
                 value={scoreThreshold}
                 onValueChange={setScoreThreshold}
@@ -141,11 +161,11 @@ const SignalHeatmap: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Sectors</SelectItem>
-                <SelectItem value="tech">Tech</SelectItem>
-                <SelectItem value="finance">Finance</SelectItem>
-                <SelectItem value="healthcare">Healthcare</SelectItem>
-                <SelectItem value="energy">Energy</SelectItem>
+                <SelectItem value="all">{language === 'ar' ? 'جميع القطاعات' : language === 'de' ? 'Alle Sektoren' : 'All Sectors'}</SelectItem>
+                <SelectItem value="tech">{language === 'ar' ? 'التكنولوجيا' : language === 'de' ? 'Technologie' : 'Tech'}</SelectItem>
+                <SelectItem value="finance">{language === 'ar' ? 'المالية' : language === 'de' ? 'Finanzen' : 'Finance'}</SelectItem>
+                <SelectItem value="healthcare">{language === 'ar' ? 'الرعاية الصحية' : language === 'de' ? 'Gesundheitswesen' : 'Healthcare'}</SelectItem>
+                <SelectItem value="energy">{language === 'ar' ? 'الطاقة' : language === 'de' ? 'Energie' : 'Energy'}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -172,18 +192,18 @@ const SignalHeatmap: React.FC = () => {
 
         {/* Legend */}
         <div className="flex flex-wrap items-center gap-3 text-xs">
-          <span className="text-slate-400">Legend:</span>
+          <span className="text-slate-400">{language === 'ar' ? 'المفتاح:' : language === 'de' ? 'Legende:' : 'Legend:'}</span>
           <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-emerald-500 rounded"></div>
-            <span className="text-slate-300">💎 90-100 Strong</span>
+            <div className="w-4 h-4 bg-emerald-500 rounded border border-emerald-400"></div>
+            <span className="text-slate-300">💎 90-100 {language === 'ar' ? 'قوي' : language === 'de' ? 'Stark' : 'Strong'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-emerald-400 rounded"></div>
-            <span className="text-slate-300">✅ 80-89 Valid</span>
+            <div className="w-4 h-4 bg-teal-400 rounded border border-teal-300"></div>
+            <span className="text-slate-300">✅ 80-89 {language === 'ar' ? 'صحيح' : language === 'de' ? 'Gültig' : 'Valid'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-            <span className="text-slate-300">⚠️ 70-79 Weak</span>
+            <div className="w-4 h-4 bg-yellow-500 rounded border border-yellow-400"></div>
+            <span className="text-slate-300">⚠️ 70-79 {language === 'ar' ? 'ضعيف' : language === 'de' ? 'Schwach' : 'Weak'}</span>
           </div>
         </div>
       </CardHeader>
@@ -194,13 +214,13 @@ const SignalHeatmap: React.FC = () => {
           <div className="min-w-[600px]">
             {/* Header Row */}
             <div className="grid grid-cols-6 gap-2 mb-2">
-              <div className="text-slate-400 text-sm font-medium">Stock</div>
+              <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'السهم' : language === 'de' ? 'Aktie' : 'Stock'}</div>
               {timeframes.map(tf => (
                 <div key={tf} className={`text-center text-slate-400 text-sm font-medium ${tf === timeFilter ? 'text-emerald-400' : ''}`}>
                   {tf}
                 </div>
               ))}
-              <div className="text-slate-400 text-sm font-medium">Actions</div>
+              <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'الإجراءات' : language === 'de' ? 'Aktionen' : 'Actions'}</div>
             </div>
 
             {/* Signal Rows */}
@@ -222,11 +242,12 @@ const SignalHeatmap: React.FC = () => {
                         <div 
                           className={`
                             px-2 py-1 rounded text-xs font-bold text-center min-w-[50px] cursor-pointer
-                            transition-all duration-200 hover:scale-105
+                            transition-all duration-200 hover:scale-105 transform
                             ${getSignalColor(score)}
                             ${tf === timeFilter ? 'ring-2 ring-emerald-400' : ''}
                           `}
-                          title={`${tf}: ${score}% confidence`}
+                          title={getTooltipText(signal, tf, score)}
+                          onClick={() => handleViewSignal(signal, tf)}
                         >
                           {getSignalIcon(score)} {score}
                         </div>
@@ -239,9 +260,9 @@ const SignalHeatmap: React.FC = () => {
                     <Button 
                       size="sm" 
                       className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1"
-                      onClick={() => console.log(`View ${signal.ticker} details`)}
+                      onClick={() => handleViewSignal(signal, timeFilter)}
                     >
-                      View
+                      {language === 'ar' ? 'عرض' : language === 'de' ? 'Anzeigen' : 'View'}
                     </Button>
                   </div>
                 </div>
@@ -256,16 +277,16 @@ const SignalHeatmap: React.FC = () => {
             <div className="text-emerald-400 text-lg font-bold">
               {filteredSignals.filter(s => s.signals[timeFilter as keyof typeof s.signals] >= 90).length}
             </div>
-            <div className="text-slate-400 text-sm">Strong (90+)</div>
+            <div className="text-slate-400 text-sm">{language === 'ar' ? 'قوي (90+)' : language === 'de' ? 'Stark (90+)' : 'Strong (90+)'}</div>
           </div>
           <div className="text-center">
-            <div className="text-emerald-400 text-lg font-bold">
+            <div className="text-teal-400 text-lg font-bold">
               {filteredSignals.filter(s => {
                 const score = s.signals[timeFilter as keyof typeof s.signals];
                 return score >= 80 && score < 90;
               }).length}
             </div>
-            <div className="text-slate-400 text-sm">Valid (80-89)</div>
+            <div className="text-slate-400 text-sm">{language === 'ar' ? 'صحيح (80-89)' : language === 'de' ? 'Gültig (80-89)' : 'Valid (80-89)'}</div>
           </div>
           <div className="text-center">
             <div className="text-yellow-400 text-lg font-bold">
@@ -274,21 +295,29 @@ const SignalHeatmap: React.FC = () => {
                 return score >= 70 && score < 80;
               }).length}
             </div>
-            <div className="text-slate-400 text-sm">Weak (70-79)</div>
+            <div className="text-slate-400 text-sm">{language === 'ar' ? 'ضعيف (70-79)' : language === 'de' ? 'Schwach (70-79)' : 'Weak (70-79)'}</div>
           </div>
           <div className="text-center">
             <div className="text-white text-lg font-bold">
               {filteredSignals.length}
             </div>
-            <div className="text-slate-400 text-sm">Total Signals</div>
+            <div className="text-slate-400 text-sm">{language === 'ar' ? 'إجمالي الإشارات' : language === 'de' ? 'Gesamtsignale' : 'Total Signals'}</div>
           </div>
         </div>
 
         {/* No Results Message */}
         {filteredSignals.length === 0 && (
           <div className="text-center py-8">
-            <div className="text-slate-400">No signals match your current filters.</div>
-            <div className="text-slate-500 text-sm mt-1">Try lowering the score threshold or changing the sector filter.</div>
+            <div className="text-slate-400">
+              {language === 'ar' ? 'لا توجد إشارات تطابق المرشحات الحالية.' :
+               language === 'de' ? 'Keine Signale entsprechen Ihren aktuellen Filtern.' :
+               'No signals match your current filters.'}
+            </div>
+            <div className="text-slate-500 text-sm mt-1">
+              {language === 'ar' ? 'حاول خفض عتبة النقاط أو تغيير مرشح القطاع.' :
+               language === 'de' ? 'Versuchen Sie, die Punkteschwelle zu senken oder den Sektorfilter zu ändern.' :
+               'Try lowering the score threshold or changing the sector filter.'}
+            </div>
           </div>
         )}
       </CardContent>

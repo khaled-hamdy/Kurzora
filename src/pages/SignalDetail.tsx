@@ -1,9 +1,9 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
+import RealisticSignalChart from '../components/charts/RealisticSignalChart';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowLeft, Shield, ArrowRight, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -21,7 +21,13 @@ const SignalDetail: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
+
+  // Get data from navigation state or use defaults
+  const selectedStock = location.state?.selectedStock;
+  const timeframe = location.state?.timeframe || '1D';
+  const score = location.state?.score || 88;
 
   useEffect(() => {
     if (!user) {
@@ -34,15 +40,16 @@ const SignalDetail: React.FC = () => {
   // Mock data for the signal detail
   const signalData = {
     symbol: symbol || 'AAPL',
-    name: 'Apple Inc.',
-    price: 155.88,
-    change: '+2.34%',
+    name: selectedStock?.name || 'Apple Inc.',
+    price: selectedStock?.price || 155.88,
+    change: selectedStock?.change || 2.34,
     signal: 'BUY',
-    score: 88,
-    badge: 'strong',
+    score: score,
+    badge: score >= 90 ? 'strong' : score >= 80 ? 'valid' : 'weak',
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString(),
     shariahCompliant: true,
+    timeframe: timeframe,
     components: [
       {
         name: 'RSI (14)',
@@ -133,6 +140,7 @@ const SignalDetail: React.FC = () => {
                   </TooltipProvider>
                 )}
                 <span className="text-slate-400 text-lg font-normal"> {signalData.name}</span>
+                <span className="text-emerald-400 text-lg font-normal">({signalData.timeframe})</span>
               </h1>
               <p className="text-slate-400">
                 {signalData.date} • {signalData.time}
@@ -155,26 +163,14 @@ const SignalDetail: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            {/* Signal Chart Placeholder */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
-              <CardHeader>
-                <CardTitle className="text-lg text-white">{t('signal.title')}</CardTitle>
-              </CardHeader>
-              <CardContent className="h-[400px] flex items-center justify-center">
-                <div className="text-slate-400 flex flex-col items-center">
-                  <svg width="200" height="120" viewBox="0 0 200 120" className="mb-4">
-                    <path d="M0,100 L20,90 L40,95 L60,80 L80,85 L100,60 L120,50 L140,55 L160,40 L180,30 L200,20" 
-                      stroke="#10b981" strokeWidth="2" fill="none" />
-                    {/* Signal Triggered Marker */}
-                    <circle cx="140" cy="55" r="5" fill="#f59e0b" />
-                  </svg>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                    <span>Signal Triggered Here</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Realistic Signal Chart */}
+            <div className="mb-6">
+              <RealisticSignalChart 
+                symbol={signalData.symbol} 
+                timeframe={signalData.timeframe}
+                signalScore={signalData.score}
+              />
+            </div>
             
             {/* Signal Components */}
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
@@ -260,8 +256,8 @@ const SignalDetail: React.FC = () => {
                   
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Daily Change</span>
-                    <span className={`font-semibold ${signalData.change.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {signalData.change}
+                    <span className={`font-semibold ${signalData.change > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {signalData.change > 0 ? '+' : ''}{signalData.change}%
                     </span>
                   </div>
                   

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Layout from '../components/Layout';
@@ -86,7 +85,10 @@ const Contact: React.FC = () => {
                   <h3 className="text-white font-semibold mb-1">
                     {language === 'ar' ? 'الهاتف' : language === 'de' ? 'Telefon' : 'Phone'}
                   </h3>
-                  <p className="text-slate-400">+1 (555) 123-4567</p>
+                  <div className="space-y-1">
+                    <p className="text-slate-400">IE: +353 1 254 4000</p>
+                    <p className="text-slate-400">DE: +49 30 3080 6500</p>
+                  </div>
                 </div>
               </div>
 
@@ -100,10 +102,10 @@ const Contact: React.FC = () => {
                   </h3>
                   <p className="text-slate-400">
                     {language === 'ar' ? 
-                      'دبي، الإمارات العربية المتحدة' :
+                      'The Greenway، مكاتب آيكونيك، سانت ستيفن جرين، دبلن، أيرلندا' :
                       language === 'de' ? 
-                      'Dubai, Vereinigte Arabische Emirate' :
-                      'Dubai, United Arab Emirates'
+                      'The Greenway, Iconic Offices, St Stephen\'s Green, Dublin, Irland' :
+                      'The Greenway, Iconic Offices, St Stephen\'s Green, Dublin, Ireland'
                     }
                   </p>
                 </div>
