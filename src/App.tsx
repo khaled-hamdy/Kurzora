@@ -20,6 +20,8 @@ import FAQ from "./pages/FAQ";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import BrokerIntegration from "./pages/BrokerIntegration";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
 import RiskDisclosure from "./pages/legal/RiskDisclosure";
@@ -51,6 +53,8 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/broker-integration" element={<BrokerIntegration />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/profile" element={<Profile />} />
               
               {/* Legal Pages */}
               <Route path="/privacy" element={<PrivacyPolicy />} />
