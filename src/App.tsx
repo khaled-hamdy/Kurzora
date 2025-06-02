@@ -13,6 +13,19 @@ import Orders from "./pages/Orders";
 import Performance from "./pages/Performance";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import SignalDetail from "./pages/SignalDetail";
+import HowItWorks from "./pages/HowItWorks";
+import Pricing from "./pages/Pricing";
+import FAQ from "./pages/FAQ";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import BrokerIntegration from "./pages/BrokerIntegration";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import TermsOfService from "./pages/legal/TermsOfService";
+import RiskDisclosure from "./pages/legal/RiskDisclosure";
+import ShariahCompliance from "./pages/legal/ShariahCompliance";
+import GDPRCompliance from "./pages/legal/GDPRCompliance";
+import CookieNotice from "./pages/legal/CookieNotice";
 
 const queryClient = new QueryClient();
 
@@ -28,10 +41,26 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/signals" element={<Signals />} />
+              <Route path="/signals/:symbol" element={<SignalDetail />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/performance" element={<Performance />} />
               <Route path="/admin" element={<Admin />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/broker-integration" element={<BrokerIntegration />} />
+              
+              {/* Legal Pages */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/risk-disclosure" element={<RiskDisclosure />} />
+              <Route path="/shariah" element={<ShariahCompliance />} />
+              <Route path="/gdpr" element={<GDPRCompliance />} />
+              <Route path="/cookies" element={<CookieNotice />} />
+              
+              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
