@@ -16,7 +16,7 @@ const NotFound = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
       <div className="text-center">
         <div className="mb-8">
-          <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="Kurzora Logo" className="h-16 w-auto mx-auto mb-4" />
+          <img src="/lovable-uploads/f1c331b0-1e71-4869-8cfa-93c68febadda.png" alt="Kurzora Logo" className="h-16 w-auto mx-auto mb-4" />
         </div>
         <h1 className="text-6xl font-bold mb-4 text-white">404</h1>
         <p className="text-xl text-slate-400 mb-6">Oops! Page not found</p>

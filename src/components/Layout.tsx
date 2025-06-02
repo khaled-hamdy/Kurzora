@@ -17,35 +17,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
       {user && (
-        <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-blue-800/30">
+        <nav className="navbar bg-slate-900/50 backdrop-blur-sm border-b border-blue-800/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20 lg:h-24">
               <div className="flex items-center">
-                <div 
-                  className="logo-container flex items-center px-3"
-                  style={{
-                    height: '60px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0 12px'
-                  }}
-                >
+                <div className="logo-container">
                   <img 
-                    src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" 
+                    src="/lovable-uploads/f1c331b0-1e71-4869-8cfa-93c68febadda.png" 
                     alt="Kurzora Logo" 
-                    className="object-contain"
-                    style={{
-                      height: '48px',
-                      maxHeight: '56px',
-                      width: 'auto',
-                      objectFit: 'contain'
-                    }}
+                    className="logo-image"
                   />
                 </div>
-                <div 
-                  className="nav-items hidden lg:flex space-x-6 xl:space-x-8"
-                  style={{ marginLeft: '16px' }}
-                >
+                <div className="nav-items hidden lg:flex space-x-6 xl:space-x-8">
                   <Link to="/dashboard" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.dashboard')}</Link>
                   <Link to="/signals" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.signals')}</Link>
                   <Link to="/orders" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.orders')}</Link>

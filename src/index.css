@@ -101,10 +101,30 @@
   }
 }
 
-/* Logo responsive styles */
+/* Logo styling rules */
+.logo-container {
+  display: flex !important;
+  align-items: center !important;
+  height: 60px !important;
+}
+
+.logo-container img {
+  height: 56px !important;
+  width: auto !important;
+  object-fit: contain;
+  padding: 6px 12px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.navbar .logo-container + .nav-items {
+  margin-left: 20px;
+}
+
+/* Mobile responsive styles */
 @media (max-width: 768px) {
   .logo-container img {
-    height: 40px !important;
-    max-height: 44px !important;
+    height: 42px !important;
   }
 }
