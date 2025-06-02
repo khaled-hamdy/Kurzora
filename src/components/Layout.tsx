@@ -24,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center">
                 <div className="logo-container">
                   <img 
-                    src="/lovable-uploads/684992a8-5003-43e9-b064-314ae1a0ba53.png" 
+                    src="/lovable-uploads/cd45e587-857f-49d9-9e54-8f7ac9bb5792.png" 
                     alt="Kurzora Logo" 
                     className="logo-image"
                   />

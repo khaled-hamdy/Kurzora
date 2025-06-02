@@ -109,7 +109,7 @@
 }
 
 .logo-container img {
-  height: 56px !important;
+  height: 64px !important;
   width: auto !important;
   object-fit: contain;
   padding: 6px 12px !important;
@@ -125,6 +125,6 @@
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   .logo-container img {
-    height: 42px !important;
+    height: 48px !important;
   }
 }
