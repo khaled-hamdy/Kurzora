@@ -72,6 +72,9 @@ const SignalTable: React.FC<SignalTableProps> = ({
   const getMarketFlag = (market: string) => {
     switch (market) {
       case 'usa': return '🇺🇸';
+      case 'germany': return '🇩🇪';
+      case 'uk': return '🇬🇧';
+      case 'japan': return '🇯🇵';
       case 'saudi': return '🇸🇦';
       case 'uae': return '🇦🇪';
       case 'qatar': return '🇶🇦';

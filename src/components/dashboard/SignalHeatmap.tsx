@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Activity } from 'lucide-react';
@@ -66,6 +65,82 @@ const mockSignals: Signal[] = [
     sector: 'finance',
     market: 'usa',
     timestamp: '12 min ago'
+  },
+  
+  // Germany 🇩🇪
+  {
+    ticker: 'SAP.DE',
+    name: 'SAP SE',
+    price: 142.80,
+    change: 3.45,
+    signals: { '1H': 87, '4H': 84, '1D': 91, '1W': 86 },
+    sector: 'tech',
+    market: 'germany',
+    timestamp: '4 min ago'
+  },
+  {
+    ticker: 'SIE.DE',
+    name: 'Siemens AG',
+    price: 178.95,
+    change: 2.20,
+    signals: { '1H': 82, '4H': 89, '1D': 85, '1W': 91 },
+    sector: 'tech',
+    market: 'germany',
+    timestamp: '6 min ago'
+  },
+  {
+    ticker: 'VOW3.DE',
+    name: 'Volkswagen AG',
+    price: 95.60,
+    change: 1.85,
+    signals: { '1H': 76, '4H': 81, '1D': 88, '1W': 83 },
+    sector: 'tech',
+    market: 'germany',
+    timestamp: '9 min ago'
+  },
+  
+  // UK 🇬🇧
+  {
+    ticker: 'SHEL.L',
+    name: 'Shell PLC',
+    price: 28.45,
+    change: 2.75,
+    signals: { '1H': 84, '4H': 87, '1D': 82, '1W': 89 },
+    sector: 'energy',
+    market: 'uk',
+    timestamp: '7 min ago'
+  },
+  {
+    ticker: 'ULVR.L',
+    name: 'Unilever PLC',
+    price: 44.22,
+    change: 1.95,
+    signals: { '1H': 79, '4H': 83, '1D': 86, '1W': 81 },
+    sector: 'tech',
+    market: 'uk',
+    timestamp: '11 min ago'
+  },
+  
+  // Japan 🇯🇵
+  {
+    ticker: '7203.T',
+    name: 'Toyota Motor Corp.',
+    price: 2845.50,
+    change: 45.20,
+    signals: { '1H': 86, '4H': 91, '1D': 88, '1W': 84 },
+    sector: 'tech',
+    market: 'japan',
+    timestamp: '5 min ago'
+  },
+  {
+    ticker: '6758.T',
+    name: 'Sony Group Corp.',
+    price: 10850.00,
+    change: 125.30,
+    signals: { '1H': 83, '4H': 87, '1D': 91, '1W': 89 },
+    sector: 'tech',
+    market: 'japan',
+    timestamp: '8 min ago'
   },
   
   // Saudi Arabia 🇸🇦
@@ -249,7 +324,7 @@ const SignalHeatmap: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState('1D');
   const [scoreThreshold, setScoreThreshold] = useState([70]);
   const [sectorFilter, setSectorFilter] = useState('all');
-  const [marketFilter, setMarketFilter] = useState('usa');
+  const [marketFilter, setMarketFilter] = useState('global');
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
@@ -266,7 +341,7 @@ const SignalHeatmap: React.FC = () => {
     const score = signal.signals[timeFilter as keyof typeof signal.signals];
     const meetsThreshold = score >= scoreThreshold[0];
     const meetsSector = sectorFilter === 'all' || signal.sector === sectorFilter;
-    const meetsMarket = marketFilter === 'all' || signal.market === marketFilter;
+    const meetsMarket = marketFilter === 'global' || signal.market === marketFilter;
     return meetsThreshold && meetsSector && meetsMarket;
   });
 

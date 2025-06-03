@@ -58,6 +58,7 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="bg-slate-700 border-slate-600">
+          <SelectItem value="global">🌐 Global</SelectItem>
           <SelectItem value="usa">🇺🇸 USA</SelectItem>
           <SelectItem value="saudi">🇸🇦 Saudi Arabia</SelectItem>
           <SelectItem value="uae">🇦🇪 UAE</SelectItem>
