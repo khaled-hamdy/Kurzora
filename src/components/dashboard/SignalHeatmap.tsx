@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Activity } from 'lucide-react';
+import { Activity, X } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import SignalFilters from './SignalFilters';
@@ -106,6 +106,47 @@ const SignalHeatmap: React.FC = () => {
     return meetsThreshold && meetsSector;
   });
 
+  // Check if any filters are active
+  const hasActiveFilters = scoreThreshold[0] > 70 || sectorFilter !== 'all';
+
+  const getFilterStatusText = () => {
+    const parts = [];
+    
+    if (scoreThreshold[0] > 70) {
+      if (language === 'ar') {
+        parts.push(`الحد الأدنى ≥ ${scoreThreshold[0]} في ${timeFilter}`);
+      } else if (language === 'de') {
+        parts.push(`Min Score ≥ ${scoreThreshold[0]} in ${timeFilter}`);
+      } else {
+        parts.push(`Min Score ≥ ${scoreThreshold[0]} in ${timeFilter}`);
+      }
+    }
+
+    if (sectorFilter !== 'all') {
+      const sectorNames = {
+        tech: language === 'ar' ? 'التكنولوجيا' : language === 'de' ? 'Technologie' : 'Tech',
+        finance: language === 'ar' ? 'المالية' : language === 'de' ? 'Finanzen' : 'Finance',
+        healthcare: language === 'ar' ? 'الرعاية الصحية' : language === 'de' ? 'Gesundheitswesen' : 'Healthcare',
+        energy: language === 'ar' ? 'الطاقة' : language === 'de' ? 'Energie' : 'Energy'
+      };
+      
+      if (language === 'ar') {
+        parts.push(`القطاع: ${sectorNames[sectorFilter as keyof typeof sectorNames]}`);
+      } else if (language === 'de') {
+        parts.push(`Sektor: ${sectorNames[sectorFilter as keyof typeof sectorNames]}`);
+      } else {
+        parts.push(`Sector: ${sectorNames[sectorFilter as keyof typeof sectorNames]}`);
+      }
+    }
+
+    return parts.join(', ');
+  };
+
+  const clearFilters = () => {
+    setScoreThreshold([70]);
+    setSectorFilter('all');
+  };
+
   return (
     <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
       <CardHeader>
@@ -125,6 +166,25 @@ const SignalHeatmap: React.FC = () => {
             language={language}
           />
         </div>
+
+        {/* Filter Status Indicator */}
+        {hasActiveFilters && (
+          <div className="flex items-center justify-between bg-slate-700/30 rounded-lg p-3 border border-slate-600">
+            <div className="flex items-center space-x-2">
+              <div className="text-sm text-slate-300">
+                {language === 'ar' ? 'مُرشح بواسطة:' : language === 'de' ? 'Gefiltert nach:' : 'Filtered by:'} 
+                <span className="font-medium text-emerald-400 ml-1">{getFilterStatusText()}</span>
+              </div>
+            </div>
+            <button
+              onClick={clearFilters}
+              className="flex items-center space-x-1 text-xs text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="h-3 w-3" />
+              <span>{language === 'ar' ? 'مسح' : language === 'de' ? 'Löschen' : 'Clear'}</span>
+            </button>
+          </div>
+        )}
 
         <SignalLegend language={language} />
       </CardHeader>
