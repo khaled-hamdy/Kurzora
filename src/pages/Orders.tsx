@@ -140,6 +140,13 @@ const Orders: React.FC = () => {
                       <span className="text-emerald-400 font-semibold">${selectedOrder.takeProfit.toFixed(2)}</span>
                     </div>
                     
+                    {/* Risk Management Warning */}
+                    <div className="bg-amber-500/20 border border-amber-500/50 rounded-lg p-3 mt-4 mb-4">
+                      <p className="text-amber-400 text-sm font-bold text-center">
+                        ⚠️ Don't risk more than 2% of your allocated capital.
+                      </p>
+                    </div>
+                    
                     <Button 
                       onClick={() => handlePlaceOrder(selectedOrder)}
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3"
