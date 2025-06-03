@@ -1,26 +1,19 @@
+
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
-import MiniSignalHeatmap from '../components/dashboard/MiniSignalHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Activity, TrendingUp, AlertCircle, Clock, ArrowRight, Shield, ArrowLeft } from 'lucide-react';
+import { Activity, TrendingUp, AlertCircle, Clock, ArrowRight, Shield } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
 
 const Signals: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
-
-  // Check if user came from heatmap with specific timeframe
-  const sourceTimeframe = searchParams.get('timeframe') || location.state?.timeframe;
-  const fromHeatmap = searchParams.has('timeframe') || location.state?.fromHeatmap;
 
   useEffect(() => {
     if (!user) {
@@ -39,8 +32,7 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 88,
       badge: 'strong',
-      shariahCompliant: true,
-      signals: { '1H': 92, '4H': 88, '1D': 95, '1W': 78 }
+      shariahCompliant: true
     },
     { 
       symbol: 'TSLA', 
@@ -50,8 +42,7 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 92,
       badge: 'strong',
-      shariahCompliant: true,
-      signals: { '1H': 85, '4H': 92, '1D': 89, '1W': 94 }
+      shariahCompliant: true
     },
     { 
       symbol: 'MSFT', 
@@ -61,8 +52,7 @@ const Signals: React.FC = () => {
       signal: 'HOLD', 
       score: 65,
       badge: 'valid',
-      shariahCompliant: true,
-      signals: { '1H': 79, '4H': 84, '1D': 87, '1W': 82 }
+      shariahCompliant: true
     },
     { 
       symbol: 'GOOGL', 
@@ -72,8 +62,7 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 75,
       badge: 'valid',
-      shariahCompliant: false,
-      signals: { '1H': 76, '4H': 82, '1D': 88, '1W': 84 }
+      shariahCompliant: false
     },
     { 
       symbol: 'NVDA', 
@@ -83,8 +72,7 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 95,
       badge: 'strong',
-      shariahCompliant: true,
-      signals: { '1H': 85, '4H': 92, '1D': 89, '1W': 94 }
+      shariahCompliant: true
     },
     { 
       symbol: 'AMZN', 
@@ -94,8 +82,7 @@ const Signals: React.FC = () => {
       signal: 'HOLD', 
       score: 62,
       badge: 'valid',
-      shariahCompliant: false,
-      signals: { '1H': 68, '4H': 72, '1D': 75, '1W': 69 }
+      shariahCompliant: false
     },
     { 
       symbol: 'META', 
@@ -105,8 +92,7 @@ const Signals: React.FC = () => {
       signal: 'SELL', 
       score: 25,
       badge: 'weak',
-      shariahCompliant: false,
-      signals: { '1H': 45, '4H': 38, '1D': 25, '1W': 42 }
+      shariahCompliant: false
     },
     { 
       symbol: 'JPM', 
@@ -116,18 +102,12 @@ const Signals: React.FC = () => {
       signal: 'SELL', 
       score: 15,
       badge: 'ignore',
-      shariahCompliant: false,
-      signals: { '1H': 22, '4H': 18, '1D': 15, '1W': 28 }
+      shariahCompliant: false
     },
   ];
 
   const handleStockClick = (stock: any) => {
-    const navigationState = {
-      selectedStock: stock,
-      ...(sourceTimeframe && { timeframe: sourceTimeframe }),
-      ...(fromHeatmap && { fromHeatmap: true })
-    };
-    navigate(`/signals/${stock.symbol}`, { state: navigationState });
+    navigate(`/signals/${stock.symbol}`, { state: { selectedStock: stock } });
   };
 
   const getBadgeClass = (badge: string) => {
@@ -150,67 +130,16 @@ const Signals: React.FC = () => {
     }
   }
 
-  // Get the currently highlighted stock (first one with strong signal for demo)
-  const highlightedStock = stocks.find(stock => stock.badge === 'strong') || stocks[0];
-
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation breadcrumb if coming from heatmap */}
-        {fromHeatmap && (
-          <div className="mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/dashboard')}
-              className="text-slate-400 hover:text-white flex items-center space-x-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back to Dashboard</span>
-            </Button>
-          </div>
-        )}
-
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
             AI-Powered Trading Signals
-            {sourceTimeframe && (
-              <span className="text-lg text-emerald-400 font-normal ml-2">
-                ({sourceTimeframe} timeframe from Heatmap)
-              </span>
-            )}
           </h1>
           <p className="text-slate-400">
             Get high-probability trade alerts using institutional-grade algorithms
-            {fromHeatmap && (
-              <span className="text-emerald-400 ml-1">
-                • Showing signals based on {sourceTimeframe} analysis
-              </span>
-            )}
           </p>
-        </div>
-
-        {/* Context indicator for heatmap navigation */}
-        {fromHeatmap && sourceTimeframe && (
-          <Card className="bg-emerald-900/20 border-emerald-700/50 mb-6">
-            <CardContent className="pt-4">
-              <div className="flex items-center space-x-2 text-emerald-300">
-                <Activity className="h-4 w-4" />
-                <span className="text-sm">
-                  Score analysis based on <strong>{sourceTimeframe}</strong> timeframe from Signal Heatmap
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Mini Heatmap Widget for highlighted stock */}
-        <div className="mb-6">
-          <MiniSignalHeatmap
-            stockSymbol={highlightedStock.symbol}
-            signals={highlightedStock.signals}
-            selectedTimeframe={sourceTimeframe}
-          />
         </div>
 
         {/* Signal Stats */}

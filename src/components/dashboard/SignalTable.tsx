@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from '../ui/button';
-import { Eye } from 'lucide-react';
 
 interface Signal {
   ticker: string;
@@ -57,7 +56,7 @@ const SignalTable: React.FC<SignalTableProps> = ({
   };
 
   const getTooltipText = (signal: Signal, timeframe: string, score: number) => {
-    return `${signal.ticker} ${timeframe}: ${score}% confidence\nClick to view detailed analysis\nRSI: 28, MACD > 0, Volume: 2.1x`;
+    return `${signal.ticker} ${timeframe}: ${score}% confidence\nRSI: 28, MACD > 0, Volume: 2.1x`;
   };
 
   const shouldHighlightScore = (score: number) => {
@@ -95,9 +94,9 @@ const SignalTable: React.FC<SignalTableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-[700px]">
+      <div className="min-w-[600px]">
         {/* Header Row */}
-        <div className="grid grid-cols-7 gap-2 mb-2">
+        <div className="grid grid-cols-6 gap-2 mb-2">
           <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'السهم' : language === 'de' ? 'Aktie' : 'Stock'}</div>
           {timeframes.map(tf => (
             <div key={tf} className={`text-center text-slate-400 text-sm font-medium ${tf === timeFilter ? 'text-emerald-400' : ''}`}>
@@ -110,7 +109,7 @@ const SignalTable: React.FC<SignalTableProps> = ({
         {/* Signal Rows */}
         <div className="space-y-2">
           {filteredSignals.map((signal) => (
-            <div key={signal.ticker} className="grid grid-cols-7 gap-2 items-center">
+            <div key={signal.ticker} className="grid grid-cols-6 gap-2 items-center">
               {/* Stock Info */}
               <div className="flex flex-col">
                 <div className="text-white font-bold text-sm">{signal.ticker}</div>
@@ -127,7 +126,7 @@ const SignalTable: React.FC<SignalTableProps> = ({
                     <div 
                       className={`
                         px-2 py-1 rounded text-xs font-bold text-center min-w-[50px] cursor-pointer
-                        transition-all duration-200 hover:scale-105 transform hover:shadow-lg
+                        transition-all duration-200 hover:scale-105 transform
                         ${getHighlightedSignalColor(score, isHighlighted)}
                         ${tf === timeFilter ? 'ring-2 ring-emerald-400' : ''}
                       `}
@@ -145,11 +144,10 @@ const SignalTable: React.FC<SignalTableProps> = ({
               <div className="flex justify-center">
                 <Button 
                   size="sm" 
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1 flex items-center space-x-1"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1"
                   onClick={() => onViewSignal(signal, timeFilter)}
                 >
-                  <Eye className="h-3 w-3" />
-                  <span>{language === 'ar' ? 'عرض' : language === 'de' ? 'Anzeigen' : 'View'}</span>
+                  {language === 'ar' ? 'عرض' : language === 'de' ? 'Anzeigen' : 'View'}
                 </Button>
               </div>
             </div>

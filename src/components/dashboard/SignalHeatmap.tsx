@@ -90,12 +90,11 @@ const SignalHeatmap: React.FC = () => {
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
-    navigate(`/signals/${signal.ticker}?timeframe=${timeframe}`, { 
+    navigate(`/signals/${signal.ticker}`, { 
       state: { 
         selectedStock: signal,
         timeframe: timeframe,
-        score: signal.signals[timeframe as keyof typeof signal.signals],
-        fromHeatmap: true
+        score: signal.signals[timeframe as keyof typeof signal.signals]
       }
     });
   };
