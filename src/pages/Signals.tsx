@@ -1,19 +1,25 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Activity, TrendingUp, AlertCircle, Clock, ArrowRight, Shield } from 'lucide-react';
+import { Activity, TrendingUp, AlertCircle, Clock, ArrowRight, Shield, ArrowLeft } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 const Signals: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+
+  // Check if user came from heatmap with specific timeframe
+  const sourceTimeframe = searchParams.get('timeframe') || location.state?.timeframe;
+  const fromHeatmap = searchParams.has('timeframe') || location.state?.fromHeatmap;
 
   useEffect(() => {
     if (!user) {
@@ -107,7 +113,12 @@ const Signals: React.FC = () => {
   ];
 
   const handleStockClick = (stock: any) => {
-    navigate(`/signals/${stock.symbol}`, { state: { selectedStock: stock } });
+    const navigationState = {
+      selectedStock: stock,
+      ...(sourceTimeframe && { timeframe: sourceTimeframe }),
+      ...(fromHeatmap && { fromHeatmap: true })
+    };
+    navigate(`/signals/${stock.symbol}`, { state: navigationState });
   };
 
   const getBadgeClass = (badge: string) => {
@@ -133,14 +144,53 @@ const Signals: React.FC = () => {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation breadcrumb if coming from heatmap */}
+        {fromHeatmap && (
+          <div className="mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="text-slate-400 hover:text-white flex items-center space-x-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Dashboard</span>
+            </Button>
+          </div>
+        )}
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
             AI-Powered Trading Signals
+            {sourceTimeframe && (
+              <span className="text-lg text-emerald-400 font-normal ml-2">
+                ({sourceTimeframe} timeframe from Heatmap)
+              </span>
+            )}
           </h1>
           <p className="text-slate-400">
             Get high-probability trade alerts using institutional-grade algorithms
+            {fromHeatmap && (
+              <span className="text-emerald-400 ml-1">
+                • Showing signals based on {sourceTimeframe} analysis
+              </span>
+            )}
           </p>
         </div>
+
+        {/* Context indicator for heatmap navigation */}
+        {fromHeatmap && sourceTimeframe && (
+          <Card className="bg-emerald-900/20 border-emerald-700/50 mb-6">
+            <CardContent className="pt-4">
+              <div className="flex items-center space-x-2 text-emerald-300">
+                <Activity className="h-4 w-4" />
+                <span className="text-sm">
+                  Score analysis based on <strong>{sourceTimeframe}</strong> timeframe from Signal Heatmap
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Signal Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

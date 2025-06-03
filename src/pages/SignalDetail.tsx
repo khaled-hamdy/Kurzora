@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import RealisticSignalChart from '../components/charts/RealisticSignalChart';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { ArrowLeft, Shield, ArrowRight, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowLeft, Shield, ArrowRight, AlertTriangle, TrendingUp, TrendingDown, Activity } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -23,11 +23,13 @@ const SignalDetail: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
+  const [searchParams] = useSearchParams();
 
-  // Get data from navigation state or use defaults
+  // Get data from navigation state or URL params
   const selectedStock = location.state?.selectedStock;
-  const timeframe = location.state?.timeframe || '1D';
+  const timeframe = searchParams.get('timeframe') || location.state?.timeframe || '1D';
   const score = location.state?.score || 88;
+  const fromHeatmap = searchParams.has('timeframe') || location.state?.fromHeatmap;
 
   useEffect(() => {
     if (!user) {
@@ -114,14 +116,42 @@ const SignalDetail: React.FC = () => {
     }
   }
 
+  const getBackLink = () => {
+    if (fromHeatmap) {
+      return '/dashboard';
+    }
+    return '/signals';
+  };
+
+  const getBackText = () => {
+    if (fromHeatmap) {
+      return t('signal.backToDashboard') || 'Back to Dashboard';
+    }
+    return t('signal.backToSignals') || 'Back to Signals';
+  };
+
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-4">
-          <Link to="/signals" className="text-slate-400 hover:text-white flex items-center space-x-1 mb-4">
+          <Link to={getBackLink()} className="text-slate-400 hover:text-white flex items-center space-x-1 mb-4">
             <ArrowLeft className="h-4 w-4" />
-            <span>{t('signal.backToSignals')}</span>
+            <span>{getBackText()}</span>
           </Link>
+
+          {/* Heatmap context indicator */}
+          {fromHeatmap && (
+            <Card className="bg-emerald-900/20 border-emerald-700/50 mb-4">
+              <CardContent className="pt-3 pb-3">
+                <div className="flex items-center space-x-2 text-emerald-300">
+                  <Activity className="h-4 w-4" />
+                  <span className="text-sm">
+                    Signal analysis based on <strong>{timeframe}</strong> timeframe from Heatmap • Score: <strong>{score}/100</strong>
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
@@ -144,6 +174,11 @@ const SignalDetail: React.FC = () => {
               </h1>
               <p className="text-slate-400">
                 {signalData.date} • {signalData.time}
+                {fromHeatmap && (
+                  <span className="text-emerald-400 ml-2">
+                    • From Heatmap ({timeframe})
+                  </span>
+                )}
               </p>
             </div>
             <div className="flex items-center space-x-4">
