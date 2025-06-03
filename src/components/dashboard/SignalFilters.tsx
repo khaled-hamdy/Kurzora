@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { Filter, Calendar, Info } from 'lucide-react';
+import { Filter, Calendar } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface SignalFiltersProps {
   timeFilter: string;
@@ -28,38 +27,16 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
 }) => {
   const timeframes = ['1H', '4H', '1D', '1W'];
 
-  const getTooltipText = () => {
-    if (language === 'ar') {
-      return `إظهار الأسهم فقط حيث النقاط في الإطار الزمني المحدد (${timeFilter}) تساوي أو تزيد عن هذا الحد الأدنى`;
-    } else if (language === 'de') {
-      return `Nur Aktien anzeigen, bei denen der Score im ausgewählten Zeitrahmen (${timeFilter}) gleich oder größer als dieser Schwellenwert ist`;
-    } else {
-      return `Only show stocks where the score in the selected timeframe (${timeFilter}) is equal to or greater than this threshold`;
-    }
-  };
-
   return (
     <div className="flex flex-wrap items-center gap-4">
       {/* Score Threshold */}
       <div className="flex items-center space-x-2 min-w-[180px]">
         <Filter className="h-4 w-4 text-slate-400" />
-        <div className="flex items-center space-x-1">
-          <Label className="text-slate-300 text-sm whitespace-nowrap">
-            {language === 'ar' ? `الحد الأدنى: ${scoreThreshold[0]}%` : 
-             language === 'de' ? `Min Score: ${scoreThreshold[0]}%` : 
-             `Min Score: ${scoreThreshold[0]}%`}
-          </Label>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-3 w-3 text-slate-400 cursor-help hover:text-slate-300" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-[250px] bg-slate-700 border-slate-600 text-white">
-                <p className="text-xs">{getTooltipText()}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <Label className="text-slate-300 text-sm whitespace-nowrap">
+          {language === 'ar' ? `الحد الأدنى: ${scoreThreshold[0]}%` : 
+           language === 'de' ? `Min Score: ${scoreThreshold[0]}%` : 
+           `Min Score: ${scoreThreshold[0]}%`}
+        </Label>
         <Slider
           value={scoreThreshold}
           onValueChange={setScoreThreshold}
