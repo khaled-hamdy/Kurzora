@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { TrendingUp, Activity, Calendar, Filter } from 'lucide-react';
@@ -87,6 +88,7 @@ const SignalHeatmap: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState('1D');
   const [scoreThreshold, setScoreThreshold] = useState([70]);
   const [sectorFilter, setSectorFilter] = useState('all');
+  const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
 
   const getSignalColor = (score: number) => {
     if (score >= 90) return 'bg-green-500 hover:bg-green-600 text-white shadow-lg border border-green-400'; // Strong - Green hsl(118, 95.3%, 49.8%)
@@ -124,6 +126,38 @@ const SignalHeatmap: React.FC = () => {
   });
 
   const timeframes = ['1H', '4H', '1D', '1W'];
+
+  // Helper functions for highlighting
+  const shouldHighlightScore = (score: number) => {
+    if (!highlightedCategory) return false;
+    if (highlightedCategory === 'strong' && score >= 90) return true;
+    if (highlightedCategory === 'valid' && score >= 80 && score < 90) return true;
+    if (highlightedCategory === 'weak' && score >= 70 && score < 80) return true;
+    return false;
+  };
+
+  const getHighlightedSignalColor = (score: number, isHighlighted: boolean) => {
+    const baseColor = getSignalColor(score);
+    if (isHighlighted) {
+      return `${baseColor} ring-4 ring-emerald-300 ring-opacity-75 animate-pulse`;
+    }
+    return baseColor;
+  };
+
+  // Get stocks for each category with their scores
+  const getStocksForCategory = (category: string) => {
+    return filteredSignals
+      .map(signal => ({
+        ticker: signal.ticker,
+        score: signal.signals[timeFilter as keyof typeof signal.signals]
+      }))
+      .filter(item => {
+        if (category === 'strong') return item.score >= 90;
+        if (category === 'valid') return item.score >= 80 && item.score < 90;
+        if (category === 'weak') return item.score >= 70 && item.score < 80;
+        return false;
+      });
+  };
 
   return (
     <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
@@ -236,13 +270,14 @@ const SignalHeatmap: React.FC = () => {
                   {/* Signal Scores for each timeframe */}
                   {timeframes.map(tf => {
                     const score = signal.signals[tf as keyof typeof signal.signals];
+                    const isHighlighted = tf === timeFilter && shouldHighlightScore(score);
                     return (
                       <div key={tf} className="flex justify-center">
                         <div 
                           className={`
                             px-2 py-1 rounded text-xs font-bold text-center min-w-[50px] cursor-pointer
                             transition-all duration-200 hover:scale-105 transform
-                            ${getSignalColor(score)}
+                            ${getHighlightedSignalColor(score, isHighlighted)}
                             ${tf === timeFilter ? 'ring-2 ring-emerald-400' : ''}
                           `}
                           title={getTooltipText(signal, tf, score)}
@@ -270,7 +305,7 @@ const SignalHeatmap: React.FC = () => {
           </div>
         </div>
 
-        {/* Summary Stats with timeframe indicator */}
+        {/* Summary Stats with timeframe indicator and enhanced interactivity */}
         <div className="mt-6 pt-4 border-t border-slate-700">
           {/* Add timeframe indicator label */}
           <div className="mb-4 text-center">
@@ -282,13 +317,31 @@ const SignalHeatmap: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
+            {/* Strong (90+) */}
+            <div 
+              className="text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200"
+              onMouseEnter={() => setHighlightedCategory('strong')}
+              onMouseLeave={() => setHighlightedCategory(null)}
+            >
               <div className="text-green-400 text-lg font-bold">
                 {filteredSignals.filter(s => s.signals[timeFilter as keyof typeof s.signals] >= 90).length}
               </div>
               <div className="text-slate-400 text-sm">{language === 'ar' ? 'قوي (90+)' : language === 'de' ? 'Stark (90+)' : 'Strong (90+)'}</div>
+              {highlightedCategory === 'strong' && getStocksForCategory('strong').length > 0 && (
+                <div className="mt-1 text-xs text-slate-300">
+                  {getStocksForCategory('strong').map(item => (
+                    <div key={item.ticker}>{item.ticker} ({item.score})</div>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="text-center">
+
+            {/* Valid (80-89) */}
+            <div 
+              className="text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200"
+              onMouseEnter={() => setHighlightedCategory('valid')}
+              onMouseLeave={() => setHighlightedCategory(null)}
+            >
               <div className="text-blue-400 text-lg font-bold">
                 {filteredSignals.filter(s => {
                   const score = s.signals[timeFilter as keyof typeof s.signals];
@@ -296,8 +349,21 @@ const SignalHeatmap: React.FC = () => {
                 }).length}
               </div>
               <div className="text-slate-400 text-sm">{language === 'ar' ? 'صحيح (80-89)' : language === 'de' ? 'Gültig (80-89)' : 'Valid (80-89)'}</div>
+              {highlightedCategory === 'valid' && getStocksForCategory('valid').length > 0 && (
+                <div className="mt-1 text-xs text-slate-300">
+                  {getStocksForCategory('valid').map(item => (
+                    <div key={item.ticker}>{item.ticker} ({item.score})</div>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="text-center">
+
+            {/* Weak (70-79) */}
+            <div 
+              className="text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200"
+              onMouseEnter={() => setHighlightedCategory('weak')}
+              onMouseLeave={() => setHighlightedCategory(null)}
+            >
               <div className="text-yellow-400 text-lg font-bold">
                 {filteredSignals.filter(s => {
                   const score = s.signals[timeFilter as keyof typeof s.signals];
@@ -305,7 +371,16 @@ const SignalHeatmap: React.FC = () => {
                 }).length}
               </div>
               <div className="text-slate-400 text-sm">{language === 'ar' ? 'ضعيف (70-79)' : language === 'de' ? 'Schwach (70-79)' : 'Weak (70-79)'}</div>
+              {highlightedCategory === 'weak' && getStocksForCategory('weak').length > 0 && (
+                <div className="mt-1 text-xs text-slate-300">
+                  {getStocksForCategory('weak').map(item => (
+                    <div key={item.ticker}>{item.ticker} ({item.score})</div>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Total Signals */}
             <div className="text-center">
               <div className="text-white text-lg font-bold">
                 {filteredSignals.length}
