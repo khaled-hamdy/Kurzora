@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Filter, Calendar } from 'lucide-react';
+import { Filter, Calendar, Globe } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -13,6 +13,8 @@ interface SignalFiltersProps {
   setScoreThreshold: (value: number[]) => void;
   sectorFilter: string;
   setSectorFilter: (value: string) => void;
+  marketFilter: string;
+  setMarketFilter: (value: string) => void;
   language: string;
 }
 
@@ -23,6 +25,8 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
   setScoreThreshold,
   sectorFilter,
   setSectorFilter,
+  marketFilter,
+  setMarketFilter,
   language
 }) => {
   const timeframes = ['1H', '4H', '1D', '1W'];
@@ -47,17 +51,36 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
         />
       </div>
 
+      {/* Market Filter */}
+      <Select value={marketFilter} onValueChange={setMarketFilter}>
+        <SelectTrigger className="w-36 bg-slate-700 border-slate-600 text-white">
+          <Globe className="h-4 w-4 mr-2" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="bg-slate-700 border-slate-600">
+          <SelectItem value="usa">🇺🇸 USA</SelectItem>
+          <SelectItem value="saudi">🇸🇦 Saudi Arabia</SelectItem>
+          <SelectItem value="uae">🇦🇪 UAE</SelectItem>
+          <SelectItem value="qatar">🇶🇦 Qatar</SelectItem>
+          <SelectItem value="kuwait">🇰🇼 Kuwait</SelectItem>
+          <SelectItem value="bahrain">🇧🇭 Bahrain</SelectItem>
+          <SelectItem value="oman">🇴🇲 Oman</SelectItem>
+          <SelectItem value="crypto">₿ Crypto</SelectItem>
+        </SelectContent>
+      </Select>
+
       {/* Sector Filter */}
       <Select value={sectorFilter} onValueChange={setSectorFilter}>
         <SelectTrigger className="w-32 bg-slate-700 border-slate-600 text-white">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-slate-700 border-slate-600">
           <SelectItem value="all">{language === 'ar' ? 'جميع القطاعات' : language === 'de' ? 'Alle Sektoren' : 'All Sectors'}</SelectItem>
           <SelectItem value="tech">{language === 'ar' ? 'التكنولوجيا' : language === 'de' ? 'Technologie' : 'Tech'}</SelectItem>
           <SelectItem value="finance">{language === 'ar' ? 'المالية' : language === 'de' ? 'Finanzen' : 'Finance'}</SelectItem>
           <SelectItem value="healthcare">{language === 'ar' ? 'الرعاية الصحية' : language === 'de' ? 'Gesundheitswesen' : 'Healthcare'}</SelectItem>
           <SelectItem value="energy">{language === 'ar' ? 'الطاقة' : language === 'de' ? 'Energie' : 'Energy'}</SelectItem>
+          <SelectItem value="crypto">{language === 'ar' ? 'العملات المشفرة' : language === 'de' ? 'Kryptowährung' : 'Crypto'}</SelectItem>
         </SelectContent>
       </Select>
 

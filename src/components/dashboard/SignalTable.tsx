@@ -14,6 +14,7 @@ interface Signal {
     '1W': number;
   };
   sector: string;
+  market: string;
   timestamp: string;
 }
 
@@ -55,6 +56,33 @@ const SignalTable: React.FC<SignalTableProps> = ({
     return '';
   };
 
+  const formatPrice = (price: number, market: string) => {
+    if (market === 'crypto') {
+      if (price >= 1000) {
+        return `$${price.toLocaleString()}`;
+      } else if (price >= 1) {
+        return `$${price.toFixed(2)}`;
+      } else {
+        return `$${price.toFixed(4)}`;
+      }
+    }
+    return `$${price.toFixed(2)}`;
+  };
+
+  const getMarketFlag = (market: string) => {
+    switch (market) {
+      case 'usa': return '🇺🇸';
+      case 'saudi': return '🇸🇦';
+      case 'uae': return '🇦🇪';
+      case 'qatar': return '🇶🇦';
+      case 'kuwait': return '🇰🇼';
+      case 'bahrain': return '🇧🇭';
+      case 'oman': return '🇴🇲';
+      case 'crypto': return '₿';
+      default: return '';
+    }
+  };
+
   const getTooltipText = (signal: Signal, timeframe: string, score: number) => {
     return `${signal.ticker} ${timeframe}: ${score}% confidence\nRSI: 28, MACD > 0, Volume: 2.1x`;
   };
@@ -86,7 +114,7 @@ const SignalTable: React.FC<SignalTableProps> = ({
         <div className="text-slate-500 text-sm mt-1">
           {language === 'ar' ? 'حاول خفض عتبة النقاط أو تغيير مرشح القطاع.' :
            language === 'de' ? 'Versuchen Sie, die Punkteschwelle zu senken oder den Sektorfilter zu ändern.' :
-           'Try lowering the score threshold or changing the sector filter.'}
+           'Try lowering the score threshold or changing the market/sector filter.'}
         </div>
       </div>
     );
@@ -97,7 +125,7 @@ const SignalTable: React.FC<SignalTableProps> = ({
       <div className="min-w-[600px]">
         {/* Header Row */}
         <div className="grid grid-cols-6 gap-2 mb-2">
-          <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'السهم' : language === 'de' ? 'Aktie' : 'Stock'}</div>
+          <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'السهم' : language === 'de' ? 'Aktie' : 'Asset'}</div>
           {timeframes.map(tf => (
             <div key={tf} className={`text-center text-slate-400 text-sm font-medium ${tf === timeFilter ? 'text-emerald-400' : ''}`}>
               {tf}
@@ -112,9 +140,12 @@ const SignalTable: React.FC<SignalTableProps> = ({
             <div key={signal.ticker} className="grid grid-cols-6 gap-2 items-center">
               {/* Stock Info */}
               <div className="flex flex-col">
-                <div className="text-white font-bold text-sm">{signal.ticker}</div>
+                <div className="text-white font-bold text-sm flex items-center space-x-1">
+                  <span>{getMarketFlag(signal.market)}</span>
+                  <span>{signal.ticker}</span>
+                </div>
                 <div className="text-slate-400 text-xs truncate">{signal.name}</div>
-                <div className="text-slate-300 text-xs">${signal.price}</div>
+                <div className="text-slate-300 text-xs">{formatPrice(signal.price, signal.market)}</div>
               </div>
 
               {/* Signal Scores for each timeframe */}
