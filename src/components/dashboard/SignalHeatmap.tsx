@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { TrendingUp, Activity, Calendar, Filter } from 'lucide-react';
@@ -271,37 +270,48 @@ const SignalHeatmap: React.FC = () => {
           </div>
         </div>
 
-        {/* Summary Stats with updated color references */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700">
-          <div className="text-center">
-            <div className="text-green-400 text-lg font-bold">
-              {filteredSignals.filter(s => s.signals[timeFilter as keyof typeof s.signals] >= 90).length}
+        {/* Summary Stats with timeframe indicator */}
+        <div className="mt-6 pt-4 border-t border-slate-700">
+          {/* Add timeframe indicator label */}
+          <div className="mb-4 text-center">
+            <div className="text-slate-300 text-sm font-medium">
+              {language === 'ar' ? `الإحصائيات تعكس الإطار الزمني النشط: ${timeFilter}` :
+               language === 'de' ? `Statistiken spiegeln nur den aktiven Zeitrahmen wider: ${timeFilter}` :
+               `Summary reflects only the active timeframe: ${timeFilter}`}
             </div>
-            <div className="text-slate-400 text-sm">{language === 'ar' ? 'قوي (90+)' : language === 'de' ? 'Stark (90+)' : 'Strong (90+)'}</div>
           </div>
-          <div className="text-center">
-            <div className="text-blue-400 text-lg font-bold">
-              {filteredSignals.filter(s => {
-                const score = s.signals[timeFilter as keyof typeof s.signals];
-                return score >= 80 && score < 90;
-              }).length}
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-green-400 text-lg font-bold">
+                {filteredSignals.filter(s => s.signals[timeFilter as keyof typeof s.signals] >= 90).length}
+              </div>
+              <div className="text-slate-400 text-sm">{language === 'ar' ? 'قوي (90+)' : language === 'de' ? 'Stark (90+)' : 'Strong (90+)'}</div>
             </div>
-            <div className="text-slate-400 text-sm">{language === 'ar' ? 'صحيح (80-89)' : language === 'de' ? 'Gültig (80-89)' : 'Valid (80-89)'}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-yellow-400 text-lg font-bold">
-              {filteredSignals.filter(s => {
-                const score = s.signals[timeFilter as keyof typeof s.signals];
-                return score >= 70 && score < 80;
-              }).length}
+            <div className="text-center">
+              <div className="text-blue-400 text-lg font-bold">
+                {filteredSignals.filter(s => {
+                  const score = s.signals[timeFilter as keyof typeof s.signals];
+                  return score >= 80 && score < 90;
+                }).length}
+              </div>
+              <div className="text-slate-400 text-sm">{language === 'ar' ? 'صحيح (80-89)' : language === 'de' ? 'Gültig (80-89)' : 'Valid (80-89)'}</div>
             </div>
-            <div className="text-slate-400 text-sm">{language === 'ar' ? 'ضعيف (70-79)' : language === 'de' ? 'Schwach (70-79)' : 'Weak (70-79)'}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-white text-lg font-bold">
-              {filteredSignals.length}
+            <div className="text-center">
+              <div className="text-yellow-400 text-lg font-bold">
+                {filteredSignals.filter(s => {
+                  const score = s.signals[timeFilter as keyof typeof s.signals];
+                  return score >= 70 && score < 80;
+                }).length}
+              </div>
+              <div className="text-slate-400 text-sm">{language === 'ar' ? 'ضعيف (70-79)' : language === 'de' ? 'Schwach (70-79)' : 'Weak (70-79)'}</div>
             </div>
-            <div className="text-slate-400 text-sm">{language === 'ar' ? 'إجمالي الإشارات' : language === 'de' ? 'Gesamtsignale' : 'Total Signals'}</div>
+            <div className="text-center">
+              <div className="text-white text-lg font-bold">
+                {filteredSignals.length}
+              </div>
+              <div className="text-slate-400 text-sm">{language === 'ar' ? 'إجمالي الإشارات' : language === 'de' ? 'Gesamtsignale' : 'Total Signals'}</div>
+            </div>
           </div>
         </div>
 
