@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { TrendingUp, Activity, Calendar, Filter } from 'lucide-react';
@@ -89,9 +90,9 @@ const SignalHeatmap: React.FC = () => {
   const [sectorFilter, setSectorFilter] = useState('all');
 
   const getSignalColor = (score: number) => {
-    if (score >= 90) return 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg border border-blue-500'; // Strong - Royal Blue
-    if (score >= 80) return 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md border border-emerald-400'; // Valid - Emerald Green
-    if (score >= 70) return 'bg-yellow-500 hover:bg-yellow-600 text-black shadow-sm border border-yellow-400'; // Weak - Yellow
+    if (score >= 90) return 'bg-green-500 hover:bg-green-600 text-white shadow-lg border border-green-400'; // Strong - Green hsl(118, 95.3%, 49.8%)
+    if (score >= 80) return 'bg-blue-400 hover:bg-blue-500 text-white shadow-md border border-blue-300'; // Valid - Blue hsl(208, 77.3%, 72.4%)
+    if (score >= 70) return 'bg-yellow-500 hover:bg-yellow-600 text-black shadow-sm border border-yellow-400'; // Weak - Yellow #F1C40F
     return 'bg-gray-600 text-gray-400 opacity-50'; // Below threshold
   };
 
@@ -193,11 +194,11 @@ const SignalHeatmap: React.FC = () => {
         <div className="flex flex-wrap items-center gap-3 text-xs">
           <span className="text-slate-400">{language === 'ar' ? 'المفتاح:' : language === 'de' ? 'Legende:' : 'Legend:'}</span>
           <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-blue-600 rounded border border-blue-500"></div>
+            <div className="w-4 h-4 bg-green-500 rounded border border-green-400"></div>
             <span className="text-slate-300">💎 90-100 {language === 'ar' ? 'قوي' : language === 'de' ? 'Stark' : 'Strong'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-emerald-500 rounded border border-emerald-400"></div>
+            <div className="w-4 h-4 bg-blue-400 rounded border border-blue-300"></div>
             <span className="text-slate-300">✅ 80-89 {language === 'ar' ? 'صحيح' : language === 'de' ? 'Gültig' : 'Valid'}</span>
           </div>
           <div className="flex items-center space-x-1">
@@ -273,13 +274,13 @@ const SignalHeatmap: React.FC = () => {
         {/* Summary Stats with updated color references */}
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700">
           <div className="text-center">
-            <div className="text-blue-400 text-lg font-bold">
+            <div className="text-green-400 text-lg font-bold">
               {filteredSignals.filter(s => s.signals[timeFilter as keyof typeof s.signals] >= 90).length}
             </div>
             <div className="text-slate-400 text-sm">{language === 'ar' ? 'قوي (90+)' : language === 'de' ? 'Stark (90+)' : 'Strong (90+)'}</div>
           </div>
           <div className="text-center">
-            <div className="text-emerald-400 text-lg font-bold">
+            <div className="text-blue-400 text-lg font-bold">
               {filteredSignals.filter(s => {
                 const score = s.signals[timeFilter as keyof typeof s.signals];
                 return score >= 80 && score < 90;
