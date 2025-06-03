@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
+import MiniSignalHeatmap from '../components/dashboard/MiniSignalHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Activity, TrendingUp, AlertCircle, Clock, ArrowRight, Shield, ArrowLeft } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -38,7 +39,8 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 88,
       badge: 'strong',
-      shariahCompliant: true
+      shariahCompliant: true,
+      signals: { '1H': 92, '4H': 88, '1D': 95, '1W': 78 }
     },
     { 
       symbol: 'TSLA', 
@@ -48,7 +50,8 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 92,
       badge: 'strong',
-      shariahCompliant: true
+      shariahCompliant: true,
+      signals: { '1H': 85, '4H': 92, '1D': 89, '1W': 94 }
     },
     { 
       symbol: 'MSFT', 
@@ -58,7 +61,8 @@ const Signals: React.FC = () => {
       signal: 'HOLD', 
       score: 65,
       badge: 'valid',
-      shariahCompliant: true
+      shariahCompliant: true,
+      signals: { '1H': 79, '4H': 84, '1D': 87, '1W': 82 }
     },
     { 
       symbol: 'GOOGL', 
@@ -68,7 +72,8 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 75,
       badge: 'valid',
-      shariahCompliant: false
+      shariahCompliant: false,
+      signals: { '1H': 76, '4H': 82, '1D': 88, '1W': 84 }
     },
     { 
       symbol: 'NVDA', 
@@ -78,7 +83,8 @@ const Signals: React.FC = () => {
       signal: 'BUY', 
       score: 95,
       badge: 'strong',
-      shariahCompliant: true
+      shariahCompliant: true,
+      signals: { '1H': 85, '4H': 92, '1D': 89, '1W': 94 }
     },
     { 
       symbol: 'AMZN', 
@@ -88,7 +94,8 @@ const Signals: React.FC = () => {
       signal: 'HOLD', 
       score: 62,
       badge: 'valid',
-      shariahCompliant: false
+      shariahCompliant: false,
+      signals: { '1H': 68, '4H': 72, '1D': 75, '1W': 69 }
     },
     { 
       symbol: 'META', 
@@ -98,7 +105,8 @@ const Signals: React.FC = () => {
       signal: 'SELL', 
       score: 25,
       badge: 'weak',
-      shariahCompliant: false
+      shariahCompliant: false,
+      signals: { '1H': 45, '4H': 38, '1D': 25, '1W': 42 }
     },
     { 
       symbol: 'JPM', 
@@ -108,7 +116,8 @@ const Signals: React.FC = () => {
       signal: 'SELL', 
       score: 15,
       badge: 'ignore',
-      shariahCompliant: false
+      shariahCompliant: false,
+      signals: { '1H': 22, '4H': 18, '1D': 15, '1W': 28 }
     },
   ];
 
@@ -140,6 +149,9 @@ const Signals: React.FC = () => {
       default: return '';
     }
   }
+
+  // Get the currently highlighted stock (first one with strong signal for demo)
+  const highlightedStock = stocks.find(stock => stock.badge === 'strong') || stocks[0];
 
   return (
     <Layout>
@@ -191,6 +203,15 @@ const Signals: React.FC = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Mini Heatmap Widget for highlighted stock */}
+        <div className="mb-6">
+          <MiniSignalHeatmap
+            stockSymbol={highlightedStock.symbol}
+            signals={highlightedStock.signals}
+            selectedTimeframe={sourceTimeframe}
+          />
+        </div>
 
         {/* Signal Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
