@@ -1,73 +1,111 @@
-# Welcome to your Lovable project
+# 📘 Kurzora Project – Comprehensive README
 
-## Project info
+Welcome to the **Kurzora** project — an AI-powered trading signal platform. This document includes the complete tech stack, developer instructions, syncing protocol, and best practices for using **Lovable**, **Cursor**, and **GitHub** together.
 
-**URL**: https://lovable.dev/projects/770f3052-5092-42eb-9e93-35309b2bb5ac
+---
 
-## How can I edit this code?
+## 🔧 Tech Stack Overview
 
-There are several ways of editing your application.
+| Area                   | Tool(s) Used                                     | Purpose |
+|------------------------|--------------------------------------------------|---------|
+| Frontend               | React + Vite + Tailwind CSS + TypeScript         | Fast, modular UI |
+| UI Framework           | shadcn/ui (built on Radix)                       | Reusable, accessible components |
+| Charting               | TradingView Widget                               | Real-time stock charts |
+| Backend Runtime        | Node.js                                           | Runs Firebase Cloud Functions |
+| Business Logic         | Firebase Cloud Functions                         | Signal scoring, alerts, scheduling |
+| Database               | PostgreSQL via Supabase                          | Structured user, trade, and signal data |
+| Auth & Payments        | Firebase Auth + Stripe                           | User login and subscription management |
+| APIs                   | Finnhub, Polygon.io, Tiingo, Alpha Vantage       | Market data & indicators |
+| Automation & Alerts    | Make.com + Telegram Bot API + SendGrid           | Send signal notifications via email/Telegram |
+| AI Assistant Tools     | Cursor, GPT-4 Turbo, Claude                      | Code generation and explanation |
+| Deployment             | Vercel                                           | Frontend hosting optimized for Vite |
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/770f3052-5092-42eb-9e93-35309b2bb5ac) and start prompting.
+## 👨‍💻 Developer Guide for Cursor (Backend Logic)
 
-Changes made via Lovable will be committed automatically to this repo.
+Please follow this structure when writing backend logic using Cursor:
 
-**Use your preferred IDE**
+### Folder Structure
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+| Folder                  | Role                    |
+|-------------------------|-------------------------|
+| `/src/pages/`           | Page routes (Lovable)   |
+| `/src/components/`      | Reusable UI components  |
+| `/src/backend-functions/` | Firebase Cloud Functions and backend logic (Cursor only) |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Cursor Prompt Template
 
-Follow these steps:
+```
+Please write a Firebase Cloud Function that [your task here].
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+Save the code in:
+/src/backend-functions/[yourFileName].ts
 ```
 
-**Edit a file directly in GitHub**
+✅ Example files:
+- `/src/backend-functions/fetchRSI.ts`
+- `/src/backend-functions/scoreSignal.ts`
+- `/src/backend-functions/sendTelegramAlert.ts`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+❗ Do NOT modify:
+- `/src/components/`
+- `/src/pages/`
+(Lovable controls those)
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🖌️ Lovable Instructions (Frontend UI)
 
-## What technologies are used for this project?
+When using Lovable to design or update the UI:
 
-This project is built with:
+### ✅ Only Modify:
+- `/src/pages/`
+- `/src/components/`
+- Basic layout and styling
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### ❌ Do NOT Touch:
+- `/src/backend-functions/`
+- Firebase or Supabase logic
+- Custom backend scripts
 
-## How can I deploy this project?
+If backend logic is needed, insert a placeholder and say:
+> “This should be implemented in `/src/backend-functions/` by Cursor.”
 
-Simply open [Lovable](https://lovable.dev/projects/770f3052-5092-42eb-9e93-35309b2bb5ac) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🔁 Syncing Protocol (Lovable + Cursor + GitHub)
 
-Yes, you can!
+To avoid overwriting each other’s code:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Before Using Lovable:
+1. In Cursor:
+   - `Git: Commit`
+   - `Git: Push`
+2. In Lovable:
+   - Make UI changes
+   - Click “Push to GitHub”
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Before Using Cursor:
+1. In Cursor:
+   - `Git: Pull` (to fetch Lovable updates)
+2. Do your logic work
+3. When finished:
+   - `Git: Commit`
+   - `Git: Push`
+
+---
+
+## 🧠 Summary
+
+| Tool     | Use For                          |
+|----------|----------------------------------|
+| Lovable  | UI design and layout only        |
+| Cursor   | Backend logic, data fetching     |
+| GitHub   | Central sync for all changes     |
+
+> Always treat **GitHub as your source of truth** and separate backend logic from UI components.
+
+---
+
+Happy building!
