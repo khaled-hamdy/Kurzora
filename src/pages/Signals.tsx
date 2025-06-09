@@ -9,7 +9,7 @@ import { Button } from '../components/ui/button';
 import { Slider } from '../components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { ArrowUp, ArrowDown, TrendingUp, Filter, RotateCcw } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, Filter, RotateCcw, Globe } from 'lucide-react';
 
 interface Signal {
   symbol: string;
@@ -18,22 +18,26 @@ interface Signal {
   change: number;
   score: number;
   sector: string;
-  marketCap: string;
+  market: string;
 }
 
 const mockSignals: Signal[] = [
-  { symbol: 'AAPL', name: 'Apple Inc.', price: 185.23, change: 2.45, score: 92, sector: 'technology', marketCap: 'large' },
-  { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 750.12, change: 15.67, score: 88, sector: 'technology', marketCap: 'large' },
-  { symbol: 'MSFT', name: 'Microsoft Corp.', price: 412.45, change: 5.23, score: 85, sector: 'technology', marketCap: 'large' },
-  { symbol: 'TSLA', name: 'Tesla Inc.', price: 242.18, change: -3.12, score: 78, sector: 'technology', marketCap: 'large' },
-  { symbol: 'JPM', name: 'JPMorgan Chase', price: 170.22, change: 1.87, score: 72, sector: 'finance', marketCap: 'large' },
-  { symbol: 'JNJ', name: 'Johnson & Johnson', price: 162.45, change: -0.89, score: 68, sector: 'healthcare', marketCap: 'large' },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 125.45, change: 4.32, score: 82, sector: 'technology', marketCap: 'large' },
-  { symbol: 'META', name: 'Meta Platforms', price: 320.54, change: -2.15, score: 45, sector: 'technology', marketCap: 'large' },
-  { symbol: 'V', name: 'Visa Inc.', price: 250.33, change: 1.25, score: 75, sector: 'finance', marketCap: 'large' },
-  { symbol: 'UNH', name: 'UnitedHealth Group', price: 520.87, change: 3.45, score: 89, sector: 'healthcare', marketCap: 'large' },
-  { symbol: 'HD', name: 'Home Depot', price: 345.67, change: -1.45, score: 65, sector: 'consumer', marketCap: 'large' },
-  { symbol: 'PG', name: 'Procter & Gamble', price: 155.23, change: 0.87, score: 71, sector: 'consumer', marketCap: 'large' }
+  { symbol: 'AAPL', name: 'Apple Inc.', price: 185.23, change: 2.45, score: 92, sector: 'technology', market: 'usa' },
+  { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 750.12, change: 15.67, score: 88, sector: 'technology', market: 'usa' },
+  { symbol: 'MSFT', name: 'Microsoft Corp.', price: 412.45, change: 5.23, score: 85, sector: 'technology', market: 'usa' },
+  { symbol: 'TSLA', name: 'Tesla Inc.', price: 242.18, change: -3.12, score: 78, sector: 'technology', market: 'usa' },
+  { symbol: 'JPM', name: 'JPMorgan Chase', price: 170.22, change: 1.87, score: 72, sector: 'finance', market: 'usa' },
+  { symbol: 'JNJ', name: 'Johnson & Johnson', price: 162.45, change: -0.89, score: 68, sector: 'healthcare', market: 'usa' },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 125.45, change: 4.32, score: 82, sector: 'technology', market: 'usa' },
+  { symbol: 'META', name: 'Meta Platforms', price: 320.54, change: -2.15, score: 45, sector: 'technology', market: 'usa' },
+  { symbol: 'V', name: 'Visa Inc.', price: 250.33, change: 1.25, score: 75, sector: 'finance', market: 'usa' },
+  { symbol: 'UNH', name: 'UnitedHealth Group', price: 520.87, change: 3.45, score: 89, sector: 'healthcare', market: 'usa' },
+  { symbol: 'HD', name: 'Home Depot', price: 345.67, change: -1.45, score: 65, sector: 'consumer', market: 'usa' },
+  { symbol: 'PG', name: 'Procter & Gamble', price: 155.23, change: 0.87, score: 71, sector: 'consumer', market: 'usa' },
+  { symbol: '2222.SR', name: 'Saudi Aramco', price: 32.15, change: 1.85, score: 84, sector: 'energy', market: 'saudi' },
+  { symbol: 'EMAAR.DU', name: 'Emaar Properties', price: 5.67, change: 3.20, score: 82, sector: 'finance', market: 'uae' },
+  { symbol: 'BTC', name: 'Bitcoin', price: 43250.00, change: 4.20, score: 89, sector: 'crypto', market: 'crypto' },
+  { symbol: 'ETH', name: 'Ethereum', price: 2680.50, change: 3.85, score: 86, sector: 'crypto', market: 'crypto' }
 ];
 
 const Signals: React.FC = () => {
@@ -43,7 +47,7 @@ const Signals: React.FC = () => {
   
   const [scoreRange, setScoreRange] = useState([0]);
   const [selectedSector, setSelectedSector] = useState('all');
-  const [selectedMarketCap, setSelectedMarketCap] = useState('all');
+  const [selectedMarket, setSelectedMarket] = useState('global');
 
   useEffect(() => {
     if (!user) {
@@ -68,14 +72,14 @@ const Signals: React.FC = () => {
   const filteredSignals = mockSignals.filter(signal => {
     const meetsScore = signal.score >= scoreRange[0];
     const meetsSector = selectedSector === 'all' || signal.sector === selectedSector;
-    const meetsMarketCap = selectedMarketCap === 'all' || signal.marketCap === selectedMarketCap;
-    return meetsScore && meetsSector && meetsMarketCap;
+    const meetsMarket = selectedMarket === 'global' || signal.market === selectedMarket;
+    return meetsScore && meetsSector && meetsMarket;
   });
 
   const resetFilters = () => {
     setScoreRange([0]);
     setSelectedSector('all');
-    setSelectedMarketCap('all');
+    setSelectedMarket('global');
   };
 
   const handleViewDetails = (signal: Signal) => {
@@ -149,6 +153,30 @@ const Signals: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Market Filter */}
+                    <div>
+                      <label className="text-sm font-medium text-slate-300 mb-3 block">
+                        Market
+                      </label>
+                      <Select value={selectedMarket} onValueChange={setSelectedMarket}>
+                        <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                          <Globe className="h-4 w-4 mr-2" />
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700">
+                          <SelectItem value="global">🌐 Global</SelectItem>
+                          <SelectItem value="usa">🇺🇸 USA</SelectItem>
+                          <SelectItem value="saudi">🇸🇦 Saudi Arabia</SelectItem>
+                          <SelectItem value="uae">🇦🇪 UAE</SelectItem>
+                          <SelectItem value="qatar">🇶🇦 Qatar</SelectItem>
+                          <SelectItem value="kuwait">🇰🇼 Kuwait</SelectItem>
+                          <SelectItem value="bahrain">🇧🇭 Bahrain</SelectItem>
+                          <SelectItem value="oman">🇴🇲 Oman</SelectItem>
+                          <SelectItem value="crypto">₿ Crypto</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
                     {/* Sector Filter */}
                     <div>
                       <label className="text-sm font-medium text-slate-300 mb-3 block">
@@ -165,24 +193,7 @@ const Signals: React.FC = () => {
                           <SelectItem value="finance">Finance</SelectItem>
                           <SelectItem value="consumer">Consumer</SelectItem>
                           <SelectItem value="energy">Energy</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Market Cap Filter */}
-                    <div>
-                      <label className="text-sm font-medium text-slate-300 mb-3 block">
-                        Market Cap
-                      </label>
-                      <Select value={selectedMarketCap} onValueChange={setSelectedMarketCap}>
-                        <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-slate-700">
-                          <SelectItem value="all">All Sizes</SelectItem>
-                          <SelectItem value="large">Large Cap</SelectItem>
-                          <SelectItem value="mid">Mid Cap</SelectItem>
-                          <SelectItem value="small">Small Cap</SelectItem>
+                          <SelectItem value="crypto">Crypto</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
