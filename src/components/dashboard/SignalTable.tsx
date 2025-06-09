@@ -86,6 +86,16 @@ const SignalTable: React.FC<SignalTableProps> = ({
     }
   };
 
+  const calculateFinalScore = (signals: Signal['signals']) => {
+    const weighted = (
+      signals['1H'] * 0.4 +
+      signals['4H'] * 0.3 +
+      signals['1D'] * 0.2 +
+      signals['1W'] * 0.1
+    );
+    return Math.round(weighted);
+  };
+
   const getTooltipText = (signal: Signal, timeframe: string, score: number) => {
     return `${signal.ticker} ${timeframe}: ${score}% confidence\nRSI: 28, MACD > 0, Volume: 2.1x`;
   };
@@ -125,67 +135,97 @@ const SignalTable: React.FC<SignalTableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-[600px]">
+      <div className="min-w-[800px]">
         {/* Header Row */}
-        <div className="grid grid-cols-6 gap-2 mb-2">
+        <div className="grid grid-cols-8 gap-2 mb-2">
           <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'السهم' : language === 'de' ? 'Aktie' : 'Asset'}</div>
+          <div className="text-slate-400 text-sm font-medium text-center">{language === 'ar' ? 'السعر' : language === 'de' ? 'Preis' : 'Current Price'}</div>
           {timeframes.map(tf => (
             <div key={tf} className={`text-center text-slate-400 text-sm font-medium ${tf === timeFilter ? 'text-emerald-400' : ''}`}>
               {tf}
             </div>
           ))}
+          <div className="text-center text-slate-400 text-sm font-medium">{language === 'ar' ? 'النقاط النهائية' : language === 'de' ? 'Endpunktzahl' : 'Final Score'}</div>
           <div className="text-slate-400 text-sm font-medium">{language === 'ar' ? 'الإجراءات' : language === 'de' ? 'Aktionen' : 'Actions'}</div>
         </div>
 
         {/* Signal Rows */}
         <div className="space-y-2">
-          {filteredSignals.map((signal) => (
-            <div key={signal.ticker} className="grid grid-cols-6 gap-2 items-center">
-              {/* Stock Info */}
-              <div className="flex flex-col">
-                <div className="text-white font-bold text-sm flex items-center space-x-1">
-                  <span>{getMarketFlag(signal.market)}</span>
-                  <span>{signal.ticker}</span>
-                </div>
-                <div className="text-slate-400 text-xs truncate">{signal.name}</div>
-                <div className="text-slate-300 text-xs">{formatPrice(signal.price, signal.market)}</div>
-              </div>
-
-              {/* Signal Scores for each timeframe */}
-              {timeframes.map(tf => {
-                const score = signal.signals[tf as keyof typeof signal.signals];
-                const isHighlighted = tf === timeFilter && shouldHighlightScore(score);
-                return (
-                  <div key={tf} className="flex justify-center">
-                    <div 
-                      className={`
-                        px-2 py-1 rounded text-xs font-bold text-center min-w-[50px] cursor-pointer
-                        transition-all duration-200 hover:scale-105 transform
-                        ${getHighlightedSignalColor(score, isHighlighted)}
-                        ${tf === timeFilter ? 'ring-2 ring-emerald-400' : ''}
-                      `}
-                      style={getSignalBackgroundColor(score)}
-                      title={getTooltipText(signal, tf, score)}
-                      onClick={() => onViewSignal(signal, tf)}
-                    >
-                      {getSignalIcon(score)} {score}
-                    </div>
+          {filteredSignals.map((signal) => {
+            const finalScore = calculateFinalScore(signal.signals);
+            const isFinalScoreHighlighted = shouldHighlightScore(finalScore);
+            
+            return (
+              <div key={signal.ticker} className="grid grid-cols-8 gap-2 items-center">
+                {/* Stock Info */}
+                <div className="flex flex-col">
+                  <div className="text-white font-bold text-sm flex items-center space-x-1">
+                    <span>{getMarketFlag(signal.market)}</span>
+                    <span>{signal.ticker}</span>
                   </div>
-                );
-              })}
+                  <div className="text-slate-400 text-xs truncate">{signal.name}</div>
+                </div>
 
-              {/* Action Button */}
-              <div className="flex justify-center">
-                <Button 
-                  size="sm" 
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1"
-                  onClick={() => onViewSignal(signal, timeFilter)}
-                >
-                  {language === 'ar' ? 'عرض' : language === 'de' ? 'Anzeigen' : 'View'}
-                </Button>
+                {/* Current Price */}
+                <div className="text-center">
+                  <div className="text-white font-medium text-sm">{formatPrice(signal.price, signal.market)}</div>
+                  <div className={`text-xs ${signal.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {signal.change >= 0 ? '+' : ''}{signal.change}%
+                  </div>
+                </div>
+
+                {/* Signal Scores for each timeframe */}
+                {timeframes.map(tf => {
+                  const score = signal.signals[tf as keyof typeof signal.signals];
+                  const isHighlighted = tf === timeFilter && shouldHighlightScore(score);
+                  return (
+                    <div key={tf} className="flex justify-center">
+                      <div 
+                        className={`
+                          px-2 py-1 rounded text-xs font-bold text-center min-w-[50px] cursor-pointer
+                          transition-all duration-200 hover:scale-105 transform
+                          ${getHighlightedSignalColor(score, isHighlighted)}
+                          ${tf === timeFilter ? 'ring-2 ring-emerald-400' : ''}
+                        `}
+                        style={getSignalBackgroundColor(score)}
+                        title={getTooltipText(signal, tf, score)}
+                        onClick={() => onViewSignal(signal, tf)}
+                      >
+                        {getSignalIcon(score)} {score}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Final Score */}
+                <div className="flex justify-center">
+                  <div 
+                    className={`
+                      px-3 py-1 rounded text-sm font-bold text-center min-w-[60px] cursor-pointer
+                      transition-all duration-200 hover:scale-105 transform
+                      ${getHighlightedSignalColor(finalScore, isFinalScoreHighlighted)}
+                    `}
+                    style={getSignalBackgroundColor(finalScore)}
+                    title={`Final weighted score: ${finalScore}`}
+                    onClick={() => onViewSignal(signal, 'final')}
+                  >
+                    {getSignalIcon(finalScore)} {finalScore}
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="flex justify-center">
+                  <Button 
+                    size="sm" 
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1"
+                    onClick={() => onViewSignal(signal, timeFilter)}
+                  >
+                    {language === 'ar' ? 'عرض' : language === 'de' ? 'Anzeigen' : 'View'}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

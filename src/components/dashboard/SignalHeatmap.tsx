@@ -7,6 +7,7 @@ import SignalFilters from './SignalFilters';
 import SignalLegend from './SignalLegend';
 import SignalTable from './SignalTable';
 import SignalSummaryStats from './SignalSummaryStats';
+import { Switch } from '../ui/switch';
 
 interface Signal {
   ticker: string;
@@ -326,13 +327,16 @@ const SignalHeatmap: React.FC = () => {
   const [sectorFilter, setSectorFilter] = useState('all');
   const [marketFilter, setMarketFilter] = useState('global');
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
     navigate(`/signals/${signal.ticker}`, { 
       state: { 
         selectedStock: signal,
         timeframe: timeframe,
-        score: signal.signals[timeframe as keyof typeof signal.signals]
+        score: timeframe === 'final' ? 
+          Math.round(signal.signals['1H'] * 0.4 + signal.signals['4H'] * 0.3 + signal.signals['1D'] * 0.2 + signal.signals['1W'] * 0.1) :
+          signal.signals[timeframe as keyof typeof signal.signals]
       }
     });
   };
@@ -349,10 +353,31 @@ const SignalHeatmap: React.FC = () => {
     <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
       <CardHeader>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <CardTitle className="text-lg text-white flex items-center space-x-2">
-            <Activity className="h-5 w-5 text-emerald-400" />
-            <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
-          </CardTitle>
+          <div className="flex items-center space-x-4">
+            <CardTitle className="text-lg text-white flex items-center space-x-2">
+              <Activity className="h-5 w-5 text-emerald-400" />
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
+              </div>
+            </CardTitle>
+            
+            <div className="flex items-center space-x-4 text-sm text-slate-400">
+              <span>{language === 'ar' ? 'آخر تحديث: منذ دقيقتين' : language === 'de' ? 'Zuletzt aktualisiert: vor 2 Min.' : 'Last Updated: 2 min ago'}</span>
+              
+              <div className="flex items-center space-x-2">
+                <span className="text-xs">{language === 'ar' ? 'التحديث التلقائي:' : language === 'de' ? 'Auto-Refresh:' : 'Auto-refresh:'}</span>
+                <Switch
+                  checked={autoRefresh}
+                  onCheckedChange={setAutoRefresh}
+                  className="data-[state=checked]:bg-emerald-600"
+                />
+                <span className={`text-xs font-medium ${autoRefresh ? 'text-emerald-400' : 'text-slate-500'}`}>
+                  {autoRefresh ? (language === 'ar' ? 'مفعل' : language === 'de' ? 'EIN' : 'ON') : (language === 'ar' ? 'مطفأ' : language === 'de' ? 'AUS' : 'OFF')}
+                </span>
+              </div>
+            </div>
+          </div>
           
           <SignalFilters
             timeFilter={timeFilter}
