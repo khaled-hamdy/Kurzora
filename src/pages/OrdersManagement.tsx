@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import PositionCloseDialog from '../components/orders/PositionCloseDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -17,7 +18,9 @@ import {
   Eye,
   X,
   BarChart3,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import {
   Table,
@@ -27,6 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '../components/ui/collapsible';
 
 interface Position {
   id: string;
@@ -56,6 +64,13 @@ const OrdersManagement: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // State for position closing dialog
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  
+  // State for history expansion
+  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
 
   // Mock data for open positions
   const [openPositions, setOpenPositions] = useState<Position[]>([
@@ -91,8 +106,8 @@ const OrdersManagement: React.FC = () => {
     }
   ]);
 
-  // Mock data for closed positions
-  const closedPositions: ClosedPosition[] = [
+  // Mock data for closed positions - expanded list
+  const allClosedPositions: ClosedPosition[] = [
     {
       id: '4',
       symbol: 'TSLA',
@@ -125,6 +140,39 @@ const OrdersManagement: React.FC = () => {
       pnl: 416,
       pnlPercent: 4.2,
       closedDate: '2025-06-03'
+    },
+    {
+      id: '7',
+      symbol: 'META',
+      name: 'Meta Platforms Inc.',
+      entryPrice: 485.20,
+      exitPrice: 502.15,
+      shares: 25,
+      pnl: 424,
+      pnlPercent: 3.5,
+      closedDate: '2025-06-02'
+    },
+    {
+      id: '8',
+      symbol: 'NFLX',
+      name: 'Netflix Inc.',
+      entryPrice: 620.45,
+      exitPrice: 595.30,
+      shares: 15,
+      pnl: -377,
+      pnlPercent: -4.1,
+      closedDate: '2025-06-01'
+    },
+    {
+      id: '9',
+      symbol: 'AMD',
+      name: 'Advanced Micro Devices',
+      entryPrice: 115.80,
+      exitPrice: 125.45,
+      shares: 85,
+      pnl: 820,
+      pnlPercent: 8.3,
+      closedDate: '2025-05-31'
     }
   ];
 
@@ -146,17 +194,22 @@ const OrdersManagement: React.FC = () => {
     return { pnl, pnlPercent };
   };
 
-  const handleClosePosition = (positionId: string) => {
+  const handleOpenCloseDialog = (position: Position) => {
+    setSelectedPosition(position);
+    setCloseDialogOpen(true);
+  };
+
+  const handleClosePosition = (positionId: string, closePrice: number) => {
     const position = openPositions.find(p => p.id === positionId);
     if (!position) return;
 
-    const { pnl } = calculatePositionPnL(position);
+    const pnl = (closePrice - position.entryPrice) * position.shares;
     
     setOpenPositions(prev => prev.filter(p => p.id !== positionId));
     
     toast({
       title: "Position Closed",
-      description: `${position.symbol} position closed. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
+      description: `${position.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
     });
 
     // TODO: Connect to backend logic via /src/backend-functions/ClosePosition.ts
@@ -166,10 +219,7 @@ const OrdersManagement: React.FC = () => {
     navigate('/signals');
   };
 
-  const handleViewHistory = () => {
-    // TODO: Navigate to full history page
-    navigate('/performance');
-  };
+  const displayedClosedPositions = isHistoryExpanded ? allClosedPositions : allClosedPositions.slice(0, 3);
 
   return (
     <Layout>
@@ -177,7 +227,7 @@ const OrdersManagement: React.FC = () => {
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-white">My Open Positions</h1>
+            <h1 className="text-3xl font-bold text-white">Orders Management</h1>
             <Button 
               onClick={handleGoToSignals}
               className="bg-emerald-600 hover:bg-emerald-700"
@@ -295,10 +345,10 @@ const OrdersManagement: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => handleClosePosition(position.id)}
+                            onClick={() => handleOpenCloseDialog(position)}
                             variant="outline"
                             size="sm"
-                            className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                            className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition-colors"
                           >
                             <X className="h-4 w-4 mr-1" />
                             Close
@@ -325,7 +375,7 @@ const OrdersManagement: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
+        {/* Recent Activity - Expandable */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -333,15 +383,30 @@ const OrdersManagement: React.FC = () => {
                 <Eye className="h-5 w-5 text-blue-400" />
                 <span>Recently Closed Positions</span>
               </CardTitle>
-              <Button 
-                onClick={handleViewHistory}
-                variant="ghost" 
-                size="sm"
-                className="text-blue-400 hover:text-blue-300"
+              <Collapsible 
+                open={isHistoryExpanded} 
+                onOpenChange={setIsHistoryExpanded}
               >
-                View All History
-                <ArrowRight className="h-4 w-4 ml-1" />
-              </Button>
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {isHistoryExpanded ? (
+                      <>
+                        Show Less
+                        <ChevronUp className="h-4 w-4 ml-1" />
+                      </>
+                    ) : (
+                      <>
+                        View All History
+                        <ChevronDown className="h-4 w-4 ml-1" />
+                      </>
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+              </Collapsible>
             </div>
           </CardHeader>
           <CardContent>
@@ -357,7 +422,7 @@ const OrdersManagement: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {closedPositions.slice(0, 3).map((position) => (
+                {displayedClosedPositions.map((position) => (
                   <TableRow key={position.id} className="border-slate-700">
                     <TableCell>
                       <div>
@@ -385,6 +450,14 @@ const OrdersManagement: React.FC = () => {
             </Table>
           </CardContent>
         </Card>
+
+        {/* Position Close Dialog */}
+        <PositionCloseDialog
+          position={selectedPosition}
+          isOpen={closeDialogOpen}
+          onClose={() => setCloseDialogOpen(false)}
+          onConfirm={handleClosePosition}
+        />
       </div>
     </Layout>
   );

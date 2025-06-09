@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -16,6 +17,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const isActiveRoute = (path: string) => {
+    if (path === '/orders' && (location.pathname === '/orders' || location.pathname === '/orders-management')) {
+      return true;
+    }
     return location.pathname === path;
   };
 
@@ -48,8 +52,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Link to="/signals" className={getNavLinkClasses('/signals')}>
                     {t('nav.signals')}
                   </Link>
-                  <Link to="/orders" className={getNavLinkClasses('/orders')}>
-                    {t('nav.orders')}
+                  <Link to="/orders-management" className={getNavLinkClasses('/orders')}>
+                    Orders Management
                   </Link>
                   <Link to="/performance" className={getNavLinkClasses('/performance')}>
                     {t('nav.performance')}
