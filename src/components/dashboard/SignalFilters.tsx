@@ -1,121 +1,109 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Filter, Calendar, Globe } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
-import { Filter, RotateCcw } from 'lucide-react';
 
 interface SignalFiltersProps {
-  scoreRange: number[];
-  setScoreRange: (value: number[]) => void;
+  timeFilter: string;
+  setTimeFilter: (value: string) => void;
+  scoreThreshold: number[];
+  setScoreThreshold: (value: number[]) => void;
   sectorFilter: string;
   setSectorFilter: (value: string) => void;
-  marketCapFilter: string;
-  setMarketCapFilter: (value: string) => void;
-  onReset: () => void;
+  marketFilter: string;
+  setMarketFilter: (value: string) => void;
+  language: string;
 }
 
 const SignalFilters: React.FC<SignalFiltersProps> = ({
-  scoreRange,
-  setScoreRange,
+  timeFilter,
+  setTimeFilter,
+  scoreThreshold,
+  setScoreThreshold,
   sectorFilter,
   setSectorFilter,
-  marketCapFilter,
-  setMarketCapFilter,
-  onReset
+  marketFilter,
+  setMarketFilter,
+  language
 }) => {
+  const timeframes = ['1H', '4H', '1D', '1W'];
+
   return (
-    <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800 sticky top-8">
-      <CardHeader>
-        <CardTitle className="text-lg text-white flex items-center space-x-2">
-          <Filter className="h-5 w-5 text-blue-400" />
-          <span>Filters</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Score Range */}
-        <div className="space-y-3">
-          <Label className="text-slate-300 font-medium">
-            Signal Score Range: {scoreRange[0]} - {scoreRange[1]}
-          </Label>
-          <Slider
-            value={scoreRange}
-            onValueChange={setScoreRange}
-            max={100}
-            min={0}
-            step={5}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-slate-400">
-            <span>0 (Weak)</span>
-            <span>100 (Strong)</span>
-          </div>
-        </div>
+    <div className="flex flex-wrap items-center gap-4">
+      {/* Score Threshold */}
+      <div className="flex items-center space-x-2 min-w-[180px]">
+        <Filter className="h-4 w-4 text-slate-400" />
+        <Label className="text-slate-300 text-sm whitespace-nowrap">
+          {language === 'ar' ? `الحد الأدنى: ${scoreThreshold[0]}%` : 
+           language === 'de' ? `Min Score: ${scoreThreshold[0]}%` : 
+           `Min Score: ${scoreThreshold[0]}%`}
+        </Label>
+        <Slider
+          value={scoreThreshold}
+          onValueChange={setScoreThreshold}
+          max={100}
+          min={60}
+          step={5}
+          className="flex-1"
+        />
+      </div>
 
-        {/* Sector Filter */}
-        <div className="space-y-3">
-          <Label className="text-slate-300 font-medium">Sector</Label>
-          <Select value={sectorFilter} onValueChange={setSectorFilter}>
-            <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-              <SelectValue placeholder="All Sectors" />
-            </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-700">
-              <SelectItem value="all">All Sectors</SelectItem>
-              <SelectItem value="Technology">Technology</SelectItem>
-              <SelectItem value="Healthcare">Healthcare</SelectItem>
-              <SelectItem value="Finance">Finance</SelectItem>
-              <SelectItem value="Energy">Energy</SelectItem>
-              <SelectItem value="Consumer">Consumer</SelectItem>
-              <SelectItem value="Industrial">Industrial</SelectItem>
-              <SelectItem value="tech">Tech</SelectItem>
-              <SelectItem value="finance">Finance</SelectItem>
-              <SelectItem value="energy">Energy</SelectItem>
-              <SelectItem value="crypto">Crypto</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Market Filter */}
+      <Select value={marketFilter} onValueChange={setMarketFilter}>
+        <SelectTrigger className="w-36 bg-slate-700 border-slate-600 text-white">
+          <Globe className="h-4 w-4 mr-2" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="bg-slate-700 border-slate-600">
+          <SelectItem value="global">🌐 Global</SelectItem>
+          <SelectItem value="usa">🇺🇸 USA</SelectItem>
+          <SelectItem value="saudi">🇸🇦 Saudi Arabia</SelectItem>
+          <SelectItem value="uae">🇦🇪 UAE</SelectItem>
+          <SelectItem value="qatar">🇶🇦 Qatar</SelectItem>
+          <SelectItem value="kuwait">🇰🇼 Kuwait</SelectItem>
+          <SelectItem value="bahrain">🇧🇭 Bahrain</SelectItem>
+          <SelectItem value="oman">🇴🇲 Oman</SelectItem>
+          <SelectItem value="crypto">₿ Crypto</SelectItem>
+        </SelectContent>
+      </Select>
 
-        {/* Market Cap Filter */}
-        <div className="space-y-3">
-          <Label className="text-slate-300 font-medium">Market Cap</Label>
-          <Select value={marketCapFilter} onValueChange={setMarketCapFilter}>
-            <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-              <SelectValue placeholder="All Market Caps" />
-            </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-700">
-              <SelectItem value="all">All Market Caps</SelectItem>
-              <SelectItem value="Large">Large Cap ($10B+)</SelectItem>
-              <SelectItem value="Mid">Mid Cap ($2B-$10B)</SelectItem>
-              <SelectItem value="Small">Small Cap ($300M-$2B)</SelectItem>
-              <SelectItem value="global">Global Markets</SelectItem>
-              <SelectItem value="usa">USA</SelectItem>
-              <SelectItem value="germany">Germany</SelectItem>
-              <SelectItem value="uk">UK</SelectItem>
-              <SelectItem value="japan">Japan</SelectItem>
-              <SelectItem value="saudi">Saudi Arabia</SelectItem>
-              <SelectItem value="uae">UAE</SelectItem>
-              <SelectItem value="qatar">Qatar</SelectItem>
-              <SelectItem value="kuwait">Kuwait</SelectItem>
-              <SelectItem value="bahrain">Bahrain</SelectItem>
-              <SelectItem value="oman">Oman</SelectItem>
-              <SelectItem value="crypto">Crypto</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Sector Filter */}
+      <Select value={sectorFilter} onValueChange={setSectorFilter}>
+        <SelectTrigger className="w-32 bg-slate-700 border-slate-600 text-white">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="bg-slate-700 border-slate-600">
+          <SelectItem value="all">{language === 'ar' ? 'جميع القطاعات' : language === 'de' ? 'Alle Sektoren' : 'All Sectors'}</SelectItem>
+          <SelectItem value="tech">{language === 'ar' ? 'التكنولوجيا' : language === 'de' ? 'Technologie' : 'Tech'}</SelectItem>
+          <SelectItem value="finance">{language === 'ar' ? 'المالية' : language === 'de' ? 'Finanzen' : 'Finance'}</SelectItem>
+          <SelectItem value="healthcare">{language === 'ar' ? 'الرعاية الصحية' : language === 'de' ? 'Gesundheitswesen' : 'Healthcare'}</SelectItem>
+          <SelectItem value="energy">{language === 'ar' ? 'الطاقة' : language === 'de' ? 'Energie' : 'Energy'}</SelectItem>
+          <SelectItem value="crypto">{language === 'ar' ? 'العملات المشفرة' : language === 'de' ? 'Kryptowährung' : 'Crypto'}</SelectItem>
+        </SelectContent>
+      </Select>
 
-        {/* Reset Button */}
-        <Button
-          onClick={onReset}
-          variant="outline"
-          className="w-full bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
-        >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Reset Filters
-        </Button>
-      </CardContent>
-    </Card>
+      {/* Timeframe Filter */}
+      <div className="flex space-x-1">
+        {timeframes.map((period) => (
+          <Button
+            key={period}
+            variant={timeFilter === period ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setTimeFilter(period)}
+            className={`text-xs ${
+              timeFilter === period 
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700' 
+                : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
+            }`}
+          >
+            {period}
+          </Button>
+        ))}
+      </div>
+    </div>
   );
 };
 
