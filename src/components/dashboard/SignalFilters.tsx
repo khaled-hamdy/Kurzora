@@ -69,6 +69,10 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
               <SelectItem value="Energy">Energy</SelectItem>
               <SelectItem value="Consumer">Consumer</SelectItem>
               <SelectItem value="Industrial">Industrial</SelectItem>
+              <SelectItem value="tech">Tech</SelectItem>
+              <SelectItem value="finance">Finance</SelectItem>
+              <SelectItem value="energy">Energy</SelectItem>
+              <SelectItem value="crypto">Crypto</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -85,6 +89,18 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
               <SelectItem value="Large">Large Cap ($10B+)</SelectItem>
               <SelectItem value="Mid">Mid Cap ($2B-$10B)</SelectItem>
               <SelectItem value="Small">Small Cap ($300M-$2B)</SelectItem>
+              <SelectItem value="global">Global Markets</SelectItem>
+              <SelectItem value="usa">USA</SelectItem>
+              <SelectItem value="germany">Germany</SelectItem>
+              <SelectItem value="uk">UK</SelectItem>
+              <SelectItem value="japan">Japan</SelectItem>
+              <SelectItem value="saudi">Saudi Arabia</SelectItem>
+              <SelectItem value="uae">UAE</SelectItem>
+              <SelectItem value="qatar">Qatar</SelectItem>
+              <SelectItem value="kuwait">Kuwait</SelectItem>
+              <SelectItem value="bahrain">Bahrain</SelectItem>
+              <SelectItem value="oman">Oman</SelectItem>
+              <SelectItem value="crypto">Crypto</SelectItem>
             </SelectContent>
           </Select>
         </div>

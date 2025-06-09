@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Activity } from 'lucide-react';
@@ -322,7 +323,7 @@ const SignalHeatmap: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [timeFilter, setTimeFilter] = useState('1D');
-  const [scoreThreshold, setScoreThreshold] = useState([70]);
+  const [scoreRange, setScoreRange] = useState([70, 100]);
   const [sectorFilter, setSectorFilter] = useState('all');
   const [marketFilter, setMarketFilter] = useState('global');
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
@@ -339,11 +340,17 @@ const SignalHeatmap: React.FC = () => {
 
   const filteredSignals = mockSignals.filter(signal => {
     const score = signal.signals[timeFilter as keyof typeof signal.signals];
-    const meetsThreshold = score >= scoreThreshold[0];
+    const meetsThreshold = score >= scoreRange[0] && score <= scoreRange[1];
     const meetsSector = sectorFilter === 'all' || signal.sector === sectorFilter;
     const meetsMarket = marketFilter === 'global' || signal.market === marketFilter;
     return meetsThreshold && meetsSector && meetsMarket;
   });
+
+  const resetFilters = () => {
+    setScoreRange([70, 100]);
+    setSectorFilter('all');
+    setMarketFilter('global');
+  };
 
   return (
     <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
@@ -354,38 +361,63 @@ const SignalHeatmap: React.FC = () => {
             <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
           </CardTitle>
           
-          <SignalFilters
-            timeFilter={timeFilter}
-            setTimeFilter={setTimeFilter}
-            scoreThreshold={scoreThreshold}
-            setScoreThreshold={setScoreThreshold}
-            sectorFilter={sectorFilter}
-            setSectorFilter={setSectorFilter}
-            marketFilter={marketFilter}
-            setMarketFilter={setMarketFilter}
-            language={language}
-          />
+          <div className="flex items-center space-x-4">
+            {/* Time Filter Buttons */}
+            <div className="flex bg-slate-800 rounded-lg p-1">
+              {(['1H', '4H', '1D', '1W'] as const).map((time) => (
+                <button
+                  key={time}
+                  onClick={() => setTimeFilter(time)}
+                  className={`px-3 py-1 rounded text-sm transition-colors ${
+                    timeFilter === time
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {time}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <SignalLegend language={language} />
       </CardHeader>
 
       <CardContent>
-        <SignalTable
-          filteredSignals={filteredSignals}
-          timeFilter={timeFilter}
-          highlightedCategory={highlightedCategory}
-          language={language}
-          onViewSignal={handleViewSignal}
-        />
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar Filters */}
+          <div className="lg:w-80">
+            <SignalFilters
+              scoreRange={scoreRange}
+              setScoreRange={setScoreRange}
+              sectorFilter={sectorFilter}
+              setSectorFilter={setSectorFilter}
+              marketCapFilter={marketFilter}
+              setMarketCapFilter={setMarketFilter}
+              onReset={resetFilters}
+            />
+          </div>
 
-        <SignalSummaryStats
-          filteredSignals={filteredSignals}
-          timeFilter={timeFilter}
-          highlightedCategory={highlightedCategory}
-          setHighlightedCategory={setHighlightedCategory}
-          language={language}
-        />
+          {/* Main Content */}
+          <div className="flex-1">
+            <SignalTable
+              filteredSignals={filteredSignals}
+              timeFilter={timeFilter}
+              highlightedCategory={highlightedCategory}
+              language={language}
+              onViewSignal={handleViewSignal}
+            />
+
+            <SignalSummaryStats
+              filteredSignals={filteredSignals}
+              timeFilter={timeFilter}
+              highlightedCategory={highlightedCategory}
+              setHighlightedCategory={setHighlightedCategory}
+              language={language}
+            />
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
