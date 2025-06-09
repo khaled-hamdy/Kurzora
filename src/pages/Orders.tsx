@@ -6,10 +6,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { Slider } from '../components/ui/slider';
 import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Shield, Calculator, Clock, Target, AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
+import { useToast } from '../components/ui/use-toast';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Shield, Calculator, Clock, Target, AlertTriangle, CheckCircle, X, Minus } from 'lucide-react';
 
 interface OrderDetails {
   symbol: string;
@@ -28,11 +32,15 @@ const Orders: React.FC = () => {
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
   const [customShares, setCustomShares] = useState<number[]>([227]);
   
   // Portfolio settings
-  const portfolioBalance = 100000;
+  const [portfolioBalance, setPortfolioBalance] = useState<number>(100000);
+  const [portfolioInput, setPortfolioInput] = useState<string>('100000');
+  const [closeOrderValue, setCloseOrderValue] = useState<string>('');
+  const [isClosingOrder, setIsClosingOrder] = useState(false);
   const maxRiskPercent = 2;
 
   useEffect(() => {
@@ -95,12 +103,67 @@ const Orders: React.FC = () => {
     navigate('/signals');
   };
 
+  const handlePortfolioBalanceChange = (value: string) => {
+    setPortfolioInput(value);
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue > 0) {
+      setPortfolioBalance(numValue);
+    }
+  };
+
+  const handleCancelOrder = () => {
+    console.log('Canceling order for:', selectedOrder.symbol);
+    toast({
+      title: "Order Cancelled",
+      description: `Order for ${selectedOrder.symbol} has been cancelled successfully.`,
+    });
+    // TODO: Connect to backend logic via /src/backend-functions/CancelOrder.ts
+    navigate('/signals');
+  };
+
+  const handleCloseOrder = () => {
+    const closeValue = parseFloat(closeOrderValue);
+    if (isNaN(closeValue) || closeValue <= 0) {
+      toast({
+        title: "Invalid Close Value",
+        description: "Please enter a valid closing price.",
+        variant: "destructive",
+    });
+      return;
+    }
+
+    console.log('Closing order:', {
+      symbol: selectedOrder.symbol,
+      shares: recommendedShares,
+      closePrice: closeValue,
+      originalEntry: selectedOrder.entryPrice
+    });
+
+    const profit = (closeValue - selectedOrder.entryPrice) * recommendedShares;
+    const newBalance = portfolioBalance + profit;
+    setPortfolioBalance(newBalance);
+    setPortfolioInput(newBalance.toString());
+
+    toast({
+      title: "Order Closed",
+      description: `Order for ${selectedOrder.symbol} closed at $${closeValue.toFixed(2)}. ${profit >= 0 ? 'Profit' : 'Loss'}: $${Math.abs(profit).toFixed(2)}`,
+    });
+    
+    // TODO: Connect to backend logic via /src/backend-functions/CloseOrder.ts
+    setIsClosingOrder(false);
+    setCloseOrderValue('');
+  };
+
   const handleExecuteTrade = () => {
     console.log('Executing safe trade:', {
       symbol: selectedOrder.symbol,
       shares: recommendedShares,
       entryPrice: selectedOrder.entryPrice,
       riskAmount: maxRiskAmount
+    });
+    toast({
+      title: "Trade Executed",
+      description: `Safe trade executed for ${recommendedShares} shares of ${selectedOrder.symbol}`,
     });
     // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
   };
@@ -144,6 +207,36 @@ const Orders: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Side - Trade Setup */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Portfolio Balance Input */}
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-lg text-white flex items-center space-x-2">
+                  <DollarSign className="h-5 w-5 text-blue-400" />
+                  <span>Portfolio Settings</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="portfolio-balance" className="text-slate-300">
+                    Enter Portfolio Balance
+                  </Label>
+                  <Input
+                    id="portfolio-balance"
+                    type="number"
+                    value={portfolioInput}
+                    onChange={(e) => handlePortfolioBalanceChange(e.target.value)}
+                    placeholder="100000"
+                    min="0"
+                    step="1000"
+                    className="bg-slate-700 border-slate-600 text-white"
+                  />
+                  <p className="text-sm text-slate-400">
+                    Current balance: ${portfolioBalance.toLocaleString()}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Trade Details */}
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
               <CardHeader>
@@ -279,6 +372,74 @@ const Orders: React.FC = () => {
                       </AlertDescription>
                     </Alert>
                   )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Order Management */}
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-lg text-white flex items-center space-x-2">
+                  <Shield className="h-5 w-5 text-orange-400" />
+                  <span>Order Management</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button 
+                    onClick={handleCancelOrder}
+                    variant="outline"
+                    className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white py-3"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Cancel Order
+                  </Button>
+                  
+                  <AlertDialog open={isClosingOrder} onOpenChange={setIsClosingOrder}>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="outline"
+                        className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white py-3"
+                      >
+                        <Minus className="h-4 w-4 mr-2" />
+                        Close Order
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-slate-800 border-slate-700">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-white">Close Order</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-300">
+                          Enter the closing price for your {selectedOrder.symbol} position.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <div className="py-4">
+                        <Label htmlFor="close-value" className="text-slate-300">
+                          Close Order At: $
+                        </Label>
+                        <Input
+                          id="close-value"
+                          type="number"
+                          value={closeOrderValue}
+                          onChange={(e) => setCloseOrderValue(e.target.value)}
+                          placeholder={selectedOrder.currentPrice.toFixed(2)}
+                          min="0"
+                          step="0.01"
+                          className="bg-slate-700 border-slate-600 text-white mt-2"
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-slate-700 text-white border-slate-600">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={handleCloseOrder}
+                          className="bg-orange-600 hover:bg-orange-700"
+                        >
+                          Close Order
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>
