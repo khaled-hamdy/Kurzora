@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -207,36 +206,6 @@ const Orders: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Side - Trade Setup */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Portfolio Balance Input */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-lg text-white flex items-center space-x-2">
-                  <DollarSign className="h-5 w-5 text-blue-400" />
-                  <span>Portfolio Settings</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Label htmlFor="portfolio-balance" className="text-slate-300">
-                    Enter Portfolio Balance
-                  </Label>
-                  <Input
-                    id="portfolio-balance"
-                    type="number"
-                    value={portfolioInput}
-                    onChange={(e) => handlePortfolioBalanceChange(e.target.value)}
-                    placeholder="100000"
-                    min="0"
-                    step="1000"
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                  <p className="text-sm text-slate-400">
-                    Current balance: ${portfolioBalance.toLocaleString()}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Trade Details */}
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
               <CardHeader>
@@ -278,6 +247,36 @@ const Orders: React.FC = () => {
                     <span className="text-slate-300">Risk/Reward Ratio</span>
                     <span className="text-white font-semibold">1:{riskRewardRatio.toFixed(1)}</span>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Portfolio Balance Input */}
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-lg text-white flex items-center space-x-2">
+                  <DollarSign className="h-5 w-5 text-blue-400" />
+                  <span>Portfolio Settings</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="portfolio-balance" className="text-slate-300">
+                    Enter Portfolio Balance
+                  </Label>
+                  <Input
+                    id="portfolio-balance"
+                    type="number"
+                    value={portfolioInput}
+                    onChange={(e) => handlePortfolioBalanceChange(e.target.value)}
+                    placeholder="100000"
+                    min="0"
+                    step="1000"
+                    className="bg-slate-700 border-slate-600 text-white"
+                  />
+                  <p className="text-sm text-slate-400">
+                    Current balance: ${portfolioBalance.toLocaleString()}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -462,14 +461,6 @@ const Orders: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <Target className="h-4 w-4 text-slate-400" />
-                    <div>
-                      <div className="text-slate-400 text-sm">Expected Hold Time</div>
-                      <div className="text-white font-medium">1-3 days</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
                     <Shield className="h-4 w-4 text-slate-400" />
                     <div>
                       <div className="text-slate-400 text-sm">Risk Level</div>
@@ -495,20 +486,6 @@ const Orders: React.FC = () => {
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 text-lg"
               >
                 Execute Safe Trade ({recommendedShares} shares)
-              </Button>
-              
-              <Button 
-                variant="outline"
-                className="w-full border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white py-3"
-              >
-                Set Price Alert
-              </Button>
-              
-              <Button 
-                variant="outline"
-                className="w-full border-slate-600 text-slate-400 hover:bg-slate-600 hover:text-white py-3"
-              >
-                Add to Watchlist
               </Button>
             </div>
           </div>
