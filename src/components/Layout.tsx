@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LogOut, Shield, User, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import LanguageToggle from './LanguageToggle';
@@ -14,6 +13,19 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
+  const location = useLocation();
+
+  const isActiveRoute = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const getNavLinkClasses = (path: string) => {
+    const baseClasses = "px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 whitespace-nowrap";
+    if (isActiveRoute(path)) {
+      return `${baseClasses} bg-blue-600 text-white shadow-lg transform scale-105`;
+    }
+    return `${baseClasses} text-slate-300 hover:text-white hover:bg-slate-700/50`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
@@ -29,13 +41,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     className="logo-image"
                   />
                 </div>
-                <div className="nav-items hidden lg:flex space-x-6 xl:space-x-8">
-                  <Link to="/dashboard" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.dashboard')}</Link>
-                  <Link to="/signals" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.signals')}</Link>
-                  <Link to="/orders" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.orders')}</Link>
-                  <Link to="/performance" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.performance')}</Link>
-                  <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">How It Works</Link>
-                  <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors whitespace-nowrap">{t('nav.pricing')}</Link>
+                <div className="nav-items hidden lg:flex space-x-2 xl:space-x-3 ml-8">
+                  <Link to="/dashboard" className={getNavLinkClasses('/dashboard')}>
+                    {t('nav.dashboard')}
+                  </Link>
+                  <Link to="/signals" className={getNavLinkClasses('/signals')}>
+                    {t('nav.signals')}
+                  </Link>
+                  <Link to="/orders" className={getNavLinkClasses('/orders')}>
+                    {t('nav.orders')}
+                  </Link>
+                  <Link to="/performance" className={getNavLinkClasses('/performance')}>
+                    {t('nav.performance')}
+                  </Link>
+                  <Link to="/how-it-works" className={getNavLinkClasses('/how-it-works')}>
+                    How It Works
+                  </Link>
+                  <Link to="/pricing" className={getNavLinkClasses('/pricing')}>
+                    {t('nav.pricing')}
+                  </Link>
                 </div>
               </div>
               
