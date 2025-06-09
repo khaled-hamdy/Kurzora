@@ -82,7 +82,7 @@ const Signals: React.FC = () => {
   };
 
   const handleViewDetails = (signal: Signal) => {
-    navigate('/orders', { 
+    navigate('/orders-management', { 
       state: { 
         selectedStock: {
           symbol: signal.symbol,

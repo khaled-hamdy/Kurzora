@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Activity } from 'lucide-react';
@@ -331,7 +330,7 @@ const SignalHeatmap: React.FC = () => {
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
-    navigate('/orders', { 
+    navigate('/orders-management', { 
       state: { 
         selectedStock: {
           symbol: signal.ticker,

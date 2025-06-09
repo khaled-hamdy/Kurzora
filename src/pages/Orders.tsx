@@ -165,6 +165,9 @@ const Orders: React.FC = () => {
       description: `Safe trade executed for ${recommendedShares} shares of ${selectedOrder.symbol}`,
     });
     // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
+    
+    // Redirect to orders management page to see the new position
+    navigate('/orders-management');
   };
 
   return (
