@@ -8,7 +8,7 @@ import SignalCard from '../components/dashboard/SignalCard';
 import SignalFilters from '../components/dashboard/SignalFilters';
 import MarketStatus from '../components/dashboard/MarketStatus';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { TrendingUp, DollarSign, Target, Bell, Activity } from 'lucide-react';
+import { Activity, Target, TrendingUp, CheckCircle } from 'lucide-react';
 
 interface Signal {
   id: string;
@@ -62,6 +62,18 @@ const mockSignals: Signal[] = [
   },
   {
     id: '4',
+    symbol: 'TSLA',
+    company: 'Tesla Inc.',
+    price: 242.18,
+    change: 12.45,
+    changePercent: 5.42,
+    score: 76,
+    sector: 'Technology',
+    marketCap: 'Large',
+    timestamp: '12 min ago'
+  },
+  {
+    id: '5',
     symbol: 'JPM',
     company: 'JPMorgan Chase & Co.',
     price: 170.22,
@@ -69,18 +81,6 @@ const mockSignals: Signal[] = [
     changePercent: 1.87,
     score: 78,
     sector: 'Finance',
-    marketCap: 'Large',
-    timestamp: '12 min ago'
-  },
-  {
-    id: '5',
-    symbol: 'JNJ',
-    company: 'Johnson & Johnson',
-    price: 155.80,
-    change: -2.45,
-    changePercent: -1.55,
-    score: 65,
-    sector: 'Healthcare',
     marketCap: 'Large',
     timestamp: '15 min ago'
   },
@@ -98,27 +98,75 @@ const mockSignals: Signal[] = [
   },
   {
     id: '7',
-    symbol: 'TSLA',
-    company: 'Tesla Inc.',
-    price: 242.18,
-    change: 12.45,
-    changePercent: 5.42,
-    score: 76,
+    symbol: 'META',
+    company: 'Meta Platforms Inc.',
+    price: 325.89,
+    change: -5.67,
+    changePercent: -1.71,
+    score: 65,
     sector: 'Technology',
     marketCap: 'Large',
     timestamp: '20 min ago'
   },
   {
     id: '8',
-    symbol: 'META',
-    company: 'Meta Platforms Inc.',
-    price: 325.89,
-    change: -5.67,
-    changePercent: -1.71,
-    score: 45,
+    symbol: 'AMD',
+    company: 'Advanced Micro Devices',
+    price: 115.78,
+    change: 8.45,
+    changePercent: 7.87,
+    score: 89,
     sector: 'Technology',
     marketCap: 'Large',
     timestamp: '25 min ago'
+  },
+  {
+    id: '9',
+    symbol: 'AMZN',
+    company: 'Amazon.com Inc.',
+    price: 148.92,
+    change: -2.34,
+    changePercent: -1.55,
+    score: 71,
+    sector: 'Technology',
+    marketCap: 'Large',
+    timestamp: '28 min ago'
+  },
+  {
+    id: '10',
+    symbol: 'NFLX',
+    company: 'Netflix Inc.',
+    price: 425.67,
+    change: 12.89,
+    changePercent: 3.12,
+    score: 83,
+    sector: 'Technology',
+    marketCap: 'Large',
+    timestamp: '30 min ago'
+  },
+  {
+    id: '11',
+    symbol: 'CRM',
+    company: 'Salesforce Inc.',
+    price: 267.45,
+    change: 5.78,
+    changePercent: 2.21,
+    score: 79,
+    sector: 'Technology',
+    marketCap: 'Large',
+    timestamp: '32 min ago'
+  },
+  {
+    id: '12',
+    symbol: 'ORCL',
+    company: 'Oracle Corporation',
+    price: 118.34,
+    change: 3.45,
+    changePercent: 3.00,
+    score: 75,
+    sector: 'Technology',
+    marketCap: 'Large',
+    timestamp: '35 min ago'
   }
 ];
 
@@ -126,7 +174,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [scoreRange, setScoreRange] = useState([0, 100]);
+  const [scoreRange, setScoreRange] = useState([70, 100]);
   const [sectorFilter, setSectorFilter] = useState('all');
   const [marketCapFilter, setMarketCapFilter] = useState('all');
 
@@ -146,10 +194,13 @@ const Dashboard: React.FC = () => {
   });
 
   const resetFilters = () => {
-    setScoreRange([0, 100]);
+    setScoreRange([70, 100]);
     setSectorFilter('all');
     setMarketCapFilter('all');
   };
+
+  const strongSignals = filteredSignals.filter(s => s.score >= 80).length;
+  const todaysSignals = filteredSignals.length;
 
   return (
     <Layout>
@@ -188,29 +239,16 @@ const Dashboard: React.FC = () => {
 
             {/* Main Content */}
             <div className="flex-1">
-              {/* Key Metrics Cards */}
+              {/* Trading Signal Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-300">Active Signals</CardTitle>
-                    <Activity className="h-4 w-4 text-emerald-400" />
+                    <CardTitle className="text-sm font-medium text-slate-300">Today's Signals</CardTitle>
+                    <Activity className="h-4 w-4 text-blue-400" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">{filteredSignals.length}</div>
-                    <p className="text-xs text-slate-400">Real-time alerts</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-300">Avg Score</CardTitle>
-                    <Target className="h-4 w-4 text-amber-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-amber-400">
-                      {Math.round(filteredSignals.reduce((acc, signal) => acc + signal.score, 0) / filteredSignals.length || 0)}
-                    </div>
-                    <p className="text-xs text-slate-400">Signal strength</p>
+                    <div className="text-2xl font-bold text-white">{todaysSignals}</div>
+                    <p className="text-xs text-slate-400">Active alerts</p>
                   </CardContent>
                 </Card>
 
@@ -220,21 +258,30 @@ const Dashboard: React.FC = () => {
                     <TrendingUp className="h-4 w-4 text-emerald-400" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-emerald-400">
-                      {filteredSignals.filter(s => s.score >= 80).length}
-                    </div>
+                    <div className="text-2xl font-bold text-emerald-400">{strongSignals}</div>
                     <p className="text-xs text-emerald-500">Score ≥ 80</p>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-300">Portfolio Value</CardTitle>
-                    <DollarSign className="h-4 w-4 text-emerald-400" />
+                    <CardTitle className="text-sm font-medium text-slate-300">Market Status</CardTitle>
+                    <Target className="h-4 w-4 text-blue-400" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">$38,734</div>
-                    <p className="text-xs text-emerald-500">+287% all time</p>
+                    <div className="text-2xl font-bold text-emerald-400">OPEN</div>
+                    <p className="text-xs text-slate-400">NYSE & NASDAQ</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-slate-300">Success Rate</CardTitle>
+                    <CheckCircle className="h-4 w-4 text-emerald-400" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-emerald-400">84%</div>
+                    <p className="text-xs text-emerald-500">This week</p>
                   </CardContent>
                 </Card>
               </div>
