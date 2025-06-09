@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -83,7 +82,17 @@ const Signals: React.FC = () => {
   };
 
   const handleViewDetails = (signal: Signal) => {
-    navigate(`/signals/${signal.symbol}`, { state: { selectedStock: signal } });
+    navigate('/orders', { 
+      state: { 
+        selectedStock: {
+          symbol: signal.symbol,
+          name: signal.name,
+          price: signal.price,
+          change: signal.change,
+          signalScore: signal.score
+        }
+      }
+    });
   };
 
   return (

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Activity } from 'lucide-react';
@@ -330,13 +331,17 @@ const SignalHeatmap: React.FC = () => {
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
-    navigate(`/signals/${signal.ticker}`, { 
+    navigate('/orders', { 
       state: { 
-        selectedStock: signal,
-        timeframe: timeframe,
-        score: timeframe === 'final' ? 
-          Math.round(signal.signals['1H'] * 0.4 + signal.signals['4H'] * 0.3 + signal.signals['1D'] * 0.2 + signal.signals['1W'] * 0.1) :
-          signal.signals[timeframe as keyof typeof signal.signals]
+        selectedStock: {
+          symbol: signal.ticker,
+          name: signal.name,
+          price: signal.price,
+          change: signal.change,
+          signalScore: timeframe === 'final' ? 
+            Math.round(signal.signals['1H'] * 0.4 + signal.signals['4H'] * 0.3 + signal.signals['1D'] * 0.2 + signal.signals['1W'] * 0.1) :
+            signal.signals[timeframe as keyof typeof signal.signals]
+        }
       }
     });
   };
