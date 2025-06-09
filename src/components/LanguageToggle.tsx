@@ -22,7 +22,7 @@ const LanguageToggle: React.FC = () => {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="text-slate-300 hover:text-white flex items-center space-x-2"
+        className="text-slate-300 hover:text-white hover:bg-slate-700/50 flex items-center space-x-2"
       >
         <Languages className="h-4 w-4" />
         <span className="flex items-center space-x-1">
@@ -33,7 +33,7 @@ const LanguageToggle: React.FC = () => {
       </Button>
       
       {isOpen && (
-        <div className="absolute top-full mt-1 right-0 bg-slate-800 border border-slate-700 rounded-md shadow-lg z-50 min-w-[120px]">
+        <div className="absolute top-full mt-1 right-0 bg-slate-800 border border-slate-600 rounded-md shadow-lg z-50 min-w-[120px]">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -41,7 +41,7 @@ const LanguageToggle: React.FC = () => {
                 setLanguage(lang.code as any);
                 setIsOpen(false);
               }}
-              className="w-full px-3 py-2 text-left hover:bg-slate-700 text-slate-300 hover:text-white flex items-center space-x-2 first:rounded-t-md last:rounded-b-md"
+              className="w-full px-3 py-2 text-left hover:bg-slate-700 text-slate-200 hover:text-white flex items-center space-x-2 first:rounded-t-md last:rounded-b-md transition-colors duration-200"
             >
               <span>{lang.flag}</span>
               <span>{lang.label}</span>
