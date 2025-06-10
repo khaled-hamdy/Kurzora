@@ -34,6 +34,9 @@ const Orders: React.FC = () => {
   // Check if this is a position being passed from Open Positions
   const existingPosition = location.state?.existingPosition;
   
+  console.log('Orders page - selectedStock:', selectedStock);
+  console.log('Orders page - existingPosition:', existingPosition);
+  
   // Trading parameters
   const riskPercentage = 2;
   const sharePrice = selectedStock.price;
@@ -44,7 +47,11 @@ const Orders: React.FC = () => {
   const customRiskPercentage = (customInvestment / portfolioBalance) * 100;
 
   // Use existing position shares if available, otherwise use recommended shares
-  const actualShares = existingPosition?.shares || recommendedShares;
+  const actualShares = existingPosition ? existingPosition.shares : recommendedShares;
+  
+  console.log('Orders page - actualShares:', actualShares);
+  console.log('Orders page - existingPosition.shares:', existingPosition?.shares);
+  console.log('Orders page - recommendedShares:', recommendedShares);
 
   useEffect(() => {
     console.log('Orders page: Auth state - loading:', loading, 'user:', user);
@@ -425,3 +432,5 @@ const Orders: React.FC = () => {
 };
 
 export default Orders;
+
+</edits_to_apply>

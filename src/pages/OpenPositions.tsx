@@ -94,6 +94,16 @@ const OpenPositions: React.FC = () => {
       shares: 120,
       entryDate: '2025-06-06',
       signalScore: 85
+    },
+    {
+      id: '4',
+      symbol: 'META',
+      name: 'Meta Platforms Inc.',
+      entryPrice: 320.54,
+      currentPrice: 342.15,
+      shares: 30,
+      entryDate: '2025-06-05',
+      signalScore: 89
     }
   ]);
 
@@ -186,17 +196,28 @@ const OpenPositions: React.FC = () => {
   };
 
   const handleOpenCloseDialog = (position: Position) => {
+    console.log('OpenPositions: Navigating to Orders with position:', position);
+    
     // Navigate to Orders page with position data instead of opening dialog directly
     navigate('/orders', {
       state: {
         selectedStock: {
           symbol: position.symbol,
           name: position.name,
-          price: position.entryPrice, // Use entry price as the reference price
+          price: position.currentPrice, // Use current price as the reference price
           change: ((position.currentPrice - position.entryPrice) / position.entryPrice) * 100,
           signalScore: position.signalScore
         },
-        existingPosition: position
+        existingPosition: {
+          id: position.id,
+          symbol: position.symbol,
+          name: position.name,
+          entryPrice: position.entryPrice,
+          currentPrice: position.currentPrice,
+          shares: position.shares,
+          entryDate: position.entryDate,
+          signalScore: position.signalScore
+        }
       }
     });
   };
