@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -10,6 +9,7 @@ import SignupForm from '../components/auth/SignupForm';
 import TestimonialCarousel from '../components/testimonials/TestimonialCarousel';
 import PricingSection from '../components/pricing/PricingSection';
 import LanguageToggle from '../components/LanguageToggle';
+import DemoSignalChart from '../components/dashboard/DemoSignalChart';
 
 const LandingPage: React.FC = () => {
   const { user, loading } = useAuth();
@@ -308,6 +308,22 @@ const LandingPage: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('landing.trustedBy')}</h2>
         </div>
         <TestimonialCarousel />
+      </section>
+
+      {/* Demo Signal Section */}
+      <section className="py-12 sm:py-16 lg:py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">See Kurzora in Action</h2>
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
+              Here's a real example of how our AI signals helped traders profit in the market
+            </p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <DemoSignalChart />
+          </div>
+        </div>
       </section>
 
       <section id="pricing" className="py-12 sm:py-16 lg:py-20">
