@@ -11,9 +11,6 @@ const TrustSignalsBar: React.FC = () => {
         <span>⚡</span> 99.9% Uptime
       </span>
       <span className="flex items-center gap-2 text-sm text-slate-400">
-        <span>🚫</span> No Card Required
-      </span>
-      <span className="flex items-center gap-2 text-sm text-slate-400">
         <span>👥</span> 2,847 Active Traders
       </span>
     </div>

@@ -378,7 +378,7 @@ const LandingPage: React.FC = () => {
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 ml-1" />
           </Button>
           <p className="text-blue-100 text-xs sm:text-sm mt-4 px-4">
-            No credit card required • Cancel anytime • Money-back guarantee
+            Cancel anytime • Money-back guarantee
           </p>
         </div>
       </section>
