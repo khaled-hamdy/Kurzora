@@ -6,9 +6,15 @@ interface PaymentFormProps {
   onPaymentSuccess: (paymentMethodId: string) => void;
   onPaymentError: (error: string) => void;
   loading: boolean;
+  planInfo?: {
+    id: string;
+    name: string;
+    price: string;
+    billingCycle?: string;
+  };
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentError, loading }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentError, loading, planInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [cardError, setCardError] = useState<string | null>(null);
@@ -112,6 +118,24 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
       
       {cardComplete && (
         <p className="text-sm text-green-400">✓ Payment method ready</p>
+      )}
+
+      {/* Plan-specific payment description */}
+      {planInfo && (
+        <div className="mt-4 p-3 bg-gray-800/30 rounded-lg">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-400">Plan:</span>
+            <span className="text-white">{planInfo.name}</span>
+          </div>
+          <div className="flex justify-between text-sm mt-1">
+            <span className="text-gray-400">Trial period:</span>
+            <span className="text-white">7 days free</span>
+          </div>
+          <div className="flex justify-between text-sm mt-1">
+            <span className="text-gray-400">Then:</span>
+            <span className="font-medium text-white">${planInfo.price}/month</span>
+          </div>
+        </div>
       )}
       
       <p className="text-xs text-gray-500">

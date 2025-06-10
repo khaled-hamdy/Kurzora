@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -16,6 +15,24 @@ import PaymentForm from './PaymentForm';
 // Use your actual test key for testing with test cards
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RYbcjP6fp0wCWWukGV48u4rYD6mhqCxFlEKjsKmwmqNkPJcDI7bKrNlqe7SPGBu4dyxy2kpBnejKQDgS0YU5uVL00omhfiN1n';
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+
+const planDetails = {
+  starter: {
+    name: 'Starter',
+    price: 29,
+    badge: null,
+  },
+  professional: {
+    name: 'Professional', 
+    price: 79,
+    badge: 'Most Popular',
+  },
+  elite: {
+    name: 'Elite',
+    price: 199,
+    badge: 'Best Value',
+  }
+};
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
@@ -44,17 +61,19 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     // Check URL parameters for plan info
     const urlParams = new URLSearchParams(window.location.search);
     const planId = urlParams.get('plan');
-    const planName = urlParams.get('name');
-    const price = urlParams.get('price');
+    const planPrice = urlParams.get('price');
     const billingCycle = urlParams.get('billing') || 'monthly';
 
-    if (planId && planName && price) {
-      setPlanInfo({
-        id: planId,
-        name: planName,
-        price: price,
-        billingCycle: billingCycle
-      });
+    if (planId && planPrice) {
+      const planDetail = planDetails[planId as keyof typeof planDetails];
+      if (planDetail) {
+        setPlanInfo({
+          id: planId,
+          name: planDetail.name,
+          price: planPrice,
+          billingCycle: billingCycle
+        });
+      }
     } else {
       // Check localStorage as backup
       const savedPlan = localStorage.getItem('selectedPlan');
@@ -200,6 +219,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
                   onPaymentSuccess={handlePaymentSuccess}
                   onPaymentError={handlePaymentError}
                   loading={loading || isProcessingPayment}
+                  planInfo={planInfo}
                 />
               </Elements>
               {paymentError && (

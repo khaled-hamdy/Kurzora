@@ -1,6 +1,27 @@
 
 import React from 'react';
 
+const planDetails = {
+  starter: {
+    name: 'Starter',
+    price: 29,
+    badge: null,
+    icon: '📈'
+  },
+  professional: {
+    name: 'Professional', 
+    price: 79,
+    badge: 'Most Popular',
+    icon: '⭐'
+  },
+  elite: {
+    name: 'Elite',
+    price: 199,
+    badge: 'Best Value',
+    icon: '👑'
+  }
+};
+
 interface PlanDisplayProps {
   planInfo: {
     id: string;
@@ -14,41 +35,27 @@ interface PlanDisplayProps {
 const PlanDisplay: React.FC<PlanDisplayProps> = ({ planInfo, onChangePlan }) => {
   if (!planInfo) return null;
 
-  const getPlanIcon = () => {
-    switch (planInfo.id) {
-      case 'starter':
-        return '📈';
-      case 'professional':
-        return '⭐';
-      case 'elite':
-        return '👑';
-      default:
-        return '⭐';
-    }
-  };
+  const planDetail = planDetails[planInfo.id as keyof typeof planDetails];
+  const planIcon = planDetail?.icon || '⭐';
+  const planBadge = planDetail?.badge;
 
   const getPlanBadge = () => {
-    switch (planInfo.id) {
-      case 'professional':
-        return (
-          <span className="inline-block bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full mb-2">
-            Most Popular
-          </span>
-        );
-      case 'elite':
-        return (
-          <span className="inline-block bg-amber-500/20 text-amber-400 text-xs px-2 py-1 rounded-full mb-2">
-            Best Value
-          </span>
-        );
-      default:
-        return null;
-    }
+    if (!planBadge) return null;
+    
+    const badgeClass = planInfo.id === 'professional' 
+      ? 'bg-green-500/20 text-green-400' 
+      : 'bg-amber-500/20 text-amber-400';
+    
+    return (
+      <span className={`inline-block ${badgeClass} text-xs px-2 py-1 rounded-full mb-2`}>
+        {planBadge}
+      </span>
+    );
   };
 
   return (
     <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6 text-center relative">
-      <span className="text-green-400 text-xl mb-2">{getPlanIcon()}</span>
+      <span className="text-green-400 text-xl mb-2">{planIcon}</span>
       <p className="text-sm text-gray-400 mb-1">You're signing up for</p>
       <h3 className="text-2xl font-bold text-white">{planInfo.name} Plan</h3>
       {getPlanBadge()}
