@@ -9,7 +9,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Signals from "./pages/Signals";
-import OrdersManagement from './pages/OrdersManagement';
+import OpenPositions from './pages/OpenPositions';
 import Orders from './pages/Orders';
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -45,7 +45,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/signals" element={<Signals />} />
                 <Route path="/signals/:symbol" element={<SignalDetail />} />
-                <Route path="/orders-management" element={<OrdersManagement />} />
+                <Route path="/orders-management" element={<OpenPositions />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />

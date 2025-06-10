@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -53,7 +52,7 @@ interface ClosedPosition {
   closedDate: string;
 }
 
-const OrdersManagement: React.FC = () => {
+const OpenPositions: React.FC = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -442,4 +441,4 @@ const OrdersManagement: React.FC = () => {
   );
 };
 
-export default OrdersManagement;
+export default OpenPositions;
