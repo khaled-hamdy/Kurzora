@@ -7,22 +7,17 @@ import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Switch } from '../components/ui/switch';
-import { Slider } from '../components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3 } from 'lucide-react';
+import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
-  // Settings state
-  const [signalThreshold, setSignalThreshold] = useState([75]);
-  const [timeframes, setTimeframes] = useState({ '1H': true, '4H': true, '1D': true, '1W': false });
-  const [sectors, setSectors] = useState({ tech: true, finance: false, healthcare: true, energy: false });
+  // Settings state (removed signal-related state)
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [telegramAlerts, setTelegramAlerts] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
@@ -56,60 +51,6 @@ const Settings: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          {/* Signal Preferences */}
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-lg text-white flex items-center">
-                <BarChart3 className="h-5 w-5 mr-2 text-emerald-400" />
-                {t('settings.signalPrefs')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Label className="text-slate-300 text-sm font-medium">{t('settings.minThreshold')}: {signalThreshold[0]}%</Label>
-                <Slider
-                  value={signalThreshold}
-                  onValueChange={setSignalThreshold}
-                  max={100}
-                  min={50}
-                  step={5}
-                  className="mt-2"
-                />
-              </div>
-              
-              <div>
-                <Label className="text-slate-300 text-sm font-medium">{t('settings.timeframes')}</Label>
-                <div className="flex flex-wrap gap-3 mt-2">
-                  {Object.entries(timeframes).map(([timeframe, enabled]) => (
-                    <div key={timeframe} className="flex items-center space-x-2">
-                      <Switch
-                        checked={enabled}
-                        onCheckedChange={(checked) => setTimeframes(prev => ({ ...prev, [timeframe]: checked }))}
-                      />
-                      <Label className="text-slate-300">{timeframe}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-slate-300 text-sm font-medium">{t('settings.sectors')}</Label>
-                <div className="flex flex-wrap gap-3 mt-2">
-                  {Object.entries(sectors).map(([sector, enabled]) => (
-                    <Badge
-                      key={sector}
-                      variant={enabled ? "default" : "outline"}
-                      className={`cursor-pointer ${enabled ? 'bg-emerald-600 text-white' : 'border-slate-600 text-slate-400'}`}
-                      onClick={() => setSectors(prev => ({ ...prev, [sector]: !enabled }))}
-                    >
-                      {sector.charAt(0).toUpperCase() + sector.slice(1)}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Notification Settings */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
             <CardHeader>
