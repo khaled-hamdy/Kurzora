@@ -166,8 +166,8 @@ const Orders: React.FC = () => {
     });
     // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
     
-    // Redirect to orders management page to see the new position
-    navigate('/orders-management');
+    // Redirect to open positions page to see the new position
+    navigate('/open-positions');
   };
 
   return (
