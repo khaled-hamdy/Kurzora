@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -16,13 +16,23 @@ import { useToast } from '../hooks/use-toast';
 const Orders: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [portfolioBalance, setPortfolioBalance] = useState(8000);
   const [customShares, setCustomShares] = useState([18]);
   
+  // Get stock data from navigation state or use defaults
+  const selectedStock = location.state?.selectedStock || {
+    symbol: 'EURUSD',
+    name: 'Euro / US Dollar',
+    price: 1.0542,
+    change: 2.45,
+    signalScore: 92
+  };
+  
   // Trading parameters
   const riskPercentage = 2;
-  const sharePrice = 8.81;
+  const sharePrice = selectedStock.price;
   const maxRisk = (portfolioBalance * riskPercentage) / 100;
   const recommendedShares = Math.floor(maxRisk / sharePrice);
   const customShareCount = customShares[0];
@@ -43,7 +53,7 @@ const Orders: React.FC = () => {
     
     toast({
       title: "Trade Executed Successfully!",
-      description: `EURUSD position opened with ${recommendedShares} shares`,
+      description: `${selectedStock.symbol} position opened with ${recommendedShares} shares`,
     });
 
     // Navigate to open positions page
@@ -64,6 +74,27 @@ const Orders: React.FC = () => {
     return null;
   }
 
+  const getSignalBadgeColor = (score: number) => {
+    if (score >= 80) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+    if (score >= 60) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+    return 'bg-red-500/20 text-red-400 border-red-500/30';
+  };
+
+  const getSignalText = (score: number) => {
+    if (score >= 80) return 'BUY SIGNAL';
+    if (score >= 60) return 'HOLD SIGNAL';
+    return 'SELL SIGNAL';
+  };
+
+  const formatPrice = (price: number, symbol: string) => {
+    // Format forex pairs differently (more decimal places)
+    if (symbol.includes('USD') || symbol.includes('EUR') || symbol.includes('GBP')) {
+      return price.toFixed(4);
+    }
+    // Format stocks with 2 decimal places
+    return price.toFixed(2);
+  };
+
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -71,14 +102,19 @@ const Orders: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-              <h1 className="text-3xl font-bold text-white">EURUSD</h1>
-              <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-                BUY SIGNAL
+              <div>
+                <h1 className="text-3xl font-bold text-white">{selectedStock.symbol}</h1>
+                <p className="text-slate-400 text-lg">{selectedStock.name}</p>
+              </div>
+              <Badge className={getSignalBadgeColor(selectedStock.signalScore)}>
+                {getSignalText(selectedStock.signalScore)}
               </Badge>
             </div>
             <div className="flex items-center space-x-2">
               <TrendingUp className="h-6 w-6 text-emerald-400" />
-              <span className="text-2xl font-bold text-emerald-400">1.0542</span>
+              <span className="text-2xl font-bold text-emerald-400">
+                ${formatPrice(selectedStock.price, selectedStock.symbol)}
+              </span>
             </div>
           </div>
           <p className="text-slate-400">Active trading signal with automated risk management</p>
@@ -96,22 +132,30 @@ const Orders: React.FC = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <Label className="text-slate-400">Entry Price</Label>
-                    <div className="text-2xl font-bold text-white">1.0520</div>
+                    <div className="text-2xl font-bold text-white">
+                      ${formatPrice(selectedStock.price * 0.998, selectedStock.symbol)}
+                    </div>
                   </div>
                   <div>
                     <Label className="text-slate-400">Current Price</Label>
-                    <div className="text-2xl font-bold text-emerald-400">1.0542</div>
+                    <div className="text-2xl font-bold text-emerald-400">
+                      ${formatPrice(selectedStock.price, selectedStock.symbol)}
+                    </div>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <Label className="text-slate-400">Take Profit</Label>
-                    <div className="text-xl font-semibold text-emerald-400">1.0580</div>
+                    <div className="text-xl font-semibold text-emerald-400">
+                      ${formatPrice(selectedStock.price * 1.05, selectedStock.symbol)}
+                    </div>
                   </div>
                   <div>
                     <Label className="text-slate-400">Stop Loss</Label>
-                    <div className="text-xl font-semibold text-red-400">1.0480</div>
+                    <div className="text-xl font-semibold text-red-400">
+                      ${formatPrice(selectedStock.price * 0.95, selectedStock.symbol)}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -164,7 +208,7 @@ const Orders: React.FC = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <Label className="text-slate-400">Risk Per Share</Label>
-                    <div className="text-xl font-bold text-white">${sharePrice}</div>
+                    <div className="text-xl font-bold text-white">${formatPrice(sharePrice, selectedStock.symbol)}</div>
                   </div>
                   <div className="bg-emerald-500/10 p-4 rounded-lg border border-emerald-500/20">
                     <Label className="text-emerald-400">Recommended Shares</Label>
@@ -191,7 +235,7 @@ const Orders: React.FC = () => {
                     <span className="text-emerald-400 font-medium">Position size follows 2% risk rule</span>
                   </div>
                   <p className="text-slate-300">
-                    Calculation: ${maxRisk.toFixed(0)} ÷ ${sharePrice} = {recommendedShares} shares
+                    Calculation: ${maxRisk.toFixed(0)} ÷ ${formatPrice(sharePrice, selectedStock.symbol)} = {recommendedShares} shares
                   </p>
                 </div>
               </CardContent>
@@ -289,8 +333,8 @@ const Orders: React.FC = () => {
                 <div className="flex items-start space-x-3">
                   <DollarSign className="h-5 w-5 text-slate-400 mt-1" />
                   <div>
-                    <div className="text-slate-400 text-sm">Potential Profit</div>
-                    <div className="text-emerald-400 text-lg font-semibold">$70,279.2</div>
+                    <div className="text-slate-400 text-sm">Signal Score</div>
+                    <div className="text-emerald-400 text-lg font-semibold">{selectedStock.signalScore}/100</div>
                   </div>
                 </div>
               </CardContent>
