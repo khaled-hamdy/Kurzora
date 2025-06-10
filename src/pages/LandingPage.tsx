@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -189,20 +188,13 @@ const LandingPage: React.FC = () => {
               confidence, and edge in every market condition.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4">
+            <div className="flex justify-center mb-8 sm:mb-12 px-4">
               <Button 
                 size="lg"
                 onClick={() => setShowAuth('signup')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg w-full sm:w-auto"
               >
                 {t('landing.startTrial')}
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                className="border-slate-600 text-slate-300 hover:bg-slate-800 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg w-full sm:w-auto"
-              >
-                {t('landing.viewSignals')}
               </Button>
             </div>
             
