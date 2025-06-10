@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -11,8 +12,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
 
-// Use a proper test key - replace with your actual publishable key
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789';
+// Your actual Stripe publishable key
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RYbcjP6fp0wCWWuIPxACqqw0ab8KVEa6aDn0s5TY0S8AeUdiAMggBvhyVsH9pAD4jj5iYsiBCcp1Bx6fycxdsKx00bBH9zv0Q';
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 interface SignupFormProps {
