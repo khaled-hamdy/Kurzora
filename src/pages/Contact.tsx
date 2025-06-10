@@ -64,7 +64,7 @@ const Contact: React.FC = () => {
                   <h3 className="text-white font-semibold mb-1">
                     {language === 'ar' ? 'البريد الإلكتروني' : language === 'de' ? 'E-Mail' : 'Email'}
                   </h3>
-                  <p className="text-slate-400">support@kurzora.com</p>
+                  <p className="text-slate-400">info@kurzora.com</p>
                 </div>
               </div>
 
@@ -74,7 +74,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">Telegram</h3>
-                  <p className="text-slate-400">@KurzoraSupport</p>
+                  <p className="text-slate-400">@kurzora_alert_bot</p>
                 </div>
               </div>
 
@@ -88,7 +88,7 @@ const Contact: React.FC = () => {
                   </h3>
                   <div className="space-y-1">
                     <p className="text-slate-400">IE: +353 1 254 4000</p>
-                    <p className="text-slate-400">DE: +49 30 3080 6500</p>
+                    <p className="text-slate-400">DE: +49 176 32578451</p>
                   </div>
                 </div>
               </div>
@@ -103,10 +103,10 @@ const Contact: React.FC = () => {
                   </h3>
                   <p className="text-slate-400">
                     {language === 'ar' ? 
-                      'The Greenway، مكاتب آيكونيك، سانت ستيفن جرين، دبلن، أيرلندا' :
+                      'كورفورستنداام 11، 10719 برلين، ألمانيا' :
                       language === 'de' ? 
-                      'The Greenway, Iconic Offices, St Stephen\'s Green, Dublin, Irland' :
-                      'The Greenway, Iconic Offices, St Stephen\'s Green, Dublin, Ireland'
+                      'Kurfürstendamm 11, 10719 Berlin, Deutschland' :
+                      'Kurfürstendamm 11, 10719 Berlin, Germany'
                     }
                   </p>
                 </div>
