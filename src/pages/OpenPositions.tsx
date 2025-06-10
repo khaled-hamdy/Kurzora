@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -56,6 +56,7 @@ const OpenPositions: React.FC = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const [showAllHistory, setShowAllHistory] = useState(false);
@@ -97,7 +98,7 @@ const OpenPositions: React.FC = () => {
   ]);
 
   // Mock data for closed positions
-  const closedPositions: ClosedPosition[] = [
+  const [closedPositions, setClosedPositions] = useState<ClosedPosition[]>([
     {
       id: '4',
       symbol: 'TSLA',
@@ -153,7 +154,18 @@ const OpenPositions: React.FC = () => {
       pnlPercent: -3.7,
       closedDate: '2025-06-01'
     }
-  ];
+  ]);
+
+  // Check if there's a new closed position from navigation state
+  useEffect(() => {
+    if (location.state?.newClosedPosition) {
+      const newClosedPosition = location.state.newClosedPosition;
+      setClosedPositions(prev => [newClosedPosition, ...prev]);
+      
+      // Clear the navigation state
+      navigate('/open-positions', { replace: true });
+    }
+  }, [location.state, navigate]);
 
   if (!user) {
     navigate('/');
@@ -442,3 +454,5 @@ const OpenPositions: React.FC = () => {
 };
 
 export default OpenPositions;
+
+}

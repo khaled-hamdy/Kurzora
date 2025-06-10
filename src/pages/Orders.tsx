@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -12,6 +11,7 @@ import { Slider } from '../components/ui/slider';
 import { Switch } from '../components/ui/switch';
 import { TrendingUp, DollarSign, Target, Shield, Settings, AlertTriangle, X, Clock } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import OrderCloseDialog from '../components/orders/OrderCloseDialog';
 
 const Orders: React.FC = () => {
   const { user, loading } = useAuth();
@@ -20,6 +20,7 @@ const Orders: React.FC = () => {
   const { toast } = useToast();
   const [portfolioBalance, setPortfolioBalance] = useState(8000);
   const [customShares, setCustomShares] = useState([18]);
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   
   // Get stock data from navigation state or use defaults
   const selectedStock = location.state?.selectedStock || {
@@ -58,6 +59,48 @@ const Orders: React.FC = () => {
 
     // Navigate to open positions page
     navigate('/open-positions');
+  };
+
+  const handleCancelOrder = () => {
+    toast({
+      title: "Order Cancelled",
+      description: `${selectedStock.symbol} order has been cancelled`,
+    });
+    
+    // Navigate back to signals page
+    navigate('/signals');
+  };
+
+  const handleCloseOrder = () => {
+    setCloseDialogOpen(true);
+  };
+
+  const handleConfirmCloseOrder = (closePrice: number) => {
+    const pnl = (closePrice - selectedStock.price) * recommendedShares;
+    
+    // TODO: Connect to backend logic via /src/backend-functions/CloseOrder.ts
+    
+    toast({
+      title: "Order Closed",
+      description: `${selectedStock.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
+    });
+
+    // Navigate to open positions page with the closed position data
+    navigate('/open-positions', {
+      state: {
+        newClosedPosition: {
+          id: Date.now().toString(),
+          symbol: selectedStock.symbol,
+          name: selectedStock.name,
+          entryPrice: selectedStock.price,
+          exitPrice: closePrice,
+          shares: recommendedShares,
+          pnl: pnl,
+          pnlPercent: ((closePrice - selectedStock.price) / selectedStock.price) * 100,
+          closedDate: new Date().toISOString().split('T')[0]
+        }
+      }
+    });
   };
 
   if (loading) {
@@ -289,6 +332,7 @@ const Orders: React.FC = () => {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <Button 
+                    onClick={handleCancelOrder}
                     variant="outline" 
                     className="border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
                   >
@@ -296,6 +340,7 @@ const Orders: React.FC = () => {
                     Cancel Order
                   </Button>
                   <Button 
+                    onClick={handleCloseOrder}
                     variant="outline" 
                     className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10 hover:border-yellow-500/50"
                   >
@@ -349,9 +394,19 @@ const Orders: React.FC = () => {
             </Button>
           </div>
         </div>
+
+        <OrderCloseDialog
+          open={closeDialogOpen}
+          onOpenChange={setCloseDialogOpen}
+          stock={selectedStock}
+          shares={recommendedShares}
+          onConfirm={handleConfirmCloseOrder}
+        />
       </div>
     </Layout>
   );
 };
 
 export default Orders;
+
+}
