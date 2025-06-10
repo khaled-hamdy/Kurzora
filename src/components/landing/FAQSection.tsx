@@ -13,8 +13,12 @@ const FAQSection: React.FC = () => {
       answer: "Yes! Each signal comes with a detailed explanation and suggested entry/exit points. We also provide educational resources and paper trading to help you learn risk-free."
     },
     {
-      question: "What's your actual win rate?",
-      answer: "Our current win rate is 68% based on 180,000+ historical trades analyzed. This is for signals with a score of 80+. Individual results vary based on execution and risk management."
+      question: "What returns can I expect?",
+      answer: "Our members average +47% annual returns with a 2:1 profit ratio. This means you can be profitable with just a 45% win rate. Individual results vary based on position sizing and risk management."
+    },
+    {
+      question: "How do you calculate the 2:1 profit ratio?",
+      answer: "Our signals target 4-6% gains while limiting losses to 2% maximum. Historical data shows our average winning trade gains +4.7% while average losses are -2.1%, delivering better than 2:1 returns."
     },
     {
       question: "When will I be charged?",

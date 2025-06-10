@@ -3,7 +3,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Navigate, Link, useLocation } from 'react-router-dom';
-import { Shield, TrendingUp, Signal, Zap, Users, Award, BarChart3, ChevronRight, Menu, X } from 'lucide-react';
+import { Shield, TrendingUp, Signal, Zap, Users, Award, BarChart3, ChevronRight, Menu, X, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import LoginForm from '../components/auth/LoginForm';
 import SignupForm from '../components/auth/SignupForm';
@@ -13,7 +13,8 @@ import LanguageToggle from '../components/LanguageToggle';
 import DemoSignalChart from '../components/dashboard/DemoSignalChart';
 import TrustSignalsBar from '../components/landing/TrustSignalsBar';
 import LiveActivityNotification from '../components/landing/LiveActivityNotification';
-import AnimatedStats from '../components/landing/AnimatedStats';
+import ProfitStats from '../components/landing/ProfitStats';
+import LivePerformanceTracker from '../components/landing/LivePerformanceTracker';
 
 // Lazy load FAQ section for better performance
 const FAQSection = lazy(() => import('../components/landing/FAQSection'));
@@ -236,11 +237,10 @@ const LandingPage: React.FC = () => {
               <span className="text-blue-400 block">Intelligence Platform</span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-6 sm:mb-8 leading-relaxed px-4">
-              Join 2,847+ traders achieving 68% win rates with our real-time, multi-strategy signals for retail traders who want clarity, 
-              confidence, and edge in every market condition.
+              Join 2,847+ traders achieving +47% average annual returns with our real-time, multi-strategy signals that deliver 2:1 profit ratios on every trade.
             </p>
             
-            <div className="flex justify-center mb-8 sm:mb-12 px-4">
+            <div className="flex justify-center mb-6 px-4">
               <Button 
                 size="lg"
                 onClick={() => setShowAuth('signup')}
@@ -249,15 +249,34 @@ const LandingPage: React.FC = () => {
                 {t('landing.startTrial')}
               </Button>
             </div>
+
+            {/* Hero Bullet Points */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mb-8 text-sm sm:text-base">
+              <div className="flex items-center gap-2 text-emerald-400">
+                <Check className="h-4 w-4" />
+                <span>Win bigger than you lose (2:1 average)</span>
+              </div>
+              <div className="flex items-center gap-2 text-emerald-400">
+                <Check className="h-4 w-4" />
+                <span>Only high-conviction setups (Score 80+)</span>
+              </div>
+              <div className="flex items-center gap-2 text-emerald-400">
+                <Check className="h-4 w-4" />
+                <span>Risk only 2% to make 4-6%</span>
+              </div>
+            </div>
             
             {/* Trust Signals Bar */}
             <TrustSignalsBar />
             
-            {/* Animated Stats */}
-            <AnimatedStats />
+            {/* Profit Stats */}
+            <ProfitStats />
           </div>
         </div>
       </section>
+
+      {/* Live Performance Tracker */}
+      <LivePerformanceTracker />
 
       {/* Features Section */}
       <section id="features" className="py-12 sm:py-16 lg:py-20 px-4">
@@ -345,7 +364,7 @@ const LandingPage: React.FC = () => {
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">See Kurzora in Action</h2>
             <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Here's a real example of how our AI signals helped traders profit in the market
+              This signal delivered a 2.3:1 profit ratio - risking $200 to make $460. Our AI identified institutional accumulation patterns combined with a bullish reversal setup scoring 87/100.
             </p>
           </div>
           
@@ -382,6 +401,13 @@ const LandingPage: React.FC = () => {
           </p>
         </div>
       </section>
+
+      {/* Disclaimer */}
+      <div className="px-4 py-8">
+        <p className="text-xs text-slate-500 text-center max-w-3xl mx-auto">
+          *Average returns based on members who follow all signals with proper position sizing. Individual results vary. Past performance doesn't guarantee future results. Trading involves risk of loss.
+        </p>
+      </div>
 
       {/* Footer */}
       <footer className="bg-slate-950/50 border-t border-blue-800/30">

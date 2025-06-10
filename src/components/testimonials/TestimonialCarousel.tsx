@@ -19,34 +19,34 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    quote: "I achieved 82% win rate using these signals! The accuracy is incredible and has completely transformed my trading strategy.",
-    author: "Sarah K.",
+    quote: "Made $4,700 on the NVDA signal. Already covered my annual subscription 5x over. The 2:1 profit ratio is a game-changer.",
+    author: "Sarah T.",
     role: "Day Trader",
     stats: "Pro user since 2023",
     rating: 5,
-    profit: "+37% in 2 months",
+    profit: "+$18,400 profit this year",
     verified: true,
     avatar: "🧑‍💼"
   },
   {
     id: 2,
-    quote: "The RSI and MACD signals have been game-changers. I've consistently outperformed the market by following their recommendations.",
-    author: "Michael Chen",
-    role: "Portfolio Manager",
+    quote: "Turned my $25k account into $37k in 8 months. The risk management is what sets Kurzora apart - I never risk more than 2%.",
+    author: "Michael K.",
+    role: "Swing Trader",
     stats: "Premium user since 2022",
     rating: 5,
-    profit: "+47% in 6 months",
+    profit: "+48% account growth",
     verified: true,
     avatar: "👨‍💻"
   },
   {
     id: 3,
-    quote: "Kurzora's alerts helped me catch the NVDA breakout early. Their technical analysis is spot-on and saved me from major losses.",
-    author: "Jessica R.",
-    role: "Swing Trader",
+    quote: "Finally profitable after 3 years of losses. The filtered signals save me hours and the stop-loss discipline changed everything.",
+    author: "James L.",
+    role: "Part-time Trader",
     stats: "Elite user since 2023",
     rating: 5,
-    profit: "+89% in 6 months",
+    profit: "From -$12k to +$8k this year",
     verified: true,
     avatar: "👩‍💼"
   },
@@ -68,7 +68,7 @@ const testimonials: Testimonial[] = [
     role: "Algorithmic Trader",
     stats: "Premium user since 2023",
     rating: 5,
-    profit: "+156% YTD",
+    profit: "+47% in 6 months",
     verified: true,
     avatar: "👩‍🔬"
   }

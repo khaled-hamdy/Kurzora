@@ -111,6 +111,11 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
     return price;
   };
 
+  const getDailyPrice = (price: string) => {
+    const numPrice = parseInt(price.replace('$', ''));
+    return (numPrice / 30).toFixed(2);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
@@ -181,6 +186,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
                 <span className="text-slate-400">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
               </div>
               
+              <p className="text-sm text-slate-400 mt-2">
+                Just ${getDailyPrice(tier.price)}/day
+              </p>
+              
               {tier.originalPrice && billingCycle === 'monthly' && (
                 <div className="text-slate-500 text-sm line-through">
                   {tier.originalPrice}/month
@@ -216,6 +225,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
               
               <p className="text-xs text-slate-500 text-center mt-2">
                 🔐 256-bit SSL encryption • PCI compliant • Powered by Stripe
+              </p>
+              
+              <p className="text-xs text-slate-500 text-center mt-2">
+                One winning trade pays for 6 months
               </p>
             </CardContent>
           </Card>
