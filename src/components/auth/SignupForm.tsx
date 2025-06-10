@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -313,11 +312,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
           {/* Payment Information Section - Only show if plan is selected */}
           {planInfo && (
             <div className="mt-6">
-              <div className="p-4 bg-amber-900/50 rounded-lg border border-amber-700 mb-4">
-                <p className="text-amber-200 text-sm">
-                  ⚠️ Payment integration is disabled in demo mode. Replace with your actual Stripe publishable key to enable payments.
-                </p>
-              </div>
               <Elements stripe={stripePromise}>
                 <PaymentForm
                   onPaymentSuccess={handlePaymentSuccess}
