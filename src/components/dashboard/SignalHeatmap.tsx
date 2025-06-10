@@ -8,7 +8,6 @@ import SignalLegend from './SignalLegend';
 import SignalTable from './SignalTable';
 import SignalSummaryStats from './SignalSummaryStats';
 import { Switch } from '../ui/switch';
-import CategoryDropdown from './CategoryDropdown';
 
 interface Signal {
   ticker: string;
@@ -327,7 +326,6 @@ const SignalHeatmap: React.FC = () => {
   const [scoreThreshold, setScoreThreshold] = useState([70]);
   const [sectorFilter, setSectorFilter] = useState('all');
   const [marketFilter, setMarketFilter] = useState('global');
-  const [categoryFilter, setCategoryFilter] = useState('all');
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -359,75 +357,67 @@ const SignalHeatmap: React.FC = () => {
 
   const filteredSignals = mockSignals.filter(signal => {
     const score = signal.signals[timeFilter as keyof typeof signal.signals];
-    const finalScore = calculateFinalScore(signal.signals);
     const meetsThreshold = score >= scoreThreshold[0];
     const meetsSector = sectorFilter === 'all' || signal.sector === sectorFilter;
     const meetsMarket = marketFilter === 'global' || signal.market === marketFilter;
     
-    // Apply category filter based on final weighted score
-    const meetsCategory = categoryFilter === 'all' || 
-      (categoryFilter === 'strong' && finalScore >= 90) ||
-      (categoryFilter === 'valid' && finalScore >= 80 && finalScore < 90) ||
-      (categoryFilter === 'weak' && finalScore >= 70 && finalScore < 80);
-    
-    return meetsThreshold && meetsSector && meetsMarket && meetsCategory;
+    return meetsThreshold && meetsSector && meetsMarket;
   });
 
   return (
     <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:bg-slate-800/70 transition-all duration-300">
       <CardHeader>
+        {/* Clean Header Layout */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <div className="flex items-center space-x-4">
-            <CardTitle className="text-lg text-white flex items-center space-x-2">
-              <Activity className="h-5 w-5 text-emerald-400" />
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
-              </div>
-            </CardTitle>
-            
-            <div className="flex items-center space-x-4 text-sm text-slate-400">
-              <span>{language === 'ar' ? 'آخر تحديث: منذ دقيقتين' : language === 'de' ? 'Zuletzt aktualisiert: vor 2 Min.' : 'Last Updated: 2 min ago'}</span>
-              
-              <div className="flex items-center space-x-2">
-                <span className="text-xs">{language === 'ar' ? 'التحديث التلقائي:' : language === 'de' ? 'Auto-Refresh:' : 'Auto-refresh:'}</span>
-                <Switch
-                  checked={autoRefresh}
-                  onCheckedChange={setAutoRefresh}
-                  className="data-[state=checked]:bg-emerald-600"
-                />
-                <span className={`text-xs font-medium ${autoRefresh ? 'text-emerald-400' : 'text-slate-500'}`}>
-                  {autoRefresh ? (language === 'ar' ? 'مفعل' : language === 'de' ? 'EIN' : 'ON') : (language === 'ar' ? 'مطفأ' : language === 'de' ? 'AUS' : 'OFF')}
-                </span>
-              </div>
+          {/* Left: Title */}
+          <CardTitle className="text-xl text-white flex items-center space-x-3">
+            <Activity className="h-6 w-6 text-emerald-400" />
+            <div className="flex items-center space-x-3">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <span>{language === 'ar' ? 'خريطة إشارات الشراء الحرارية' : language === 'de' ? 'BUY Signal Heatmap' : 'BUY Signal Heatmap'}</span>
+            </div>
+          </CardTitle>
+
+          {/* Center: Last Updated */}
+          <div className="flex-1 text-center">
+            <div className="text-slate-300 font-medium">
+              {language === 'ar' ? 'آخر تحديث: منذ دقيقتين' : language === 'de' ? 'Zuletzt aktualisiert: vor 2 Min.' : 'Last Updated: 2 min ago'}
             </div>
           </div>
-          
-          <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
-            <CategoryDropdown
-              categoryFilter={categoryFilter}
-              setCategoryFilter={setCategoryFilter}
-              language={language}
+
+          {/* Right: Auto Refresh Toggle */}
+          <div className="flex items-center space-x-3">
+            <span className="text-slate-300 font-medium">
+              {language === 'ar' ? 'التحديث التلقائي:' : language === 'de' ? 'Auto-Refresh:' : 'Auto-refresh:'}
+            </span>
+            <Switch
+              checked={autoRefresh}
+              onCheckedChange={setAutoRefresh}
+              className="data-[state=checked]:bg-emerald-600"
             />
-            
-            <SignalFilters
-              timeFilter={timeFilter}
-              setTimeFilter={setTimeFilter}
-              scoreThreshold={scoreThreshold}
-              setScoreThreshold={setScoreThreshold}
-              sectorFilter={sectorFilter}
-              setSectorFilter={setSectorFilter}
-              marketFilter={marketFilter}
-              setMarketFilter={setMarketFilter}
-              language={language}
-            />
+            <span className={`font-bold ${autoRefresh ? 'text-emerald-400' : 'text-slate-500'}`}>
+              {autoRefresh ? (language === 'ar' ? 'مفعل' : language === 'de' ? 'EIN' : 'ON') : (language === 'ar' ? 'مطفأ' : language === 'de' ? 'AUS' : 'OFF')}
+            </span>
           </div>
         </div>
 
         <SignalLegend language={language} />
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-6">
+        {/* Filter Bar */}
+        <SignalFilters
+          timeFilter={timeFilter}
+          setTimeFilter={setTimeFilter}
+          scoreThreshold={scoreThreshold}
+          setScoreThreshold={setScoreThreshold}
+          sectorFilter={sectorFilter}
+          setSectorFilter={setSectorFilter}
+          marketFilter={marketFilter}
+          setMarketFilter={setMarketFilter}
+          language={language}
+        />
+
         <SignalTable
           filteredSignals={filteredSignals}
           timeFilter={timeFilter}
@@ -449,3 +439,5 @@ const SignalHeatmap: React.FC = () => {
 };
 
 export default SignalHeatmap;
+
+}
