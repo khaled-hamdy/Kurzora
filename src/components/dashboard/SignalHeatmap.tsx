@@ -330,7 +330,7 @@ const SignalHeatmap: React.FC = () => {
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   const handleViewSignal = (signal: Signal, timeframe: string) => {
-    navigate('/orders-management', { 
+    navigate('/orders', { 
       state: { 
         selectedStock: {
           symbol: signal.ticker,
