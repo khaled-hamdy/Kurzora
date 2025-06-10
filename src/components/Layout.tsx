@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -41,6 +40,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const handleShariahLinkClick = () => {
+    // Use setTimeout to ensure navigation completes before scrolling
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
   };
 
   const navItems = [
@@ -273,7 +282,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <li><Link to="/privacy-policy" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
                 <li><Link to="/terms-of-service" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
                 <li><Link to="/risk-disclosure" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</Link></li>
-                <li><Link to="/shariah-compliance" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
+                <li><Link to="/shariah-compliance" onClick={handleShariahLinkClick} className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
               </ul>
             </div>
           </div>
