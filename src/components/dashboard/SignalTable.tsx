@@ -108,6 +108,16 @@ const SignalTable: React.FC<SignalTableProps> = ({
     return false;
   };
 
+  // Check if entire row should blink based on final score category
+  const shouldBlinkRow = (signal: Signal) => {
+    if (!highlightedCategory) return false;
+    const finalScore = calculateFinalScore(signal.signals);
+    if (highlightedCategory === 'strong' && finalScore >= 90) return true;
+    if (highlightedCategory === 'valid' && finalScore >= 80 && finalScore < 90) return true;
+    if (highlightedCategory === 'weak' && finalScore >= 70 && finalScore < 80) return true;
+    return false;
+  };
+
   const getHighlightedSignalColor = (score: number, isHighlighted: boolean) => {
     const baseColor = getSignalColor(score);
     if (isHighlighted) {
@@ -154,9 +164,15 @@ const SignalTable: React.FC<SignalTableProps> = ({
           {filteredSignals.map((signal) => {
             const finalScore = calculateFinalScore(signal.signals);
             const isFinalScoreHighlighted = shouldHighlightScore(finalScore);
+            const shouldRowBlink = shouldBlinkRow(signal);
             
             return (
-              <div key={signal.ticker} className="grid grid-cols-8 gap-2 items-center">
+              <div 
+                key={signal.ticker} 
+                className={`grid grid-cols-8 gap-2 items-center transition-all duration-200 rounded-lg p-2 ${
+                  shouldRowBlink ? 'animate-pulse bg-slate-700/50 ring-2 ring-emerald-400/50' : ''
+                }`}
+              >
                 {/* Stock Info */}
                 <div className="flex flex-col">
                   <div className="text-white font-bold text-sm flex items-center space-x-1">
