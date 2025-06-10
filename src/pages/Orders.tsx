@@ -49,7 +49,7 @@ const Orders: React.FC = () => {
 
   // Use existing position shares if available, otherwise use recommended shares
   // Make sure to handle the case where existingPosition exists but shares might be undefined
-  const actualShares = (existingPosition && existingPosition.shares) ? existingPosition.shares : recommendedShares;
+  const actualShares = (existingPosition && typeof existingPosition.shares === 'number') ? existingPosition.shares : recommendedShares;
   
   console.log('Orders page - actualShares:', actualShares);
   console.log('Orders page - existingPosition.shares:', existingPosition?.shares);

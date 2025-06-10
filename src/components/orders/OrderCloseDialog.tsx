@@ -37,6 +37,9 @@ const OrderCloseDialog: React.FC<OrderCloseDialogProps> = ({
   const [closePrice, setClosePrice] = useState('');
   const [error, setError] = useState('');
 
+  console.log('OrderCloseDialog - shares received:', shares);
+  console.log('OrderCloseDialog - stock:', stock);
+
   const handleConfirm = () => {
     const price = parseFloat(closePrice);
     if (isNaN(price) || price <= 0) {
@@ -56,11 +59,14 @@ const OrderCloseDialog: React.FC<OrderCloseDialogProps> = ({
     onOpenChange(false);
   };
 
+  // Make sure shares is a valid number, default to 0 if not
+  const validShares = typeof shares === 'number' && !isNaN(shares) ? shares : 0;
+
   // P&L calculation: (close_price - entry_price) * shares
   const closePriceNum = parseFloat(closePrice);
   const priceValid = !isNaN(closePriceNum) && closePriceNum > 0;
   const priceDifference = priceValid ? closePriceNum - stock.price : 0;
-  const estimatedPnL = priceValid ? priceDifference * shares : 0;
+  const estimatedPnL = priceValid ? priceDifference * validShares : 0;
 
   // Currency formatting function
   const formatCurrency = (amount: number) => {
@@ -89,7 +95,7 @@ const OrderCloseDialog: React.FC<OrderCloseDialogProps> = ({
             Close Order: {stock.symbol}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-slate-300">
-            Enter the closing price for your {shares} shares of {stock.name}.
+            Enter the closing price for your {validShares} shares of {stock.name}.
           </AlertDialogDescription>
         </AlertDialogHeader>
         
@@ -101,7 +107,7 @@ const OrderCloseDialog: React.FC<OrderCloseDialogProps> = ({
             </div>
             <div>
               <span className="text-slate-400">Shares:</span>
-              <span className="text-white ml-2">{shares}</span>
+              <span className="text-white ml-2">{validShares}</span>
             </div>
           </div>
           
@@ -136,10 +142,10 @@ const OrderCloseDialog: React.FC<OrderCloseDialogProps> = ({
               
               <div className="space-y-1 text-sm">
                 <div className="text-slate-400">
-                  P&L = {shares} × (${formatPrice(closePriceNum, stock.symbol)} − ${formatPrice(stock.price, stock.symbol)})
+                  P&L = {validShares} × (${formatPrice(closePriceNum, stock.symbol)} − ${formatPrice(stock.price, stock.symbol)})
                 </div>
                 <div className="text-slate-400">
-                  P&L = {shares} × ${priceDifference.toFixed(4)}
+                  P&L = {validShares} × ${priceDifference.toFixed(4)}
                 </div>
                 <div className="text-white font-semibold border-t border-slate-600 pt-2">
                   <span className="text-slate-400">Estimated P&L:</span>

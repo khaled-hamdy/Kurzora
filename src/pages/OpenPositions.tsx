@@ -105,6 +105,16 @@ const OpenPositions: React.FC = () => {
       shares: 30,
       entryDate: '2025-06-05',
       signalScore: 89
+    },
+    {
+      id: '5',
+      symbol: 'ETH',
+      name: 'Ethereum',
+      entryPrice: 2680.50,
+      currentPrice: 2750.25,
+      shares: 25,
+      entryDate: '2025-06-04',
+      signalScore: 91
     }
   ]);
 
@@ -198,6 +208,7 @@ const OpenPositions: React.FC = () => {
 
   const handleOpenCloseDialog = (position: Position) => {
     console.log('OpenPositions: Navigating to Orders with position:', position);
+    console.log('OpenPositions: Position shares:', position.shares);
     
     // Navigate to Orders page with complete position data
     navigate('/orders', {
@@ -215,7 +226,7 @@ const OpenPositions: React.FC = () => {
           name: position.name,
           entryPrice: position.entryPrice,
           currentPrice: position.currentPrice,
-          shares: position.shares,
+          shares: position.shares, // Make sure this is correctly passed
           entryDate: position.entryDate,
           signalScore: position.signalScore
         }
