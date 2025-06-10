@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -288,7 +287,7 @@ const LandingPage: React.FC = () => {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-12 sm:py-16 lg:py-20">
-        <PricingSection />
+        <PricingSection onSignupClick={() => setShowAuth('signup')} />
       </section>
 
       {/* CTA Section */}

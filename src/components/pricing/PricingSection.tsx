@@ -3,6 +3,7 @@ import { Check, Star, Zap, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface PricingTier {
   id: string;
@@ -69,12 +70,22 @@ const pricingTiers: PricingTier[] = [
   }
 ];
 
-const PricingSection: React.FC = () => {
+interface PricingSectionProps {
+  onSignupClick?: () => void;
+}
+
+const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const navigate = useNavigate();
 
   const handleSubscribe = (tierId: string) => {
-    toast.success(`Redirecting to checkout for ${tierId} plan...`);
-    // Here you would integrate with Stripe checkout
+    if (onSignupClick) {
+      // If we're on the landing page, use the callback
+      onSignupClick();
+    } else {
+      // If we're on the pricing page, navigate to home with signup form
+      navigate('/', { state: { showSignup: true } });
+    }
   };
 
   const getDiscountedPrice = (price: string) => {
