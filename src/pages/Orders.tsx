@@ -12,6 +12,14 @@ import { Switch } from '../components/ui/switch';
 import { TrendingUp, DollarSign, Target, Shield, Settings, AlertTriangle, X, Clock } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import OrderCloseDialog from '../components/orders/OrderCloseDialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
 
 const Orders: React.FC = () => {
   const { user, loading } = useAuth();
@@ -21,6 +29,8 @@ const Orders: React.FC = () => {
   const [portfolioBalance, setPortfolioBalance] = useState(8000);
   const [customShares, setCustomShares] = useState([18]);
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+  const [entryPriceDialogOpen, setEntryPriceDialogOpen] = useState(false);
+  const [editableEntryPrice, setEditableEntryPrice] = useState(0);
   
   // Get stock data from navigation state or use defaults
   const selectedStock = location.state?.selectedStock || {
@@ -66,15 +76,23 @@ const Orders: React.FC = () => {
   }, [user, loading, navigate]);
 
   const handleExecuteTrade = () => {
+    // Set the initial entry price and open the dialog
+    setEditableEntryPrice(selectedStock.price * 0.998);
+    setEntryPriceDialogOpen(true);
+  };
+
+  const handleConfirmTrade = () => {
     // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
     
-    console.log('Executing trade with shares:', actualShares);
+    console.log('Executing trade with shares:', actualShares, 'and entry price:', editableEntryPrice);
     
     toast({
       title: "Trade Executed Successfully!",
-      description: `${selectedStock.symbol} position opened with ${actualShares} shares`,
+      description: `${selectedStock.symbol} position opened with ${actualShares} shares at $${editableEntryPrice.toFixed(4)}`,
     });
 
+    setEntryPriceDialogOpen(false);
+    
     // Navigate to open positions page
     navigate('/open-positions');
   };
@@ -423,6 +441,51 @@ const Orders: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* Entry Price Edit Dialog */}
+        <Dialog open={entryPriceDialogOpen} onOpenChange={setEntryPriceDialogOpen}>
+          <DialogContent className="bg-slate-800 border-slate-700">
+            <DialogHeader>
+              <DialogTitle className="text-white">Confirm Entry Price</DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Review and adjust the entry price for your {selectedStock.symbol} trade
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-slate-400">Entry Price</Label>
+                <Input
+                  type="number"
+                  step="0.0001"
+                  value={editableEntryPrice}
+                  onChange={(e) => setEditableEntryPrice(Number(e.target.value))}
+                  className="bg-slate-700 border-slate-600 text-white text-lg"
+                />
+              </div>
+              <div className="bg-slate-700/50 p-4 rounded-lg">
+                <div className="text-slate-400 text-sm mb-2">Trade Summary:</div>
+                <div className="text-white">
+                  <div>{actualShares} shares × ${editableEntryPrice.toFixed(4)} = ${(actualShares * editableEntryPrice).toFixed(2)}</div>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => setEntryPriceDialogOpen(false)}
+                className="border-slate-600 text-slate-400 hover:bg-slate-700"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleConfirmTrade}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                Confirm Trade
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <OrderCloseDialog
           open={closeDialogOpen}
