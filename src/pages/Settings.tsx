@@ -12,12 +12,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3 } from 'lucide-react';
+import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3, DollarSign } from 'lucide-react';
+import { useToast } from '../components/ui/use-toast';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Settings state
   const [signalThreshold, setSignalThreshold] = useState([75]);
@@ -33,6 +35,32 @@ const Settings: React.FC = () => {
   const [showBacktest, setShowBacktest] = useState(false);
   const [uiDensity, setUiDensity] = useState('default');
   const [apiKey, setApiKey] = useState('sk-****************************');
+  
+  // Language & Currency preferences
+  const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+
+  const languages = [
+    { code: 'en', label: 'English', flag: '🇺🇸' },
+    { code: 'es', label: 'Español', flag: '🇪🇸' },
+    { code: 'fr', label: 'Français', flag: '🇫🇷' },
+    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+    { code: 'zh', label: '中文', flag: '🇨🇳' },
+    { code: 'ja', label: '日本語', flag: '🇯🇵' },
+    { code: 'hi', label: 'हिन्दी', flag: '🇮🇳' }
+  ];
+
+  const currencies = [
+    { code: 'USD', symbol: '$', label: 'US Dollar', flag: '🇺🇸' },
+    { code: 'EUR', symbol: '€', label: 'Euro', flag: '🇪🇺' },
+    { code: 'GBP', symbol: '£', label: 'British Pound', flag: '🇬🇧' },
+    { code: 'SAR', symbol: '﷼', label: 'Saudi Riyal', flag: '🇸🇦' },
+    { code: 'AED', symbol: 'د.إ', label: 'UAE Dirham', flag: '🇦🇪' },
+    { code: 'JPY', symbol: '¥', label: 'Japanese Yen', flag: '🇯🇵' },
+    { code: 'INR', symbol: '₹', label: 'Indian Rupee', flag: '🇮🇳' },
+    { code: 'CNY', symbol: '¥', label: 'Chinese Yuan', flag: '🇨🇳' }
+  ];
 
   React.useEffect(() => {
     if (!user) {
@@ -47,6 +75,25 @@ const Settings: React.FC = () => {
     setApiKey(newKey);
   };
 
+  const handleLanguageChange = (langCode: string) => {
+    setSelectedLanguage(langCode);
+    setLanguage(langCode as any);
+    // TODO: Connect to backend logic via /src/backend-functions/UpdateUserPreferences.ts
+  };
+
+  const handleCurrencyChange = (currencyCode: string) => {
+    setSelectedCurrency(currencyCode);
+    // TODO: Connect to backend logic via /src/backend-functions/UpdateCurrencyPreferences.ts
+  };
+
+  const saveLanguageCurrencyPreferences = () => {
+    // TODO: Connect to backend logic via /src/backend-functions/SavePreferences.ts
+    toast({
+      title: "Preferences Updated",
+      description: `Language: ${languages.find(l => l.code === selectedLanguage)?.label}, Currency: ${selectedCurrency}`,
+    });
+  };
+
   return (
     <Layout>
       <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${language === 'ar' ? 'rtl' : 'ltr'}`}>
@@ -56,6 +103,122 @@ const Settings: React.FC = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Language & Currency Preferences */}
+          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-lg text-white flex items-center">
+                <Globe className="h-5 w-5 mr-2 text-blue-400" />
+                <DollarSign className="h-5 w-5 mr-2 text-green-400" />
+                Language & Currency Preferences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Language Selection */}
+                <div>
+                  <Label className="text-slate-300 text-sm font-medium flex items-center mb-3">
+                    <Globe className="h-4 w-4 mr-2" />
+                    Language
+                  </Label>
+                  <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
+                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {languages.map((lang) => (
+                        <SelectItem key={lang.code} value={lang.code}>
+                          <div className="flex items-center space-x-2">
+                            <span>{lang.flag}</span>
+                            <span>{lang.label}</span>
+                            {selectedLanguage === lang.code && (
+                              <CheckCircle className="h-4 w-4 text-green-400 ml-auto" />
+                            )}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Currency Selection */}
+                <div>
+                  <Label className="text-slate-300 text-sm font-medium flex items-center mb-3">
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    Currency
+                    <span className="ml-2 text-xs text-slate-400">(Updates all prices in real-time)</span>
+                  </Label>
+                  <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
+                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currencies.map((currency) => (
+                        <SelectItem key={currency.code} value={currency.code}>
+                          <div className="flex items-center space-x-2">
+                            <span>{currency.flag}</span>
+                            <span className="font-mono font-bold">{currency.code}</span>
+                            <span>{currency.symbol}</span>
+                            <span className="text-slate-400">- {currency.label}</span>
+                            {selectedCurrency === currency.code && (
+                              <CheckCircle className="h-4 w-4 text-green-400 ml-auto" />
+                            )}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Current Selection Display */}
+              <div className="bg-slate-700/30 rounded-lg p-4 space-y-2">
+                <div className="text-sm text-slate-400">Current Selection:</div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span>{languages.find(l => l.code === selectedLanguage)?.flag}</span>
+                    <span className="text-white font-medium">
+                      {languages.find(l => l.code === selectedLanguage)?.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span>{currencies.find(c => c.code === selectedCurrency)?.flag}</span>
+                    <span className="text-white font-medium">
+                      {selectedCurrency} {currencies.find(c => c.code === selectedCurrency)?.symbol}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <Button 
+                  onClick={saveLanguageCurrencyPreferences}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center"
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Save Preferences
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    setSelectedLanguage(language);
+                    setSelectedCurrency('USD');
+                  }}
+                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+
+              {/* Helper Text */}
+              <div className="text-xs text-slate-400 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                <strong>💡 Note:</strong> Currency changes will update all prices, charts, and financial data across the platform. 
+                If a specific page doesn't support your selected currency, USD will be displayed as default.
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Signal Preferences */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
             <CardHeader>
