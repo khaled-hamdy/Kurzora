@@ -28,6 +28,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return `${baseClasses} text-slate-300 hover:text-white hover:bg-slate-700/50`;
   };
 
+  const handleNavClick = (e: React.MouseEvent, path: string) => {
+    // Prevent any default behavior that might cause the redirect
+    e.preventDefault();
+    // Use React Router's programmatic navigation
+    window.location.href = path;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
       {user && (
@@ -43,21 +50,41 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 </div>
                 <div className="nav-items hidden lg:flex space-x-2 xl:space-x-3 ml-8">
-                  <Link to="/dashboard" className={getNavLinkClasses('/dashboard')}>
+                  <a 
+                    href="/dashboard" 
+                    className={getNavLinkClasses('/dashboard')}
+                    onClick={(e) => handleNavClick(e, '/dashboard')}
+                  >
                     {t('nav.dashboard')}
-                  </Link>
-                  <Link to="/signals" className={getNavLinkClasses('/signals')}>
+                  </a>
+                  <a 
+                    href="/signals" 
+                    className={getNavLinkClasses('/signals')}
+                    onClick={(e) => handleNavClick(e, '/signals')}
+                  >
                     {t('nav.signals')}
-                  </Link>
-                  <Link to="/open-positions" className={getNavLinkClasses('/open-positions')}>
+                  </a>
+                  <a 
+                    href="/open-positions" 
+                    className={getNavLinkClasses('/open-positions')}
+                    onClick={(e) => handleNavClick(e, '/open-positions')}
+                  >
                     Open Positions
-                  </Link>
-                  <Link to="/orders" className={getNavLinkClasses('/orders')}>
+                  </a>
+                  <a 
+                    href="/orders" 
+                    className={getNavLinkClasses('/orders')}
+                    onClick={(e) => handleNavClick(e, '/orders')}
+                  >
                     Orders
-                  </Link>
-                  <Link to="/pricing" className={getNavLinkClasses('/pricing')}>
+                  </a>
+                  <a 
+                    href="/pricing" 
+                    className={getNavLinkClasses('/pricing')}
+                    onClick={(e) => handleNavClick(e, '/pricing')}
+                  >
                     {t('nav.pricing')}
-                  </Link>
+                  </a>
                 </div>
               </div>
               
@@ -71,16 +98,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {t('nav.welcome')}, <span className="text-white font-medium">{user.name}</span>
                 </div>
                 <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white" asChild>
-                  <Link to="/profile">
+                  <a href="/profile">
                     <User className="h-4 w-4 mr-1" />
                     <span className="hidden sm:inline">{t('nav.profile')}</span>
-                  </Link>
+                  </a>
                 </Button>
                 <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white" asChild>
-                  <Link to="/settings">
+                  <a href="/settings">
                     <Settings className="h-4 w-4 mr-1" />
                     <span className="hidden sm:inline">{t('nav.settings')}</span>
-                  </Link>
+                  </a>
                 </Button>
                 <Button variant="ghost" size="sm" onClick={logout} className="text-slate-300 hover:text-white">
                   <LogOut className="h-4 w-4 mr-1" />
@@ -122,30 +149,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.platform')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/dashboard" className="hover:text-white transition-colors">{t('nav.dashboard')}</Link></li>
-                <li><Link to="/signals" className="hover:text-white transition-colors">{t('nav.signals')}</Link></li>
-                <li><Link to="/how-it-works" className="hover:text-white transition-colors">{t('nav.howItWorks')}</Link></li>
-                <li><Link to="/pricing" className="hover:text-white transition-colors">{t('nav.pricing')}</Link></li>
+                <li><a href="/dashboard" className="hover:text-white transition-colors">{t('nav.dashboard')}</a></li>
+                <li><a href="/signals" className="hover:text-white transition-colors">{t('nav.signals')}</a></li>
+                <li><a href="/how-it-works" className="hover:text-white transition-colors">{t('nav.howItWorks')}</a></li>
+                <li><a href="/pricing" className="hover:text-white transition-colors">{t('nav.pricing')}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.support')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">{t('nav.contact')}</Link></li>
+                <li><a href="/faq" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="/contact" className="hover:text-white transition-colors">{t('nav.contact')}</a></li>
                 <li><a href="https://t.me/kurzora" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link></li>
+                <li><a href="/about" className="hover:text-white transition-colors">{t('nav.about')}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.legal')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/privacy-policy" className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
-                <li><Link to="/risk-disclosure" className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</Link></li>
-                <li><Link to="/shariah-compliance" className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
+                <li><a href="/privacy-policy" className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</a></li>
+                <li><a href="/terms-of-service" className="hover:text-white transition-colors">{t('legal.termsOfService')}</a></li>
+                <li><a href="/risk-disclosure" className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</a></li>
+                <li><a href="/shariah-compliance" className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</a></li>
               </ul>
             </div>
           </div>
@@ -156,8 +183,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {t('footer.copyright').replace('SwingTrader', 'Kurzora')}
               </p>
               <div className="flex space-x-4 text-xs text-slate-400">
-                <Link to="/gdpr-compliance" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>
-                <Link to="/cookie-notice" className="hover:text-white transition-colors">{t('legal.cookieNotice')}</Link>
+                <a href="/gdpr-compliance" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</a>
+                <a href="/cookie-notice" className="hover:text-white transition-colors">{t('legal.cookieNotice')}</a>
               </div>
             </div>
           </div>
