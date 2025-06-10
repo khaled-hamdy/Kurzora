@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -48,7 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Link to="/signals" className={getNavLinkClasses('/signals')}>
                     {t('nav.signals')}
                   </Link>
-                  <Link to="/Open_positions" className={getNavLinkClasses('/Open_positions')}>
+                  <Link to="/open-positions" className={getNavLinkClasses('/open-positions')}>
                     Open Positions
                   </Link>
                   <Link to="/orders" className={getNavLinkClasses('/orders')}>
@@ -141,10 +142,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.legal')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/privacy" className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
+                <li><Link to="/privacy-policy" className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
                 <li><Link to="/risk-disclosure" className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</Link></li>
-                <li><Link to="/shariah" className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
+                <li><Link to="/shariah-compliance" className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
               </ul>
             </div>
           </div>
@@ -155,8 +156,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {t('footer.copyright').replace('SwingTrader', 'Kurzora')}
               </p>
               <div className="flex space-x-4 text-xs text-slate-400">
-                <Link to="/gdpr" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>
-                <Link to="/cookies" className="hover:text-white transition-colors">{t('legal.cookieNotice')}</Link>
+                <Link to="/gdpr-compliance" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>
+                <Link to="/cookie-notice" className="hover:text-white transition-colors">{t('legal.cookieNotice')}</Link>
               </div>
             </div>
           </div>

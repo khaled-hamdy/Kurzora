@@ -45,7 +45,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/signals" element={<Signals />} />
                 <Route path="/signals/:symbol" element={<SignalDetail />} />
-                <Route path="/Open_positions" element={<OpenPositions />} />
+                <Route path="/open-positions" element={<OpenPositions />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
@@ -58,12 +58,12 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 
                 {/* Legal Pages */}
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/risk-disclosure" element={<RiskDisclosure />} />
-                <Route path="/shariah" element={<ShariahCompliance />} />
-                <Route path="/gdpr" element={<GDPRCompliance />} />
-                <Route path="/cookies" element={<CookieNotice />} />
+                <Route path="/shariah-compliance" element={<ShariahCompliance />} />
+                <Route path="/gdpr-compliance" element={<GDPRCompliance />} />
+                <Route path="/cookie-notice" element={<CookieNotice />} />
                 
                 {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
