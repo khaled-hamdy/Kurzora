@@ -143,7 +143,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/lovable-uploads/d645d78a-8c0d-4796-9dfc-d29d882c7652.png" alt="Kurzora Logo" className="h-16 w-auto md:h-20" />
+                <div className="logo-container">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-6 w-6 chart-element" />
+                    <span className="logo-text text-lg font-bold">Kurzora</span>
+                  </div>
+                </div>
               </div>
               <p className="text-slate-400 text-sm mb-4">
                 {t('footer.description')}
