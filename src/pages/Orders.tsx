@@ -99,21 +99,6 @@ const Orders: React.FC = () => {
                     <div className="text-xl font-semibold text-red-400">1.0480</div>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-700">
-                  <div className="text-center">
-                    <div className="text-slate-400 text-sm">P&L</div>
-                    <div className="text-emerald-400 font-bold">+$220</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-slate-400 text-sm">Risk/Reward</div>
-                    <div className="text-white font-bold">1:1.5</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-slate-400 text-sm">Duration</div>
-                    <div className="text-white font-bold">2h 15m</div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 
