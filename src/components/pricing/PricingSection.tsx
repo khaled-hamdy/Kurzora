@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Check, Star, Zap, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -19,32 +18,31 @@ interface PricingTier {
 
 const pricingTiers: PricingTier[] = [
   {
-    id: 'basic',
-    name: 'Basic Trader',
-    price: '$19',
+    id: 'starter',
+    name: 'Starter',
+    price: '$29',
     features: [
-      '20 signals per day',
-      'Basic technical indicators',
-      'Email notifications',
-      'Mobile app access',
+      '2-3 signals per day',
+      'Telegram instant alerts',
+      '30-day signal history',
+      'Basic filtering',
       'Community Discord'
     ],
     cta: 'Start Free Trial',
     icon: <TrendingUp className="h-6 w-6" />
   },
   {
-    id: 'pro',
-    name: 'Pro Trader',
-    price: '$49',
-    originalPrice: '$69',
+    id: 'professional',
+    name: 'Professional',
+    price: '$79',
     features: [
-      '100 signals per day',
-      'Advanced indicators (RSI, MACD, Bollinger)',
-      'Real-time push notifications',
-      'Options trading signals',
-      'Performance analytics',
+      '5-7 signals per day',
+      'Priority alerts (get them first)',
+      'Advanced filters',
+      'Sector analysis',
+      'API access (100 calls/day)',
       'Priority customer support',
-      'API access'
+      'Extended signal history'
     ],
     cta: 'Start 7-day Trial',
     popular: true,
@@ -53,17 +51,15 @@ const pricingTiers: PricingTier[] = [
   },
   {
     id: 'elite',
-    name: 'Elite Trader',
-    price: '$99',
-    originalPrice: '$129',
+    name: 'Elite',
+    price: '$199',
     features: [
-      'Unlimited signals',
-      'AI-powered predictions',
-      'Custom watchlists',
-      'Advanced options strategies',
-      'Portfolio optimization',
+      'ALL signals (10-20 per day)',
+      'Earliest access (5 min before others)',
+      'Custom watchlist alerts',
+      'White-label options',
+      'API access (1000 calls/day)',
       'Dedicated account manager',
-      'WhatsApp alerts',
       'Exclusive webinars',
       'Early access to new features'
     ],
