@@ -5,6 +5,13 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
 import { LogOut, Shield, User, Settings } from 'lucide-react';
 import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 import LanguageToggle from './LanguageToggle';
 
 interface LayoutProps {
@@ -12,7 +19,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const { t, language } = useLanguage();
   const location = useLocation();
 
@@ -85,22 +92,44 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="text-sm text-slate-300 hidden md:block">
                   {t('nav.welcome')}, <span className="text-white font-medium">{user.name}</span>
                 </div>
-                <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white" asChild>
-                  <Link to="/profile">
-                    <User className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">{t('nav.profile')}</span>
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white" asChild>
-                  <Link to="/settings">
-                    <Settings className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">{t('nav.settings')}</span>
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="sm" onClick={logout} className="text-slate-300 hover:text-white">
-                  <LogOut className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">{t('nav.logout')}</span>
-                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+                      <User className="h-4 w-4 mr-1" />
+                      <span className="hidden sm:inline">Account</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-800 border-slate-700 text-white" align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center cursor-pointer">
+                        <User className="h-4 w-4 mr-2" />
+                        {t('nav.profile')}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="flex items-center cursor-pointer">
+                        <Settings className="h-4 w-4 mr-2" />
+                        {t('nav.settings')}
+                      </Link>
+                    </DropdownMenuItem>
+                    {isAdmin() && (
+                      <>
+                        <DropdownMenuSeparator className="bg-slate-700" />
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="flex items-center cursor-pointer text-red-400 hover:text-red-300">
+                            🔧 Admin Panel
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator className="bg-slate-700" />
+                    <DropdownMenuItem onClick={logout} className="flex items-center cursor-pointer">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('nav.logout')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>

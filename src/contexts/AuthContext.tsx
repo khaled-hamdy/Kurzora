@@ -5,6 +5,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  role: 'user' | 'admin';
   subscription?: {
     tier: string;
     active: boolean;
@@ -18,6 +19,7 @@ interface AuthContextType {
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  isAdmin: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,10 +68,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Simulate login API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Admin login for admin@kurzora.com
+      const isAdminUser = email === 'admin@kurzora.com';
+      
       const mockUser: User = {
         id: '1',
         email,
         name: email.split('@')[0],
+        role: isAdminUser ? 'admin' : 'user',
         subscription: {
           tier: 'Pro Trader',
           active: true,
@@ -98,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email,
         name,
+        role: 'user',
       };
       
       setUser(mockUser);
@@ -117,8 +124,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user');
   };
 
+  const isAdmin = () => {
+    return user?.role === 'admin';
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

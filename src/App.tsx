@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Signals from "./pages/Signals";
@@ -22,6 +23,10 @@ import Contact from "./pages/Contact";
 import BrokerIntegration from "./pages/BrokerIntegration";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSignals from "./pages/admin/AdminSignals";
+import AdminSettings from "./pages/admin/AdminSettings";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
 import RiskDisclosure from "./pages/legal/RiskDisclosure";
@@ -47,7 +52,7 @@ function App() {
                 <Route path="/signals/:symbol" element={<SignalDetail />} />
                 <Route path="/open-positions" element={<OpenPositions />} />
                 <Route path="/orders" element={<Orders />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin-old" element={<Admin />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/faq" element={<FAQ />} />
@@ -56,6 +61,28 @@ function App() {
                 <Route path="/broker-integration" element={<BrokerIntegration />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/profile" element={<Profile />} />
+                
+                {/* Admin Routes - Protected */}
+                <Route path="/admin" element={
+                  <AdminProtectedRoute>
+                    <AdminDashboard />
+                  </AdminProtectedRoute>
+                } />
+                <Route path="/admin/users" element={
+                  <AdminProtectedRoute>
+                    <AdminUsers />
+                  </AdminProtectedRoute>
+                } />
+                <Route path="/admin/signals" element={
+                  <AdminProtectedRoute>
+                    <AdminSignals />
+                  </AdminProtectedRoute>
+                } />
+                <Route path="/admin/settings" element={
+                  <AdminProtectedRoute>
+                    <AdminSettings />
+                  </AdminProtectedRoute>
+                } />
                 
                 {/* Legal Pages */}
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
