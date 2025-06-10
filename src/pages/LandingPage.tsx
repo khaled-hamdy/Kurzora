@@ -285,7 +285,6 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-white font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Documentation</a></li>
                 <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Contact</a></li>
                 <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Discord</a></li>
                 <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Twitter</a></li>
