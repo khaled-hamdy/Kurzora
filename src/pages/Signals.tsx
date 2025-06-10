@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -49,13 +48,20 @@ const Signals: React.FC = () => {
   const [selectedSector, setSelectedSector] = useState('all');
   const [selectedMarket, setSelectedMarket] = useState('global');
 
+  // Remove automatic redirect to dashboard - let user stay on signals page
   useEffect(() => {
+    console.log('Signals page loaded, user:', user);
     if (!user) {
+      console.log('No user found, redirecting to login');
       navigate('/');
     }
   }, [user, navigate]);
 
-  if (!user) return null;
+  // Show loading or redirect only if no user and not already redirecting
+  if (!user) {
+    console.log('User not authenticated, should redirect to home');
+    return null;
+  }
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'bg-emerald-500 text-white';
