@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Lock, Eye, EyeOff } from 'lucide-react';
+import { useToast } from '../ui/use-toast';
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -17,17 +18,26 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onOpe
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      alert('Passwords do not match');
+      toast({
+        title: "Password Mismatch",
+        description: "The passwords you entered don't match. Please try again.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (newPassword.length < 6) {
-      alert('Password must be at least 6 characters long');
+      toast({
+        title: "Password Too Short",
+        description: "Your password must be at least 6 characters long for security.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -43,7 +53,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onOpe
     setNewPassword('');
     setConfirmPassword('');
     onOpenChange(false);
-    alert('Password changed successfully!');
+    
+    toast({
+      title: "Password Updated",
+      description: "Your password has been successfully changed. Please use your new password for future logins.",
+    });
   };
 
   const handleClose = () => {
