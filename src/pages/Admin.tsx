@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
@@ -207,5 +208,3 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
-
-</initial_code>

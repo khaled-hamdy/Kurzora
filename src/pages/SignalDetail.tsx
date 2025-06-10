@@ -342,5 +342,3 @@ const SignalDetail: React.FC = () => {
 };
 
 export default SignalDetail;
-
-}
