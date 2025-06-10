@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { User, Mail, Calendar, Shield } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Lock } from 'lucide-react';
 
 const Profile: React.FC = () => {
   const { user, loading } = useAuth();
@@ -40,6 +40,11 @@ const Profile: React.FC = () => {
     console.log('Profile page: No user found, should redirect');
     return null;
   }
+
+  const handleChangePassword = () => {
+    console.log('Opening change password dialog');
+    // TODO: Connect to backend logic via /src/backend-functions/ChangePassword.ts
+  };
 
   return (
     <Layout>
@@ -74,8 +79,12 @@ const Profile: React.FC = () => {
                   readOnly
                 />
               </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                Edit Profile
+              <Button 
+                onClick={handleChangePassword}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Change Password
               </Button>
             </CardContent>
           </Card>
