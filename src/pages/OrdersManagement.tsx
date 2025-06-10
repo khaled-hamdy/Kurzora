@@ -7,8 +7,7 @@ import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { useToast } from '../components/ui/use-toast';
+import { useToast } from '../hooks/use-toast';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -17,7 +16,9 @@ import {
   Eye,
   X,
   BarChart3,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import {
   Table,
@@ -27,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
+import PositionCloseDialog from '../components/orders/PositionCloseDialog';
 
 interface Position {
   id: string;
@@ -56,6 +58,10 @@ const OrdersManagement: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const [showAllHistory, setShowAllHistory] = useState(false);
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
 
   // Mock data for open positions
   const [openPositions, setOpenPositions] = useState<Position[]>([
@@ -125,6 +131,28 @@ const OrdersManagement: React.FC = () => {
       pnl: 416,
       pnlPercent: 4.2,
       closedDate: '2025-06-03'
+    },
+    {
+      id: '7',
+      symbol: 'META',
+      name: 'Meta Platforms Inc.',
+      entryPrice: 325.40,
+      exitPrice: 342.15,
+      shares: 30,
+      pnl: 502,
+      pnlPercent: 5.1,
+      closedDate: '2025-06-02'
+    },
+    {
+      id: '8',
+      symbol: 'NFLX',
+      name: 'Netflix Inc.',
+      entryPrice: 445.20,
+      exitPrice: 428.90,
+      shares: 22,
+      pnl: -359,
+      pnlPercent: -3.7,
+      closedDate: '2025-06-01'
     }
   ];
 
@@ -146,17 +174,22 @@ const OrdersManagement: React.FC = () => {
     return { pnl, pnlPercent };
   };
 
-  const handleClosePosition = (positionId: string) => {
+  const handleOpenCloseDialog = (position: Position) => {
+    setSelectedPosition(position);
+    setCloseDialogOpen(true);
+  };
+
+  const handleClosePosition = (positionId: string, closePrice: number) => {
     const position = openPositions.find(p => p.id === positionId);
     if (!position) return;
 
-    const { pnl } = calculatePositionPnL(position);
+    const pnl = (closePrice - position.entryPrice) * position.shares;
     
     setOpenPositions(prev => prev.filter(p => p.id !== positionId));
     
     toast({
       title: "Position Closed",
-      description: `${position.symbol} position closed. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
+      description: `${position.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
     });
 
     // TODO: Connect to backend logic via /src/backend-functions/ClosePosition.ts
@@ -166,10 +199,11 @@ const OrdersManagement: React.FC = () => {
     navigate('/signals');
   };
 
-  const handleViewHistory = () => {
-    // TODO: Navigate to full history page
-    navigate('/performance');
+  const toggleHistoryView = () => {
+    setShowAllHistory(!showAllHistory);
   };
+
+  const displayedClosedPositions = showAllHistory ? closedPositions : closedPositions.slice(0, 3);
 
   return (
     <Layout>
@@ -295,7 +329,7 @@ const OrdersManagement: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => handleClosePosition(position.id)}
+                            onClick={() => handleOpenCloseDialog(position)}
                             variant="outline"
                             size="sm"
                             className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
@@ -334,57 +368,75 @@ const OrdersManagement: React.FC = () => {
                 <span>Recently Closed Positions</span>
               </CardTitle>
               <Button 
-                onClick={handleViewHistory}
+                onClick={toggleHistoryView}
                 variant="ghost" 
                 size="sm"
-                className="text-blue-400 hover:text-blue-300"
+                className="text-blue-400 hover:text-blue-300 transition-all duration-300"
               >
-                View All History
-                <ArrowRight className="h-4 w-4 ml-1" />
+                {showAllHistory ? (
+                  <>
+                    Show Less
+                    <ChevronUp className="h-4 w-4 ml-1" />
+                  </>
+                ) : (
+                  <>
+                    View All History
+                    <ChevronDown className="h-4 w-4 ml-1" />
+                  </>
+                )}
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-700">
-                  <TableHead className="text-slate-300">Symbol</TableHead>
-                  <TableHead className="text-slate-300">Entry Price</TableHead>
-                  <TableHead className="text-slate-300">Exit Price</TableHead>
-                  <TableHead className="text-slate-300">Shares</TableHead>
-                  <TableHead className="text-slate-300">Final P&L</TableHead>
-                  <TableHead className="text-slate-300">Closed Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {closedPositions.slice(0, 3).map((position) => (
-                  <TableRow key={position.id} className="border-slate-700">
-                    <TableCell>
-                      <div>
-                        <div className="text-white font-semibold">{position.symbol}</div>
-                        <div className="text-slate-400 text-sm">{position.name}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-white">${position.entryPrice.toFixed(2)}</TableCell>
-                    <TableCell className="text-white">${position.exitPrice.toFixed(2)}</TableCell>
-                    <TableCell className="text-white">{position.shares}</TableCell>
-                    <TableCell>
-                      <div>
-                        <span className={`font-semibold ${position.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                          {position.pnl >= 0 ? '+' : ''}${position.pnl.toFixed(0)}
-                        </span>
-                        <span className={`text-sm ml-2 ${position.pnlPercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                          ({position.pnlPercent >= 0 ? '+' : ''}{position.pnlPercent.toFixed(1)}%)
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-slate-400">{position.closedDate}</TableCell>
+            <div className="transition-all duration-500 ease-in-out">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-slate-700">
+                    <TableHead className="text-slate-300">Symbol</TableHead>
+                    <TableHead className="text-slate-300">Entry Price</TableHead>
+                    <TableHead className="text-slate-300">Exit Price</TableHead>
+                    <TableHead className="text-slate-300">Shares</TableHead>
+                    <TableHead className="text-slate-300">Final P&L</TableHead>
+                    <TableHead className="text-slate-300">Closed Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {displayedClosedPositions.map((position) => (
+                    <TableRow key={position.id} className="border-slate-700">
+                      <TableCell>
+                        <div>
+                          <div className="text-white font-semibold">{position.symbol}</div>
+                          <div className="text-slate-400 text-sm">{position.name}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-white">${position.entryPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-white">${position.exitPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-white">{position.shares}</TableCell>
+                      <TableCell>
+                        <div>
+                          <span className={`font-semibold ${position.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {position.pnl >= 0 ? '+' : ''}${position.pnl.toFixed(0)}
+                          </span>
+                          <span className={`text-sm ml-2 ${position.pnlPercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            ({position.pnlPercent >= 0 ? '+' : ''}{position.pnlPercent.toFixed(1)}%)
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-slate-400">{position.closedDate}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
+
+        <PositionCloseDialog
+          open={closeDialogOpen}
+          onOpenChange={setCloseDialogOpen}
+          position={selectedPosition}
+          onConfirm={handleClosePosition}
+        />
       </div>
     </Layout>
   );
