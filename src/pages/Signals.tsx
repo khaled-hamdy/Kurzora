@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -40,7 +41,7 @@ const mockSignals: Signal[] = [
 ];
 
 const Signals: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   
@@ -48,18 +49,31 @@ const Signals: React.FC = () => {
   const [selectedSector, setSelectedSector] = useState('all');
   const [selectedMarket, setSelectedMarket] = useState('global');
 
-  // Remove automatic redirect to dashboard - let user stay on signals page
   useEffect(() => {
-    console.log('Signals page loaded, user:', user);
-    if (!user) {
-      console.log('No user found, redirecting to login');
+    console.log('Signals page: Auth state - loading:', loading, 'user:', user);
+    
+    // Only redirect if not loading and no user
+    if (!loading && !user) {
+      console.log('Signals page: User not authenticated, redirecting to home');
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
-  // Show loading or redirect only if no user and not already redirecting
+  // Show loading spinner while authentication state is being determined
+  if (loading) {
+    console.log('Signals page: Still loading auth state');
+    return (
+      <Layout>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show nothing if no user (will redirect via useEffect)
   if (!user) {
-    console.log('User not authenticated, should redirect to home');
+    console.log('Signals page: No user found, should redirect');
     return null;
   }
 

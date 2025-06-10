@@ -37,22 +37,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check for existing session on mount
     const checkAuth = () => {
+      console.log('AuthContext: Checking authentication state...');
       try {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
           const parsedUser = JSON.parse(savedUser);
+          console.log('AuthContext: Found saved user:', parsedUser);
           setUser(parsedUser);
+        } else {
+          console.log('AuthContext: No saved user found');
         }
       } catch (error) {
-        console.error('Error loading user from localStorage:', error);
+        console.error('AuthContext: Error loading user from localStorage:', error);
         localStorage.removeItem('user');
+      } finally {
+        console.log('AuthContext: Setting loading to false');
+        setLoading(false);
       }
-      setLoading(false);
     };
     
-    // Small delay to prevent flickering
-    const timeoutId = setTimeout(checkAuth, 100);
-    return () => clearTimeout(timeoutId);
+    // Check authentication immediately without delay
+    checkAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -74,6 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
+      console.log('AuthContext: User logged in successfully');
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -96,6 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
+      console.log('AuthContext: User signed up successfully');
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
@@ -105,6 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    console.log('AuthContext: User logging out');
     setUser(null);
     localStorage.removeItem('user');
   };
