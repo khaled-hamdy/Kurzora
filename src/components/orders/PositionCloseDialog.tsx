@@ -63,14 +63,9 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
 
   // P&L calculation: (close_price - entry_price) * shares
   const closePriceNum = parseFloat(closePrice);
-  const estimatedPnL = !isNaN(closePriceNum) && closePriceNum > 0 
-    ? (closePriceNum - position.entryPrice) * position.shares 
-    : 0;
-
-  // Debug logging
-  console.log('Position data:', position);
-  console.log('Close price:', closePriceNum);
-  console.log('Estimated P&L calculation:', `(${closePriceNum} - ${position.entryPrice}) * ${position.shares} = ${estimatedPnL}`);
+  const priceValid = !isNaN(closePriceNum) && closePriceNum > 0;
+  const priceDifference = priceValid ? closePriceNum - position.entryPrice : 0;
+  const estimatedPnL = priceValid ? priceDifference * position.shares : 0;
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -115,13 +110,29 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
             {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
           </div>
           
-          {closePrice && !isNaN(parseFloat(closePrice)) && parseFloat(closePrice) > 0 && (
-            <div className="bg-slate-700/50 p-3 rounded-md">
-              <div className="text-sm">
-                <span className="text-slate-400">Estimated P&L:</span>
-                <span className={`ml-2 font-semibold ${estimatedPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {estimatedPnL >= 0 ? '+' : ''}${estimatedPnL.toFixed(2)}
-                </span>
+          {priceValid && (
+            <div className="bg-slate-700/50 p-4 rounded-md space-y-3">
+              <div className="text-sm font-medium text-slate-300 border-b border-slate-600 pb-2">
+                P&L Calculation Formula:
+              </div>
+              
+              <div className="text-sm text-slate-400">
+                P&L = Number of Shares × (Closing Price − Entry Price)
+              </div>
+              
+              <div className="space-y-1 text-sm">
+                <div className="text-slate-400">
+                  P&L = {position.shares} × (${closePriceNum.toFixed(2)} − ${position.entryPrice.toFixed(2)})
+                </div>
+                <div className="text-slate-400">
+                  P&L = {position.shares} × ${priceDifference.toFixed(2)}
+                </div>
+                <div className="text-white font-semibold border-t border-slate-600 pt-2">
+                  <span className="text-slate-400">Estimated P&L:</span>
+                  <span className={`ml-2 text-lg ${estimatedPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {estimatedPnL >= 0 ? '+' : ''}${estimatedPnL.toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
           )}
