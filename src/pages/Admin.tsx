@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,6 +9,7 @@ import { HelpCircle, Shield, Settings, FileText, Mail, Phone } from 'lucide-reac
 
 const Admin: React.FC = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('Admin page: Auth state - loading:', loading, 'user:', user);
@@ -15,9 +17,9 @@ const Admin: React.FC = () => {
     // Only redirect if not loading and no user
     if (!loading && !user) {
       console.log('Admin page: User not authenticated, redirecting to home');
-      window.location.href = '/';
+      navigate('/');
     }
-  }, [user, loading]);
+  }, [user, loading, navigate]);
 
   // Show loading spinner while authentication state is being determined
   if (loading) {
