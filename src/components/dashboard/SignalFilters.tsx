@@ -33,22 +33,24 @@ const SignalFilters: React.FC<SignalFiltersProps> = ({
 
   return (
     <div className="flex flex-wrap items-center gap-4">
-      {/* Score Threshold */}
-      <div className="flex items-center space-x-2 min-w-[180px]">
-        <Filter className="h-4 w-4 text-slate-400" />
-        <Label className="text-slate-300 text-sm whitespace-nowrap">
+      {/* Score Threshold - Made larger */}
+      <div className="flex items-center space-x-3 min-w-[220px]">
+        <Filter className="h-4 w-4 text-slate-400 flex-shrink-0" />
+        <Label className="text-slate-300 text-sm whitespace-nowrap font-medium">
           {language === 'ar' ? `الحد الأدنى: ${scoreThreshold[0]}%` : 
            language === 'de' ? `Min Score: ${scoreThreshold[0]}%` : 
            `Min Score: ${scoreThreshold[0]}%`}
         </Label>
-        <Slider
-          value={scoreThreshold}
-          onValueChange={setScoreThreshold}
-          max={100}
-          min={60}
-          step={5}
-          className="flex-1"
-        />
+        <div className="flex-1 min-w-[120px]">
+          <Slider
+            value={scoreThreshold}
+            onValueChange={setScoreThreshold}
+            max={100}
+            min={60}
+            step={5}
+            className="w-full [&_[role=slider]]:h-5 [&_[role=slider]]:w-5 [&_.slider-track]:h-3 [&_.slider-range]:h-3"
+          />
+        </div>
       </div>
 
       {/* Market Filter */}
