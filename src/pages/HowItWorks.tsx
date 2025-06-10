@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -8,17 +7,37 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { CheckCircle, AlertTriangle, Layers, Signal, Gauge, BrainCircuit } from 'lucide-react';
 
 const HowItWorks: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!user) {
+    console.log('HowItWorks page: Auth state - loading:', loading, 'user:', user);
+    
+    // Only redirect if not loading and no user
+    if (!loading && !user) {
+      console.log('HowItWorks page: User not authenticated, redirecting to home');
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
-  if (!user) return null;
+  // Show loading spinner while authentication state is being determined
+  if (loading) {
+    console.log('HowItWorks page: Still loading auth state');
+    return (
+      <Layout>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show nothing if no user (will redirect via useEffect)
+  if (!user) {
+    console.log('HowItWorks page: No user found, should redirect');
+    return null;
+  }
 
   return (
     <Layout>

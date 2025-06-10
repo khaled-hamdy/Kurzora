@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -14,7 +13,7 @@ import { Badge } from '../components/ui/badge';
 import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
 
 const Settings: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
@@ -31,12 +30,32 @@ const Settings: React.FC = () => {
   const [apiKey, setApiKey] = useState('sk-****************************');
 
   React.useEffect(() => {
-    if (!user) {
+    console.log('Settings page: Auth state - loading:', loading, 'user:', user);
+    
+    // Only redirect if not loading and no user
+    if (!loading && !user) {
+      console.log('Settings page: User not authenticated, redirecting to home');
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
-  if (!user) return null;
+  // Show loading spinner while authentication state is being determined
+  if (loading) {
+    console.log('Settings page: Still loading auth state');
+    return (
+      <Layout>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show nothing if no user (will redirect via useEffect)
+  if (!user) {
+    console.log('Settings page: No user found, should redirect');
+    return null;
+  }
 
   const generateNewAPIKey = () => {
     const newKey = 'sk-' + Math.random().toString(36).substring(2, 30);
@@ -278,3 +297,5 @@ const Settings: React.FC = () => {
 };
 
 export default Settings;
+
+}

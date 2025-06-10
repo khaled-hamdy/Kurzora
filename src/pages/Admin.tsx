@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
@@ -7,15 +6,35 @@ import { Button } from '../components/ui/button';
 import { HelpCircle, Shield, Settings, FileText, Mail, Phone } from 'lucide-react';
 
 const Admin: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    console.log('Admin page: Auth state - loading:', loading, 'user:', user);
+    
+    // Only redirect if not loading and no user
+    if (!loading && !user) {
+      console.log('Admin page: User not authenticated, redirecting to home');
       window.location.href = '/';
     }
-  }, [user]);
+  }, [user, loading]);
 
-  if (!user) return null;
+  // Show loading spinner while authentication state is being determined
+  if (loading) {
+    console.log('Admin page: Still loading auth state');
+    return (
+      <Layout>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show nothing if no user (will redirect via useEffect)
+  if (!user) {
+    console.log('Admin page: No user found, should redirect');
+    return null;
+  }
 
   const handleHelpClick = () => {
     console.log('Opening Help/FAQ');
@@ -188,3 +207,5 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
+
+</initial_code>

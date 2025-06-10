@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -32,7 +31,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 const BrokerIntegration: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   
@@ -43,10 +42,32 @@ const BrokerIntegration: React.FC = () => {
   const [minScore, setMinScore] = useState<number>(80);
 
   React.useEffect(() => {
-    if (!user) {
+    console.log('BrokerIntegration page: Auth state - loading:', loading, 'user:', user);
+    
+    // Only redirect if not loading and no user
+    if (!loading && !user) {
+      console.log('BrokerIntegration page: User not authenticated, redirecting to home');
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
+
+  // Show loading spinner while authentication state is being determined
+  if (loading) {
+    console.log('BrokerIntegration page: Still loading auth state');
+    return (
+      <Layout>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show nothing if no user (will redirect via useEffect)
+  if (!user) {
+    console.log('BrokerIntegration page: No user found, should redirect');
+    return null;
+  }
 
   const handleConnect = () => {
     if (broker && apiKey) {
@@ -59,8 +80,6 @@ const BrokerIntegration: React.FC = () => {
     setIsConnected(false);
     setAutoTrading(false);
   };
-
-  if (!user) return null;
 
   return (
     <Layout>
