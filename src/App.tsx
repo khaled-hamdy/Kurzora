@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,7 +45,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/signals" element={<Signals />} />
                 <Route path="/signals/:symbol" element={<SignalDetail />} />
-                <Route path="/open-positions" element={<OpenPositions />} />
+                <Route path="/Open_positions" element={<OpenPositions />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
