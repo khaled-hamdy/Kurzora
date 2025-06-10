@@ -48,7 +48,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Link to="/signals" className={getNavLinkClasses('/signals')}>
                     {t('nav.signals')}
                   </Link>
-                  <Link to="/orders-management" className={getNavLinkClasses('/orders-management')}>
+                  <Link to="/Open_positions" className={getNavLinkClasses('/Open_positions')}>
                     Open Positions
                   </Link>
                   <Link to="/orders" className={getNavLinkClasses('/orders')}>
