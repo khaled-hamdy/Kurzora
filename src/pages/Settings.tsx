@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage, Language } from '../contexts/LanguageContext';
-import { useCurrency } from '../contexts/CurrencyContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -12,13 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3, DollarSign, AlertTriangle, RefreshCw } from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3, DollarSign } from 'lucide-react';
+import { useToast } from '../components/ui/use-toast';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
-  const { selectedCurrency, setSelectedCurrency, formatCurrency, exchangeRate, isLoading, error, lastUpdated } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,26 +35,30 @@ const Settings: React.FC = () => {
   const [uiDensity, setUiDensity] = useState('default');
   const [apiKey, setApiKey] = useState('sk-****************************');
   
-  // Local state for pending changes (not applied until Save Preferences is clicked)
-  const [pendingLanguage, setPendingLanguage] = useState<Language>(language);
-  const [pendingCurrency, setPendingCurrency] = useState(selectedCurrency);
+  // Language & Currency preferences
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
-  // Only include languages that are actually supported in LanguageContext
   const languages = [
     { code: 'en' as Language, label: 'English', flag: '🇺🇸' },
+    { code: 'es' as Language, label: 'Español', flag: '🇪🇸' },
+    { code: 'fr' as Language, label: 'Français', flag: '🇫🇷' },
+    { code: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' },
     { code: 'ar' as Language, label: 'العربية', flag: '🇸🇦' },
-    { code: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' }
+    { code: 'zh' as Language, label: '中文', flag: '🇨🇳' },
+    { code: 'ja' as Language, label: '日本語', flag: '🇯🇵' },
+    { code: 'hi' as Language, label: 'हिन्दी', flag: '🇮🇳' }
   ];
 
-  // Only include currencies supported by the Frankfurter API
   const currencies = [
     { code: 'USD', symbol: '$', label: 'US Dollar', flag: '🇺🇸' },
     { code: 'EUR', symbol: '€', label: 'Euro', flag: '🇪🇺' },
     { code: 'GBP', symbol: '£', label: 'British Pound', flag: '🇬🇧' },
+    { code: 'SAR', symbol: '﷼', label: 'Saudi Riyal', flag: '🇸🇦' },
+    { code: 'AED', symbol: 'د.إ', label: 'UAE Dirham', flag: '🇦🇪' },
     { code: 'JPY', symbol: '¥', label: 'Japanese Yen', flag: '🇯🇵' },
-    { code: 'CHF', symbol: 'Fr', label: 'Swiss Franc', flag: '🇨🇭' },
-    { code: 'CAD', symbol: 'C$', label: 'Canadian Dollar', flag: '🇨🇦' },
-    { code: 'AUD', symbol: 'A$', label: 'Australian Dollar', flag: '🇦🇺' }
+    { code: 'INR', symbol: '₹', label: 'Indian Rupee', flag: '🇮🇳' },
+    { code: 'CNY', symbol: '¥', label: 'Chinese Yuan', flag: '🇨🇳' }
   ];
 
   React.useEffect(() => {
@@ -64,12 +66,6 @@ const Settings: React.FC = () => {
       navigate('/');
     }
   }, [user, navigate]);
-
-  React.useEffect(() => {
-    // Update pending state when context values change
-    setPendingLanguage(language);
-    setPendingCurrency(selectedCurrency);
-  }, [language, selectedCurrency]);
 
   if (!user) return null;
 
@@ -81,38 +77,22 @@ const Settings: React.FC = () => {
   const handleLanguageChange = (langCode: string) => {
     const validLanguage = languages.find(lang => lang.code === langCode);
     if (validLanguage) {
-      setPendingLanguage(validLanguage.code);
-      // Don't apply immediately - wait for Save Preferences
+      setSelectedLanguage(validLanguage.code);
+      setLanguage(validLanguage.code);
+      // TODO: Connect to backend logic via /src/backend-functions/UpdateUserPreferences.ts
     }
   };
 
   const handleCurrencyChange = (currencyCode: string) => {
-    setPendingCurrency(currencyCode);
-    // Don't apply immediately - wait for Save Preferences
-    // Don't show toast immediately
+    setSelectedCurrency(currencyCode);
+    // TODO: Connect to backend logic via /src/backend-functions/UpdateCurrencyPreferences.ts
   };
 
   const saveLanguageCurrencyPreferences = () => {
-    // Apply the changes
-    setLanguage(pendingLanguage);
-    setSelectedCurrency(pendingCurrency);
-    
-    // Show success toast
+    // TODO: Connect to backend logic via /src/backend-functions/SavePreferences.ts
     toast({
       title: "Preferences Updated",
-      description: `Language: ${languages.find(l => l.code === pendingLanguage)?.label}, Currency: ${pendingCurrency}. All prices will be converted automatically.`,
-    });
-    
-    // TODO: Connect to backend logic via /src/backend-functions/SavePreferences.ts
-  };
-
-  const resetToDefault = () => {
-    setPendingLanguage('en');
-    setPendingCurrency('USD');
-    
-    toast({
-      title: "Reset to Default",
-      description: "Language and currency preferences have been reset. Click 'Save Preferences' to apply changes.",
+      description: `Language: ${languages.find(l => l.code === selectedLanguage)?.label}, Currency: ${selectedCurrency}`,
     });
   };
 
@@ -135,27 +115,6 @@ const Settings: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Currency Status */}
-              {(error || isLoading) && (
-                <div className={`p-4 rounded-lg border ${error ? 'bg-red-500/10 border-red-500/20' : 'bg-blue-500/10 border-blue-500/20'}`}>
-                  <div className="flex items-center space-x-2">
-                    {isLoading ? (
-                      <RefreshCw className="h-4 w-4 animate-spin text-blue-400" />
-                    ) : error ? (
-                      <AlertTriangle className="h-4 w-4 text-red-400" />
-                    ) : null}
-                    <span className={`text-sm ${error ? 'text-red-400' : 'text-blue-400'}`}>
-                      {isLoading ? 'Fetching exchange rates...' : error ? `Exchange Rate Error: ${error}` : ''}
-                    </span>
-                    {lastUpdated && (
-                      <span className="text-xs text-slate-400">
-                        Last updated: {lastUpdated.toLocaleTimeString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Language Selection */}
                 <div>
@@ -163,7 +122,7 @@ const Settings: React.FC = () => {
                     <Globe className="h-4 w-4 mr-2" />
                     Language
                   </Label>
-                  <Select value={pendingLanguage} onValueChange={handleLanguageChange}>
+                  <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
@@ -173,7 +132,7 @@ const Settings: React.FC = () => {
                           <div className="flex items-center space-x-2">
                             <span>{lang.flag}</span>
                             <span>{lang.label}</span>
-                            {pendingLanguage === lang.code && (
+                            {selectedLanguage === lang.code && (
                               <CheckCircle className="h-4 w-4 text-green-400 ml-auto" />
                             )}
                           </div>
@@ -188,9 +147,9 @@ const Settings: React.FC = () => {
                   <Label className="text-slate-300 text-sm font-medium flex items-center mb-3">
                     <DollarSign className="h-4 w-4 mr-2" />
                     Currency
-                    <span className="ml-2 text-xs text-slate-400">(Live conversion rates)</span>
+                    <span className="ml-2 text-xs text-slate-400">(Updates all prices in real-time)</span>
                   </Label>
-                  <Select value={pendingCurrency} onValueChange={handleCurrencyChange}>
+                  <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
@@ -202,7 +161,7 @@ const Settings: React.FC = () => {
                             <span className="font-mono font-bold">{currency.code}</span>
                             <span>{currency.symbol}</span>
                             <span className="text-slate-400">- {currency.label}</span>
-                            {pendingCurrency === currency.code && (
+                            {selectedCurrency === currency.code && (
                               <CheckCircle className="h-4 w-4 text-green-400 ml-auto" />
                             )}
                           </div>
@@ -213,14 +172,14 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Current vs Pending Selection Display */}
-              <div className="bg-slate-700/30 rounded-lg p-4 space-y-3">
+              {/* Current Selection Display */}
+              <div className="bg-slate-700/30 rounded-lg p-4 space-y-2">
                 <div className="text-sm text-slate-400">Current Selection:</div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span>{languages.find(l => l.code === language)?.flag}</span>
+                    <span>{languages.find(l => l.code === selectedLanguage)?.flag}</span>
                     <span className="text-white font-medium">
-                      {languages.find(l => l.code === language)?.label}
+                      {languages.find(l => l.code === selectedLanguage)?.label}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -230,35 +189,6 @@ const Settings: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
-                {/* Show pending changes if different */}
-                {(pendingLanguage !== language || pendingCurrency !== selectedCurrency) && (
-                  <>
-                    <div className="border-t border-slate-600 pt-3">
-                      <div className="text-sm text-amber-400 mb-2">Pending Changes (click Save to apply):</div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span>{languages.find(l => l.code === pendingLanguage)?.flag}</span>
-                          <span className="text-amber-200 font-medium">
-                            {languages.find(l => l.code === pendingLanguage)?.label}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span>{currencies.find(c => c.code === pendingCurrency)?.flag}</span>
-                          <span className="text-amber-200 font-medium">
-                            {pendingCurrency} {currencies.find(c => c.code === pendingCurrency)?.symbol}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {selectedCurrency !== 'USD' && exchangeRate && (
-                  <div className="text-xs text-slate-400 pt-2 border-t border-slate-600">
-                    Exchange Rate: 1 USD = {exchangeRate.toFixed(4)} {selectedCurrency}
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
@@ -266,25 +196,27 @@ const Settings: React.FC = () => {
                 <Button 
                   onClick={saveLanguageCurrencyPreferences}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center"
-                  disabled={pendingLanguage === language && pendingCurrency === selectedCurrency}
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Save Preferences
                 </Button>
                 <Button 
                   variant="outline"
-                  onClick={resetToDefault}
+                  onClick={() => {
+                    setSelectedLanguage(language);
+                    setSelectedCurrency('USD');
+                  }}
                   className="border-slate-600 text-slate-300 hover:bg-slate-700"
                 >
                   <XCircle className="h-4 w-4 mr-2" />
-                  Reset to Default
+                  Cancel
                 </Button>
               </div>
 
               {/* Helper Text */}
               <div className="text-xs text-slate-400 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                <strong>💡 Note:</strong> Currency changes will update all prices, charts, and financial data across the platform using live exchange rates from Frankfurter.app. 
-                Rates are cached for 1 hour and automatically refreshed. Only major currencies supported by the exchange rate API are available.
+                <strong>💡 Note:</strong> Currency changes will update all prices, charts, and financial data across the platform. 
+                If a specific page doesn't support your selected currency, USD will be displayed as default.
               </div>
             </CardContent>
           </Card>
