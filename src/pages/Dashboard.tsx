@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import WinRateGauge from '../components/dashboard/WinRateGauge';
+import PerformanceChart from '../components/dashboard/PerformanceChart';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { TrendingUp, DollarSign, Target, Bell } from 'lucide-react';
@@ -39,12 +40,12 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-slate-900/50 backdrop-blur-sm border-blue-800/30 hover:bg-slate-900/70 transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Monthly P&L</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">{t('dashboard.todayPnl')}</CardTitle>
               <DollarSign className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-400">+$12,450</div>
-              <p className="text-xs text-emerald-500">+15.6% this month</p>
+              <div className="text-2xl font-bold text-emerald-400">+$2,847</div>
+              <p className="text-xs text-emerald-500">+12.3% from yesterday</p>
             </CardContent>
           </Card>
 
@@ -88,9 +89,13 @@ const Dashboard: React.FC = () => {
             <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
           </div>
           <div className="lg:col-span-2">
-            {/* Signal Heatmap moved here to fill the space */}
-            <SignalHeatmap />
+            <PerformanceChart />
           </div>
+        </div>
+
+        {/* Signal Heatmap */}
+        <div className="mb-8">
+          <SignalHeatmap />
         </div>
 
         {/* Recent Activity */}

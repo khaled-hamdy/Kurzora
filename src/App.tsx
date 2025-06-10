@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Signals from "./pages/Signals";
 import OrdersManagement from './pages/OrdersManagement';
 import Orders from './pages/Orders';
+import Performance from "./pages/Performance";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SignalDetail from "./pages/SignalDetail";
@@ -47,6 +47,7 @@ function App() {
                 <Route path="/signals/:symbol" element={<SignalDetail />} />
                 <Route path="/orders-management" element={<OrdersManagement />} />
                 <Route path="/orders" element={<Orders />} />
+                <Route path="/performance" element={<Performance />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="/pricing" element={<Pricing />} />
