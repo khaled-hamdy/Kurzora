@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -32,6 +33,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       return `${baseClasses} bg-blue-600 text-white shadow-lg transform scale-105`;
     }
     return `${baseClasses} text-slate-300 hover:text-white hover:bg-slate-700/50`;
+  };
+
+  const handleFooterLinkClick = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -169,30 +177,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.platform')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/dashboard" className="hover:text-white transition-colors">{t('nav.dashboard')}</Link></li>
-                <li><Link to="/signals" className="hover:text-white transition-colors">{t('nav.signals')}</Link></li>
-                <li><Link to="/how-it-works" className="hover:text-white transition-colors">{t('nav.howItWorks')}</Link></li>
-                <li><Link to="/pricing" className="hover:text-white transition-colors">{t('nav.pricing')}</Link></li>
+                <li><Link to="/dashboard" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.dashboard')}</Link></li>
+                <li><Link to="/signals" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.signals')}</Link></li>
+                <li><Link to="/how-it-works" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.howItWorks')}</Link></li>
+                <li><Link to="/pricing" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.pricing')}</Link></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.support')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">{t('nav.contact')}</Link></li>
+                <li><Link to="/faq" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link to="/contact" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.contact')}</Link></li>
                 <li><a href="https://t.me/kurzora" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link></li>
+                <li><Link to="/about" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.about')}</Link></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">{t('footer.legal')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/privacy-policy" className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
-                <li><Link to="/risk-disclosure" className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</Link></li>
-                <li><Link to="/shariah-compliance" className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
+                <li><Link to="/privacy-policy" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.privacyPolicy')}</Link></li>
+                <li><Link to="/terms-of-service" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.termsOfService')}</Link></li>
+                <li><Link to="/risk-disclosure" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.riskDisclosure')}</Link></li>
+                <li><Link to="/shariah-compliance" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.shariahCompliant')}</Link></li>
               </ul>
             </div>
           </div>
@@ -203,8 +211,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {t('footer.copyright').replace('SwingTrader', 'Kurzora')}
               </p>
               <div className="flex space-x-4 text-xs text-slate-400">
-                <Link to="/gdpr-compliance" className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>
-                <Link to="/cookie-notice" className="hover:text-white transition-colors">{t('legal.cookieNotice')}</Link>
+                <Link to="/gdpr-compliance" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.gdprCompliance')}</Link>
+                <Link to="/cookie-notice" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('legal.cookieNotice')}</Link>
               </div>
             </div>
           </div>

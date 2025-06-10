@@ -15,6 +15,13 @@ const LandingPage: React.FC = () => {
   const { t } = useLanguage();
   const [showAuth, setShowAuth] = useState<'login' | 'signup' | null>(null);
 
+  const handleFooterLinkClick = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   // Show loading state while checking authentication
   if (loading) {
     return (
@@ -270,29 +277,29 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-white font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Signals</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Analytics</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
+                <li><a href="#features" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Signals</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Analytics</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">API</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Discord</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Discord</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Twitter</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-white font-semibold mb-4">Legal</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Risk Disclosure</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Risk Disclosure</a></li>
               </ul>
             </div>
           </div>
@@ -303,8 +310,8 @@ const LandingPage: React.FC = () => {
                 © 2024 Kurzora. All rights reserved. Trading involves risk and may not be suitable for all investors.
               </p>
               <div className="flex space-x-4 text-xs text-slate-400">
-                <a href="#" className="hover:text-white transition-colors">GDPR Compliance</a>
-                <a href="#" className="hover:text-white transition-colors">Cookie Notice</a>
+                <a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">GDPR Compliance</a>
+                <a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Cookie Notice</a>
               </div>
             </div>
           </div>
