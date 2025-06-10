@@ -19,15 +19,15 @@ const currencies = {
   USD: { symbol: '$', label: 'US Dollar' },
   EUR: { symbol: '€', label: 'Euro' },
   GBP: { symbol: '£', label: 'British Pound' },
-  SAR: { symbol: '﷼', label: 'Saudi Riyal' },
-  AED: { symbol: 'د.إ', label: 'UAE Dirham' },
   JPY: { symbol: '¥', label: 'Japanese Yen' },
-  INR: { symbol: '₹', label: 'Indian Rupee' },
-  CNY: { symbol: '¥', label: 'Chinese Yuan' }
+  CHF: { symbol: 'Fr', label: 'Swiss Franc' },
+  CAD: { symbol: 'C$', label: 'Canadian Dollar' },
+  AUD: { symbol: 'A$', label: 'Australian Dollar' }
 };
 
 // Cache key for localStorage
 const CACHE_KEY = 'currency_rates_cache';
+const CURRENCY_PREF_KEY = 'selected_currency';
 const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
 
 interface CachedRate {
@@ -37,11 +37,27 @@ interface CachedRate {
 }
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  // Load saved currency preference from localStorage
+  const [selectedCurrency, setSelectedCurrencyState] = useState(() => {
+    const saved = localStorage.getItem(CURRENCY_PREF_KEY);
+    return saved && currencies[saved as keyof typeof currencies] ? saved : 'USD';
+  });
+  
   const [exchangeRate, setExchangeRate] = useState(1);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Save currency preference to localStorage whenever it changes
+  const setSelectedCurrency = (currency: string) => {
+    if (currencies[currency as keyof typeof currencies]) {
+      setSelectedCurrencyState(currency);
+      localStorage.setItem(CURRENCY_PREF_KEY, currency);
+      console.log(`Currency preference saved: ${currency}`);
+    } else {
+      console.warn(`Unsupported currency: ${currency}`);
+    }
+  };
 
   // Load cached rate on mount
   useEffect(() => {
@@ -72,6 +88,12 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (selectedCurrency === 'USD') {
       setExchangeRate(1);
       setError(null);
+      return;
+    }
+
+    // Check if currency is supported
+    if (!currencies[selectedCurrency as keyof typeof currencies]) {
+      setError(`Currency ${selectedCurrency} is not supported`);
       return;
     }
 
@@ -170,16 +192,10 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return currency?.symbol || '$';
   };
 
-  const handleSetSelectedCurrency = (currency: string) => {
-    setSelectedCurrency(currency);
-    // Clear cache when currency changes
-    localStorage.removeItem(CACHE_KEY);
-  };
-
   return (
     <CurrencyContext.Provider value={{
       selectedCurrency,
-      setSelectedCurrency: handleSetSelectedCurrency,
+      setSelectedCurrency,
       formatCurrency,
       getCurrencySymbol,
       convertFromUSD,
