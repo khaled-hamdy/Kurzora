@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 interface PaymentFormProps {
@@ -12,14 +12,24 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
   const stripe = useStripe();
   const elements = useElements();
   const [cardError, setCardError] = useState<string | null>(null);
+  const [cardComplete, setCardComplete] = useState(false);
 
   const handleCardChange = (event: any) => {
     if (event.error) {
       setCardError(event.error.message);
+      setCardComplete(false);
     } else {
       setCardError(null);
+      setCardComplete(event.complete);
     }
   };
+
+  // Automatically create payment method when card is complete
+  useEffect(() => {
+    if (cardComplete && stripe && elements && !loading) {
+      createPaymentMethod();
+    }
+  }, [cardComplete, stripe, elements, loading]);
 
   const createPaymentMethod = async () => {
     if (!stripe || !elements) {
@@ -84,6 +94,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
       
       {cardError && (
         <p className="text-sm text-red-400">{cardError}</p>
+      )}
+      
+      {cardComplete && (
+        <p className="text-sm text-green-400">✓ Payment method ready</p>
       )}
       
       <p className="text-xs text-gray-500">
