@@ -87,6 +87,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     }));
   };
 
+  const getButtonText = () => {
+    if (planInfo) {
+      return loading ? 'Starting Trial...' : 'Start Free Trial';
+    }
+    return loading ? 'Creating account...' : 'Continue to Payment';
+  };
+
   return (
     <Card className="w-full max-w-md bg-slate-900/50 backdrop-blur-sm border-blue-800/30">
       <CardHeader className="space-y-1">
@@ -99,6 +106,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Plan Context Display */}
+        {planInfo && (
+          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6 text-center">
+            <p className="text-sm text-gray-400">You're creating an account for</p>
+            <h3 className="text-xl font-semibold text-white">{planInfo.name} Plan - ${planInfo.price}/month</h3>
+            <p className="text-xs text-gray-400 mt-1">7-day free trial • Cancel anytime</p>
+          </div>
+        )}
+        
         <PlanIndicator 
           planId={planInfo?.id}
           planName={planInfo?.name}
@@ -174,6 +190,18 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
               />
             </div>
           </div>
+
+          {/* Payment Information Section */}
+          {planInfo && (
+            <div className="mt-6 p-4 bg-gray-800/30 rounded-lg">
+              <h4 className="font-medium mb-3 text-white">Payment Information</h4>
+              <p className="text-xs text-gray-400 mb-4">
+                🔒 Your card won't be charged for 7 days
+              </p>
+              {/* Stripe Card Element will go here */}
+              <div id="card-element" className="p-3 bg-gray-900/50 rounded border border-gray-700"></div>
+            </div>
+          )}
           
           <Button 
             type="submit" 
@@ -183,10 +211,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
+                {planInfo ? 'Starting Trial...' : 'Creating account...'}
               </>
             ) : (
-              planInfo ? `Start ${planInfo.name} Trial` : 'Create Account'
+              getButtonText()
             )}
           </Button>
         </form>
