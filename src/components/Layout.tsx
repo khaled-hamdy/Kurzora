@@ -54,9 +54,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Link to="/orders" className={getNavLinkClasses('/orders')}>
                     {t('nav.orders')}
                   </Link>
-                  <Link to="/how-it-works" className={getNavLinkClasses('/how-it-works')}>
-                    How It Works
-                  </Link>
                   <Link to="/pricing" className={getNavLinkClasses('/pricing')}>
                     {t('nav.pricing')}
                   </Link>
