@@ -17,6 +17,10 @@ const FAQSection: React.FC = () => {
       answer: "Our current win rate is 68% based on 180,000+ historical trades analyzed. This is for signals with a score of 80+. Individual results vary based on execution and risk management."
     },
     {
+      question: "When will I be charged?",
+      answer: "Your card won't be charged during the 7-day free trial. The first charge will occur after the trial ends, and then monthly or yearly based on your selected plan. You can cancel anytime during the trial to avoid any charges."
+    },
+    {
       question: "Can I cancel anytime?",
       answer: "Absolutely. No contracts, no hidden fees. Cancel your subscription anytime from your dashboard and you'll retain access until the end of your billing period."
     },

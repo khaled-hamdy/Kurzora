@@ -35,7 +35,7 @@ const testimonials: Testimonial[] = [
     role: "Portfolio Manager",
     stats: "Premium user since 2022",
     rating: 5,
-    profit: "+124% this year",
+    profit: "+47% in 6 months",
     verified: true,
     avatar: "👨‍💻"
   },

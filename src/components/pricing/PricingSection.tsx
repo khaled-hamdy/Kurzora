@@ -213,6 +213,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
               <p className="text-center text-xs text-slate-400">
                 7-day free trial • Cancel anytime • No setup fees
               </p>
+              
+              <p className="text-xs text-slate-500 text-center mt-2">
+                🔐 256-bit SSL encryption • PCI compliant • Powered by Stripe
+              </p>
             </CardContent>
           </Card>
         ))}
