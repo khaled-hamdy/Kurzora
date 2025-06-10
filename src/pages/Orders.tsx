@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -47,7 +48,8 @@ const Orders: React.FC = () => {
   const customRiskPercentage = (customInvestment / portfolioBalance) * 100;
 
   // Use existing position shares if available, otherwise use recommended shares
-  const actualShares = existingPosition ? existingPosition.shares : recommendedShares;
+  // Make sure to handle the case where existingPosition exists but shares might be undefined
+  const actualShares = (existingPosition && existingPosition.shares) ? existingPosition.shares : recommendedShares;
   
   console.log('Orders page - actualShares:', actualShares);
   console.log('Orders page - existingPosition.shares:', existingPosition?.shares);
@@ -67,7 +69,7 @@ const Orders: React.FC = () => {
     
     toast({
       title: "Trade Executed Successfully!",
-      description: `${selectedStock.symbol} position opened with ${recommendedShares} shares`,
+      description: `${selectedStock.symbol} position opened with ${actualShares} shares`,
     });
 
     // Navigate to open positions page

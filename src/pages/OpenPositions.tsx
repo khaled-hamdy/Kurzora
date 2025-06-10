@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -198,13 +199,13 @@ const OpenPositions: React.FC = () => {
   const handleOpenCloseDialog = (position: Position) => {
     console.log('OpenPositions: Navigating to Orders with position:', position);
     
-    // Navigate to Orders page with position data instead of opening dialog directly
+    // Navigate to Orders page with complete position data
     navigate('/orders', {
       state: {
         selectedStock: {
           symbol: position.symbol,
           name: position.name,
-          price: position.currentPrice, // Use current price as the reference price
+          price: position.currentPrice,
           change: ((position.currentPrice - position.entryPrice) / position.entryPrice) * 100,
           signalScore: position.signalScore
         },
