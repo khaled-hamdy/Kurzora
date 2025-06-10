@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -55,6 +54,16 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         }
       }
     }
+
+    // Restore form data if available
+    const savedFormData = localStorage.getItem('signupFormData');
+    if (savedFormData) {
+      try {
+        setFormData(JSON.parse(savedFormData));
+      } catch (error) {
+        console.error('Error parsing saved form data:', error);
+      }
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,6 +83,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         localStorage.setItem('showWelcome', 'true');
       }
       
+      // Clear saved form data on successful signup
+      localStorage.removeItem('signupFormData');
+      
       toast.success('Account created successfully! Welcome to Kurzora.');
     } catch (error) {
       toast.error('Signup failed. Please try again.');
@@ -81,10 +93,20 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       [e.target.name]: e.target.value
-    }));
+    };
+    setFormData(newFormData);
+    
+    // Save form data to localStorage
+    localStorage.setItem('signupFormData', JSON.stringify(newFormData));
+  };
+
+  const handleChangePlan = () => {
+    // Save current form data before navigation
+    localStorage.setItem('signupFormData', JSON.stringify(formData));
+    window.location.href = '/pricing';
   };
 
   const getButtonText = () => {
@@ -92,6 +114,42 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       return loading ? 'Starting Trial...' : 'Start Free Trial';
     }
     return loading ? 'Creating account...' : 'Continue to Payment';
+  };
+
+  const getPlanIcon = () => {
+    if (!planInfo) return null;
+    
+    switch (planInfo.id) {
+      case 'starter':
+        return '📈';
+      case 'professional':
+        return '⭐';
+      case 'elite':
+        return '👑';
+      default:
+        return '⭐';
+    }
+  };
+
+  const getPlanBadge = () => {
+    if (!planInfo) return null;
+    
+    switch (planInfo.id) {
+      case 'professional':
+        return (
+          <span className="inline-block bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full mb-2">
+            Most Popular
+          </span>
+        );
+      case 'elite':
+        return (
+          <span className="inline-block bg-amber-500/20 text-amber-400 text-xs px-2 py-1 rounded-full mb-2">
+            Best Value
+          </span>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -108,10 +166,18 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       <CardContent className="space-y-4">
         {/* Plan Context Display */}
         {planInfo && (
-          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6 text-center">
-            <p className="text-sm text-gray-400">You're creating an account for</p>
-            <h3 className="text-xl font-semibold text-white">{planInfo.name} Plan - ${planInfo.price}/month</h3>
-            <p className="text-xs text-gray-400 mt-1">7-day free trial • Cancel anytime</p>
+          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6 text-center relative">
+            <span className="text-green-400 text-xl mb-2">{getPlanIcon()}</span>
+            <p className="text-sm text-gray-400 mb-1">You're signing up for</p>
+            <h3 className="text-2xl font-bold text-white">{planInfo.name} Plan</h3>
+            {getPlanBadge()}
+            <p className="text-gray-400">${planInfo.price}/{planInfo.billingCycle || 'monthly'} after 7-day free trial</p>
+            <button 
+              onClick={handleChangePlan}
+              className="text-blue-400 hover:text-blue-300 text-sm underline mt-2 inline-block"
+            >
+              Change plan
+            </button>
           </div>
         )}
         
