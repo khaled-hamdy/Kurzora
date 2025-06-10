@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Slider } from '../components/ui/slider';
 import { Switch } from '../components/ui/switch';
-import { TrendingUp, DollarSign, Target, Shield, Settings, AlertTriangle, X } from 'lucide-react';
+import { TrendingUp, DollarSign, Target, Shield, Settings, AlertTriangle, X, Clock } from 'lucide-react';
 
 const Orders: React.FC = () => {
   const { user, loading } = useAuth();
@@ -263,92 +262,44 @@ const Orders: React.FC = () => {
             </Card>
           </div>
 
-          {/* Right Column - Execute Trade */}
+          {/* Right Column - Quick Info */}
           <div className="space-y-6">
+            {/* Quick Info Card */}
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Target className="h-5 w-5 mr-2" />
-                  Execute Trade
-                </CardTitle>
+                <CardTitle className="text-white text-xl">Quick Info</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                  <div className="text-blue-400 text-sm mb-1">Using Position Size</div>
-                  <div className="text-2xl font-bold text-white">{customShareCount} shares</div>
-                  <div className="text-slate-400 text-sm">Investment: ${customInvestment.toLocaleString()}</div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Risk Amount</span>
-                    <span className="text-white">${(customInvestment * 0.02).toFixed(0)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Potential Profit</span>
-                    <span className="text-emerald-400">${(customInvestment * 0.03).toFixed(0)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Risk Percentage</span>
-                    <span className={customRiskPercentage > 2 ? "text-red-400" : "text-white"}>
-                      {customRiskPercentage.toFixed(1)}%
-                    </span>
+              <CardContent className="space-y-6">
+                <div className="flex items-start space-x-3">
+                  <Clock className="h-5 w-5 text-slate-400 mt-1" />
+                  <div>
+                    <div className="text-slate-400 text-sm">Signal Generated</div>
+                    <div className="text-white text-lg font-semibold">6/10/2025 1:07 AM</div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-700">
-                  <div className="flex items-center justify-between mb-4">
-                    <Label className="text-slate-400">Auto Position Sizing</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <Label className="text-slate-400">Risk Management</Label>
-                    <Switch defaultChecked />
+                <div className="flex items-start space-x-3">
+                  <Shield className="h-5 w-5 text-slate-400 mt-1" />
+                  <div>
+                    <div className="text-slate-400 text-sm">Risk Level</div>
+                    <div className="text-emerald-400 text-lg font-semibold">Low (2% max)</div>
                   </div>
                 </div>
 
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  <DollarSign className="h-4 w-4 mr-2" />
-                  Execute Trade
-                </Button>
+                <div className="flex items-start space-x-3">
+                  <DollarSign className="h-5 w-5 text-slate-400 mt-1" />
+                  <div>
+                    <div className="text-slate-400 text-sm">Potential Profit</div>
+                    <div className="text-emerald-400 text-lg font-semibold">$70,279.2</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Risk Management Card */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Shield className="h-5 w-5 mr-2" />
-                  Risk Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label className="text-slate-400">Trailing Stop</Label>
-                  <Switch />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <Label className="text-slate-400">Break Even</Label>
-                  <Switch defaultChecked />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-slate-400">Partial Close</Label>
-                  <Switch />
-                </div>
-
-                <div className="pt-4 border-t border-slate-700">
-                  <Label className="text-slate-400 mb-2 block">Max Daily Loss</Label>
-                  <Input
-                    type="number"
-                    defaultValue="500"
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            {/* Execute Safe Trade Button */}
+            <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-semibold">
+              Execute Safe Trade (4540 shares)
+            </Button>
           </div>
         </div>
       </div>
