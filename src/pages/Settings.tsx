@@ -10,6 +10,7 @@ import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
+import { Badge } from '../components/ui/badge';
 import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
 
 const Settings: React.FC = () => {
