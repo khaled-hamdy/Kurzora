@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage, Language } from '../contexts/LanguageContext';
@@ -13,13 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3, DollarSign } from 'lucide-react';
+import { Bell, Globe, Shield, Key, Monitor, Smartphone, Mail, MessageSquare, CheckCircle, XCircle, Clock, Eye, BarChart3, DollarSign, AlertTriangle, RefreshCw } from 'lucide-react';
 import { useToast } from '../components/ui/use-toast';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
-  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { selectedCurrency, setSelectedCurrency, formatCurrency, exchangeRate, isLoading, error, lastUpdated } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -83,6 +82,10 @@ const Settings: React.FC = () => {
 
   const handleCurrencyChange = (currencyCode: string) => {
     setSelectedCurrency(currencyCode);
+    toast({
+      title: "Currency Updated",
+      description: `Currency preference changed to ${currencyCode}. All prices will be converted automatically.`,
+    });
     // TODO: Connect to backend logic via /src/backend-functions/UpdateCurrencyPreferences.ts
   };
 
@@ -113,6 +116,27 @@ const Settings: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Currency Status */}
+              {(error || isLoading) && (
+                <div className={`p-4 rounded-lg border ${error ? 'bg-red-500/10 border-red-500/20' : 'bg-blue-500/10 border-blue-500/20'}`}>
+                  <div className="flex items-center space-x-2">
+                    {isLoading ? (
+                      <RefreshCw className="h-4 w-4 animate-spin text-blue-400" />
+                    ) : error ? (
+                      <AlertTriangle className="h-4 w-4 text-red-400" />
+                    ) : null}
+                    <span className={`text-sm ${error ? 'text-red-400' : 'text-blue-400'}`}>
+                      {isLoading ? 'Fetching exchange rates...' : error ? `Exchange Rate Error: ${error}` : ''}
+                    </span>
+                    {lastUpdated && (
+                      <span className="text-xs text-slate-400">
+                        Last updated: {lastUpdated.toLocaleTimeString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Language Selection */}
                 <div>
@@ -145,7 +169,7 @@ const Settings: React.FC = () => {
                   <Label className="text-slate-300 text-sm font-medium flex items-center mb-3">
                     <DollarSign className="h-4 w-4 mr-2" />
                     Currency
-                    <span className="ml-2 text-xs text-slate-400">(Updates all prices in real-time)</span>
+                    <span className="ml-2 text-xs text-slate-400">(Live conversion rates)</span>
                   </Label>
                   <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
@@ -187,6 +211,11 @@ const Settings: React.FC = () => {
                     </span>
                   </div>
                 </div>
+                {selectedCurrency !== 'USD' && exchangeRate && (
+                  <div className="text-xs text-slate-400 pt-2 border-t border-slate-600">
+                    Exchange Rate: 1 USD = {exchangeRate.toFixed(4)} {selectedCurrency}
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -207,14 +236,14 @@ const Settings: React.FC = () => {
                   className="border-slate-600 text-slate-300 hover:bg-slate-700"
                 >
                   <XCircle className="h-4 w-4 mr-2" />
-                  Cancel
+                  Reset to Default
                 </Button>
               </div>
 
               {/* Helper Text */}
               <div className="text-xs text-slate-400 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                <strong>💡 Note:</strong> Currency changes will update all prices, charts, and financial data across the platform. 
-                If a specific page doesn't support your selected currency, USD will be displayed as default.
+                <strong>💡 Note:</strong> Currency changes will update all prices, charts, and financial data across the platform using live exchange rates from Frankfurter.app. 
+                Rates are cached for 1 hour and automatically refreshed. If conversion fails, the app will use cached rates or fall back to USD.
               </div>
             </CardContent>
           </Card>
@@ -499,3 +528,5 @@ const Settings: React.FC = () => {
 };
 
 export default Settings;
+
+</edits_to_apply>

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -17,7 +19,9 @@ import {
   BarChart3,
   ArrowRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import {
   Table,
@@ -52,17 +56,32 @@ interface ClosedPosition {
   closedDate: string;
 }
 
+interface ConvertedPosition extends Position {
+  convertedEntryPrice: number;
+  convertedCurrentPrice: number;
+}
+
+interface ConvertedClosedPosition extends ClosedPosition {
+  convertedEntryPrice: number;
+  convertedExitPrice: number;
+  convertedPnl: number;
+}
+
 const OpenPositions: React.FC = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { formatCurrency, convertFromUSD, selectedCurrency, isLoading, error, exchangeRate, lastUpdated } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [showAllHistory, setShowAllHistory] = useState(false);
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [convertedPositions, setConvertedPositions] = useState<ConvertedPosition[]>([]);
+  const [convertedClosedPositions, setConvertedClosedPositions] = useState<ConvertedClosedPosition[]>([]);
+  const [isConverting, setIsConverting] = useState(false);
 
-  // Mock data for open positions
+  // Mock data for open positions (in USD)
   const [openPositions, setOpenPositions] = useState<Position[]>([
     {
       id: '1',
@@ -96,7 +115,7 @@ const OpenPositions: React.FC = () => {
     }
   ]);
 
-  // Mock data for closed positions
+  // Mock data for closed positions (in USD)
   const closedPositions: ClosedPosition[] = [
     {
       id: '4',
@@ -155,27 +174,100 @@ const OpenPositions: React.FC = () => {
     }
   ];
 
+  // Convert positions when currency or positions change
+  useEffect(() => {
+    const convertPositions = async () => {
+      if (selectedCurrency === 'USD') {
+        setConvertedPositions(openPositions.map(pos => ({
+          ...pos,
+          convertedEntryPrice: pos.entryPrice,
+          convertedCurrentPrice: pos.currentPrice
+        })));
+        return;
+      }
+
+      setIsConverting(true);
+      try {
+        const converted = await Promise.all(
+          openPositions.map(async (position) => ({
+            ...position,
+            convertedEntryPrice: await convertFromUSD(position.entryPrice),
+            convertedCurrentPrice: await convertFromUSD(position.currentPrice)
+          }))
+        );
+        setConvertedPositions(converted);
+      } catch (err) {
+        console.error('Failed to convert positions:', err);
+        toast({
+          title: "Currency Conversion Error",
+          description: "Failed to convert positions to selected currency",
+          variant: "destructive"
+        });
+      } finally {
+        setIsConverting(false);
+      }
+    };
+
+    convertPositions();
+  }, [openPositions, selectedCurrency, exchangeRate]);
+
+  // Convert closed positions
+  useEffect(() => {
+    const convertClosedPositions = async () => {
+      if (selectedCurrency === 'USD') {
+        setConvertedClosedPositions(closedPositions.map(pos => ({
+          ...pos,
+          convertedEntryPrice: pos.entryPrice,
+          convertedExitPrice: pos.exitPrice,
+          convertedPnl: pos.pnl
+        })));
+        return;
+      }
+
+      try {
+        const converted = await Promise.all(
+          closedPositions.map(async (position) => ({
+            ...position,
+            convertedEntryPrice: await convertFromUSD(position.entryPrice),
+            convertedExitPrice: await convertFromUSD(position.exitPrice),
+            convertedPnl: await convertFromUSD(position.pnl)
+          }))
+        );
+        setConvertedClosedPositions(converted);
+      } catch (err) {
+        console.error('Failed to convert closed positions:', err);
+      }
+    };
+
+    convertClosedPositions();
+  }, [closedPositions, selectedCurrency, exchangeRate]);
+
   if (!user) {
     navigate('/');
     return null;
   }
 
-  // Portfolio calculations
+  // Portfolio calculations using converted values
   const portfolioBalance = 100000;
-  const totalPnL = openPositions.reduce((total, position) => {
-    return total + ((position.currentPrice - position.entryPrice) * position.shares);
+  const convertedPortfolioBalance = selectedCurrency === 'USD' ? portfolioBalance : portfolioBalance * exchangeRate;
+  const totalPnL = convertedPositions.reduce((total, position) => {
+    return total + ((position.convertedCurrentPrice - position.convertedEntryPrice) * position.shares);
   }, 0);
-  const totalPnLPercent = (totalPnL / portfolioBalance) * 100;
+  const totalPnLPercent = (totalPnL / convertedPortfolioBalance) * 100;
 
-  const calculatePositionPnL = (position: Position) => {
-    const pnl = (position.currentPrice - position.entryPrice) * position.shares;
-    const pnlPercent = ((position.currentPrice - position.entryPrice) / position.entryPrice) * 100;
+  const calculatePositionPnL = (position: ConvertedPosition) => {
+    const pnl = (position.convertedCurrentPrice - position.convertedEntryPrice) * position.shares;
+    const pnlPercent = ((position.convertedCurrentPrice - position.convertedEntryPrice) / position.convertedEntryPrice) * 100;
     return { pnl, pnlPercent };
   };
 
-  const handleOpenCloseDialog = (position: Position) => {
-    setSelectedPosition(position);
-    setCloseDialogOpen(true);
+  const handleOpenCloseDialog = (position: ConvertedPosition) => {
+    // Convert back to original position format for dialog
+    const originalPosition = openPositions.find(p => p.id === position.id);
+    if (originalPosition) {
+      setSelectedPosition(originalPosition);
+      setCloseDialogOpen(true);
+    }
   };
 
   const handleClosePosition = (positionId: string, closePrice: number) => {
@@ -188,7 +280,7 @@ const OpenPositions: React.FC = () => {
     
     toast({
       title: "Position Closed",
-      description: `${position.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
+      description: `${position.symbol} position closed at ${formatCurrency(closePrice)}. P&L: ${pnl >= 0 ? '+' : ''}${formatCurrency(pnl)}`,
     });
 
     // TODO: Connect to backend logic via /src/backend-functions/ClosePosition.ts
@@ -202,7 +294,7 @@ const OpenPositions: React.FC = () => {
     setShowAllHistory(!showAllHistory);
   };
 
-  const displayedClosedPositions = showAllHistory ? closedPositions : closedPositions.slice(0, 3);
+  const displayedClosedPositions = showAllHistory ? convertedClosedPositions : convertedClosedPositions.slice(0, 3);
 
   return (
     <Layout>
@@ -220,6 +312,27 @@ const OpenPositions: React.FC = () => {
             </Button>
           </div>
 
+          {/* Currency Status Banner */}
+          {(error || isLoading || isConverting) && (
+            <div className={`mb-6 p-4 rounded-lg border ${error ? 'bg-red-500/10 border-red-500/20' : 'bg-blue-500/10 border-blue-500/20'}`}>
+              <div className="flex items-center space-x-2">
+                {isLoading || isConverting ? (
+                  <RefreshCw className="h-4 w-4 animate-spin text-blue-400" />
+                ) : error ? (
+                  <AlertTriangle className="h-4 w-4 text-red-400" />
+                ) : null}
+                <span className={`text-sm ${error ? 'text-red-400' : 'text-blue-400'}`}>
+                  {isLoading || isConverting ? 'Converting prices...' : error ? `Currency Error: ${error}` : ''}
+                </span>
+                {lastUpdated && (
+                  <span className="text-xs text-slate-400">
+                    Last updated: {lastUpdated.toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Portfolio Summary */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
@@ -228,7 +341,7 @@ const OpenPositions: React.FC = () => {
                   <DollarSign className="h-5 w-5 text-blue-400" />
                   <div>
                     <p className="text-slate-400 text-sm">Portfolio Balance</p>
-                    <p className="text-white font-bold text-xl">${portfolioBalance.toLocaleString()}</p>
+                    <p className="text-white font-bold text-xl">{formatCurrency(convertedPortfolioBalance)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -241,7 +354,7 @@ const OpenPositions: React.FC = () => {
                   <div>
                     <p className="text-slate-400 text-sm">Total P&L</p>
                     <p className={`font-bold text-xl ${totalPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(0)} ({totalPnL >= 0 ? '+' : ''}{totalPnLPercent.toFixed(1)}%)
+                      {totalPnL >= 0 ? '+' : ''}{formatCurrency(Math.abs(totalPnL))} ({totalPnL >= 0 ? '+' : ''}{totalPnLPercent.toFixed(1)}%)
                     </p>
                   </div>
                 </div>
@@ -280,10 +393,15 @@ const OpenPositions: React.FC = () => {
             <CardTitle className="text-lg text-white flex items-center space-x-2">
               <Activity className="h-5 w-5 text-emerald-400" />
               <span>Open Positions</span>
+              {selectedCurrency !== 'USD' && (
+                <Badge variant="outline" className="text-xs">
+                  Converted to {selectedCurrency}
+                </Badge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {openPositions.length > 0 ? (
+            {convertedPositions.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow className="border-slate-700">
@@ -298,7 +416,7 @@ const OpenPositions: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {openPositions.map((position) => {
+                  {convertedPositions.map((position) => {
                     const { pnl, pnlPercent } = calculatePositionPnL(position);
                     return (
                       <TableRow key={position.id} className="border-slate-700 hover:bg-slate-700/30">
@@ -308,12 +426,12 @@ const OpenPositions: React.FC = () => {
                             <div className="text-slate-400 text-sm">{position.name}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-white">${position.entryPrice.toFixed(2)}</TableCell>
-                        <TableCell className="text-white">${position.currentPrice.toFixed(2)}</TableCell>
+                        <TableCell className="text-white">{formatCurrency(position.convertedEntryPrice)}</TableCell>
+                        <TableCell className="text-white">{formatCurrency(position.convertedCurrentPrice)}</TableCell>
                         <TableCell className="text-white">{position.shares}</TableCell>
                         <TableCell>
                           <span className={`font-semibold ${pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                            {pnl >= 0 ? '+' : ''}${pnl.toFixed(0)}
+                            {pnl >= 0 ? '+' : ''}{formatCurrency(Math.abs(pnl))}
                           </span>
                         </TableCell>
                         <TableCell>
@@ -365,6 +483,11 @@ const OpenPositions: React.FC = () => {
               <CardTitle className="text-lg text-white flex items-center space-x-2">
                 <Eye className="h-5 w-5 text-blue-400" />
                 <span>Recently Closed Positions</span>
+                {selectedCurrency !== 'USD' && (
+                  <Badge variant="outline" className="text-xs">
+                    Converted to {selectedCurrency}
+                  </Badge>
+                )}
               </CardTitle>
               <Button 
                 onClick={toggleHistoryView}
@@ -408,13 +531,13 @@ const OpenPositions: React.FC = () => {
                           <div className="text-slate-400 text-sm">{position.name}</div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-white">${position.entryPrice.toFixed(2)}</TableCell>
-                      <TableCell className="text-white">${position.exitPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-white">{formatCurrency(position.convertedEntryPrice)}</TableCell>
+                      <TableCell className="text-white">{formatCurrency(position.convertedExitPrice)}</TableCell>
                       <TableCell className="text-white">{position.shares}</TableCell>
                       <TableCell>
                         <div>
-                          <span className={`font-semibold ${position.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                            {position.pnl >= 0 ? '+' : ''}${position.pnl.toFixed(0)}
+                          <span className={`font-semibold ${position.convertedPnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {position.convertedPnl >= 0 ? '+' : ''}{formatCurrency(Math.abs(position.convertedPnl))}
                           </span>
                           <span className={`text-sm ml-2 ${position.pnlPercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                             ({position.pnlPercent >= 0 ? '+' : ''}{position.pnlPercent.toFixed(1)}%)
