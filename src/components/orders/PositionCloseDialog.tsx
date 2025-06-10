@@ -61,7 +61,11 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
 
   if (!position) return null;
 
-  const estimatedPnL = closePrice ? (parseFloat(closePrice) - position.entryPrice) * position.shares : 0;
+  // Fixed P&L calculation: (close_price - entry_price) * shares
+  const closePriceNum = parseFloat(closePrice);
+  const estimatedPnL = !isNaN(closePriceNum) && closePriceNum > 0 
+    ? (closePriceNum - position.entryPrice) * position.shares 
+    : 0;
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -106,7 +110,7 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
             {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
           </div>
           
-          {closePrice && !isNaN(parseFloat(closePrice)) && (
+          {closePrice && !isNaN(parseFloat(closePrice)) && parseFloat(closePrice) > 0 && (
             <div className="bg-slate-700/50 p-3 rounded-md">
               <div className="text-sm">
                 <span className="text-slate-400">Estimated P&L:</span>
