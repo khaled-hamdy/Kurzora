@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Layout from '../components/Layout';
@@ -86,10 +85,7 @@ const Contact: React.FC = () => {
                   <h3 className="text-white font-semibold mb-1">
                     {language === 'ar' ? 'الهاتف' : language === 'de' ? 'Telefon' : 'Phone'}
                   </h3>
-                  <div className="space-y-1">
-                    <p className="text-slate-400">IE: +353 1 254 4000</p>
-                    <p className="text-slate-400">DE: +49 176 32578451</p>
-                  </div>
+                  <p className="text-slate-400">+49 176 32578451</p>
                 </div>
               </div>
 
