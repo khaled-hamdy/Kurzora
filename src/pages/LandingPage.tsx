@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { Shield, TrendingUp, Signal, Zap, Users, Award, BarChart3, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import LoginForm from '../components/auth/LoginForm';
@@ -297,9 +298,9 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-white font-semibold mb-4">Legal</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Risk Disclosure</a></li>
+                <li><Link to="/privacy-policy" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/risk-disclosure" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Risk Disclosure</Link></li>
               </ul>
             </div>
           </div>
