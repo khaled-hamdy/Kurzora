@@ -10,10 +10,12 @@ import { Label } from '../components/ui/label';
 import { Slider } from '../components/ui/slider';
 import { Switch } from '../components/ui/switch';
 import { TrendingUp, DollarSign, Target, Shield, Settings, AlertTriangle, X, Clock } from 'lucide-react';
+import { useToast } from '../hooks/use-toast';
 
 const Orders: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [portfolioBalance, setPortfolioBalance] = useState(8000);
   const [customShares, setCustomShares] = useState([18]);
   
@@ -34,6 +36,18 @@ const Orders: React.FC = () => {
       navigate('/');
     }
   }, [user, loading, navigate]);
+
+  const handleExecuteTrade = () => {
+    // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
+    
+    toast({
+      title: "Trade Executed Successfully!",
+      description: `EURUSD position opened with ${recommendedShares} shares`,
+    });
+
+    // Navigate to open positions page
+    navigate('/open-positions');
+  };
 
   if (loading) {
     return (
@@ -281,9 +295,12 @@ const Orders: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Execute Safe Trade Button */}
-            <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-semibold">
-              Execute Safe Trade (4540 shares)
+            {/* Execute Trade Button */}
+            <Button 
+              onClick={handleExecuteTrade}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-semibold"
+            >
+              Execute Trade ({recommendedShares} shares)
             </Button>
           </div>
         </div>
@@ -293,3 +310,5 @@ const Orders: React.FC = () => {
 };
 
 export default Orders;
+
+}
