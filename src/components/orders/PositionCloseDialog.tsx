@@ -12,6 +12,7 @@ import {
 } from '../ui/alert-dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { useCurrency } from '../../contexts/CurrencyContext';
 
 interface Position {
   id: string;
@@ -37,6 +38,7 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
 }) => {
   const [closePrice, setClosePrice] = useState('');
   const [error, setError] = useState('');
+  const { formatCurrency, getCurrencySymbol } = useCurrency();
 
   const handleConfirm = () => {
     if (!position) return;
@@ -67,16 +69,6 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
   const priceDifference = priceValid ? closePriceNum - position.entryPrice : 0;
   const estimatedPnL = priceValid ? priceDifference * position.shares : 0;
 
-  // Currency formatting function
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
-  };
-
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-slate-800 border-slate-700">
@@ -93,11 +85,11 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-slate-400">Entry Price:</span>
-              <span className="text-white ml-2">${position.entryPrice.toFixed(2)}</span>
+              <span className="text-white ml-2">{getCurrencySymbol()}{position.entryPrice.toFixed(2)}</span>
             </div>
             <div>
               <span className="text-slate-400">Current Price:</span>
-              <span className="text-white ml-2">${position.currentPrice.toFixed(2)}</span>
+              <span className="text-white ml-2">{getCurrencySymbol()}{position.currentPrice.toFixed(2)}</span>
             </div>
           </div>
           
@@ -132,10 +124,10 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
               
               <div className="space-y-1 text-sm">
                 <div className="text-slate-400">
-                  P&L = {position.shares} × (${closePriceNum.toFixed(2)} − ${position.entryPrice.toFixed(2)})
+                  P&L = {position.shares} × ({getCurrencySymbol()}{closePriceNum.toFixed(2)} − {getCurrencySymbol()}{position.entryPrice.toFixed(2)})
                 </div>
                 <div className="text-slate-400">
-                  P&L = {position.shares} × ${priceDifference.toFixed(2)}
+                  P&L = {position.shares} × {getCurrencySymbol()}{priceDifference.toFixed(2)}
                 </div>
                 <div className="text-white font-semibold border-t border-slate-600 pt-2">
                   <span className="text-slate-400">Estimated P&L:</span>

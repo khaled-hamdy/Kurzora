@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage, Language } from '../contexts/LanguageContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -17,6 +19,7 @@ import { useToast } from '../components/ui/use-toast';
 const Settings: React.FC = () => {
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
+  const { selectedCurrency, setSelectedCurrency } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -35,9 +38,8 @@ const Settings: React.FC = () => {
   const [uiDensity, setUiDensity] = useState('default');
   const [apiKey, setApiKey] = useState('sk-****************************');
   
-  // Language & Currency preferences
+  // Language preferences
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
-  const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
   // Only include languages that are actually supported in LanguageContext
   const languages = [
