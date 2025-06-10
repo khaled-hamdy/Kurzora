@@ -67,6 +67,16 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
   const priceDifference = priceValid ? closePriceNum - position.entryPrice : 0;
   const estimatedPnL = priceValid ? priceDifference * position.shares : 0;
 
+  // Currency formatting function
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-slate-800 border-slate-700">
@@ -130,7 +140,7 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
                 <div className="text-white font-semibold border-t border-slate-600 pt-2">
                   <span className="text-slate-400">Estimated P&L:</span>
                   <span className={`ml-2 text-lg ${estimatedPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {estimatedPnL >= 0 ? '+' : ''}${estimatedPnL.toFixed(2)}
+                    {estimatedPnL >= 0 ? '+' : ''}{formatCurrency(Math.abs(estimatedPnL))}
                   </span>
                 </div>
               </div>
