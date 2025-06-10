@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -243,7 +244,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h3 className="text-white font-semibold mb-4 text-sm sm:text-base">{t('footer.platform')}</h3>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link to="/" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Home</Link></li>
+                <li>
+                  <Link 
+                    to={user ? "/dashboard" : "/"} 
+                    onClick={handleFooterLinkClick} 
+                    className="hover:text-white transition-colors"
+                  >
+                    {user ? "Dashboard" : "Home"}
+                  </Link>
+                </li>
                 <li><Link to="/pricing" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">{t('nav.pricing')}</Link></li>
               </ul>
             </div>
