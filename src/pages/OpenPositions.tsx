@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -28,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
-import PositionCloseDialog from '../components/orders/PositionCloseDialog';
+import OrderCloseDialog from '../components/orders/OrderCloseDialog';
 
 interface Position {
   id: string;
@@ -115,6 +114,16 @@ const OpenPositions: React.FC = () => {
       shares: 25,
       entryDate: '2025-06-04',
       signalScore: 91
+    },
+    {
+      id: '6',
+      symbol: 'EURUSD',
+      name: 'Euro / US Dollar',
+      entryPrice: 1.0542,
+      currentPrice: 1.0567,
+      shares: 18,
+      entryDate: '2025-06-03',
+      signalScore: 92
     }
   ]);
 
@@ -207,47 +216,45 @@ const OpenPositions: React.FC = () => {
   };
 
   const handleOpenCloseDialog = (position: Position) => {
-    console.log('OpenPositions: Navigating to Orders with position:', position);
+    console.log('OpenPositions: Opening close dialog for position:', position);
     console.log('OpenPositions: Position shares:', position.shares);
     
-    // Navigate to Orders page with complete position data
-    navigate('/orders', {
-      state: {
-        selectedStock: {
-          symbol: position.symbol,
-          name: position.name,
-          price: position.currentPrice,
-          change: ((position.currentPrice - position.entryPrice) / position.entryPrice) * 100,
-          signalScore: position.signalScore
-        },
-        existingPosition: {
-          id: position.id,
-          symbol: position.symbol,
-          name: position.name,
-          entryPrice: position.entryPrice,
-          currentPrice: position.currentPrice,
-          shares: position.shares, // Make sure this is correctly passed
-          entryDate: position.entryDate,
-          signalScore: position.signalScore
-        }
-      }
-    });
+    setSelectedPosition(position);
+    setCloseDialogOpen(true);
   };
 
-  const handleClosePosition = (positionId: string, closePrice: number) => {
-    const position = openPositions.find(p => p.id === positionId);
-    if (!position) return;
-
-    const pnl = (closePrice - position.entryPrice) * position.shares;
+  const handleConfirmCloseOrder = (closePrice: number) => {
+    if (!selectedPosition) return;
     
-    setOpenPositions(prev => prev.filter(p => p.id !== positionId));
+    const pnl = (closePrice - selectedPosition.entryPrice) * selectedPosition.shares;
+    
+    // Remove the position from open positions
+    setOpenPositions(prev => prev.filter(p => p.id !== selectedPosition.id));
+    
+    // Add to closed positions
+    const newClosedPosition = {
+      id: Date.now().toString(),
+      symbol: selectedPosition.symbol,
+      name: selectedPosition.name,
+      entryPrice: selectedPosition.entryPrice,
+      exitPrice: closePrice,
+      shares: selectedPosition.shares,
+      pnl: pnl,
+      pnlPercent: ((closePrice - selectedPosition.entryPrice) / selectedPosition.entryPrice) * 100,
+      closedDate: new Date().toISOString().split('T')[0]
+    };
+    
+    setClosedPositions(prev => [newClosedPosition, ...prev]);
     
     toast({
       title: "Position Closed",
-      description: `${position.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
+      description: `${selectedPosition.symbol} position closed at $${closePrice.toFixed(2)}. P&L: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`,
     });
 
     // TODO: Connect to backend logic via /src/backend-functions/ClosePosition.ts
+    
+    setSelectedPosition(null);
+    setCloseDialogOpen(false);
   };
 
   const handleGoToSignals = () => {
@@ -484,11 +491,16 @@ const OpenPositions: React.FC = () => {
           </CardContent>
         </Card>
 
-        <PositionCloseDialog
+        <OrderCloseDialog
           open={closeDialogOpen}
           onOpenChange={setCloseDialogOpen}
-          position={selectedPosition}
-          onConfirm={handleClosePosition}
+          stock={selectedPosition ? {
+            symbol: selectedPosition.symbol,
+            name: selectedPosition.name,
+            price: selectedPosition.entryPrice
+          } : { symbol: '', name: '', price: 0 }}
+          shares={selectedPosition?.shares || 0}
+          onConfirm={handleConfirmCloseOrder}
         />
       </div>
     </Layout>
