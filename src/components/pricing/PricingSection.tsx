@@ -1,9 +1,9 @@
+
 import React, { useState } from 'react';
 import { Check, Star, Zap, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
 
 interface PricingTier {
   id: string;
@@ -71,28 +71,34 @@ const pricingTiers: PricingTier[] = [
 ];
 
 interface PricingSectionProps {
-  onSignupClick?: () => void;
+  onSignupClick?: (planInfo?: any) => void;
 }
 
 const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const navigate = useNavigate();
 
   const handleSubscribe = (tier: PricingTier) => {
     const price = tier.price.replace('$', '');
+    const planInfo = {
+      id: tier.id,
+      name: tier.name,
+      price: price,
+      billingCycle
+    };
     
     if (onSignupClick) {
-      // If we're on the landing page, show signup form directly with plan info
-      localStorage.setItem('selectedPlan', JSON.stringify({
-        id: tier.id,
-        name: tier.name,
-        price: price,
-        billingCycle
-      }));
-      onSignupClick();
+      // Store plan info for the signup form
+      localStorage.setItem('selectedPlan', JSON.stringify(planInfo));
+      onSignupClick(planInfo);
     } else {
-      // If we're on the pricing page, navigate with URL parameters
-      navigate(`/?plan=${tier.id}&price=${price}&name=${encodeURIComponent(tier.name)}&billing=${billingCycle}#signup`);
+      // If we're on a dedicated pricing page, store the plan and navigate cleanly
+      localStorage.setItem('selectedPlan', JSON.stringify(planInfo));
+      window.location.href = '/';
+      // Use a timeout to trigger signup after navigation
+      setTimeout(() => {
+        const event = new CustomEvent('showSignup', { detail: planInfo });
+        window.dispatchEvent(event);
+      }, 100);
     }
   };
 

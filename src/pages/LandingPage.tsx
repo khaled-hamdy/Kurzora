@@ -21,31 +21,50 @@ const LandingPage: React.FC = () => {
 
   // Check if we should show signup from navigation state or URL params
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const planId = urlParams.get('plan');
-    const planName = urlParams.get('name');
-    const price = urlParams.get('price');
-    const billingCycle = urlParams.get('billing');
-    const hash = location.hash;
+    // Check localStorage for plan selection
+    const savedPlan = localStorage.getItem('selectedPlan');
+    if (savedPlan) {
+      try {
+        const plan = JSON.parse(savedPlan);
+        setSelectedPlan(plan);
+        setShowAuth('signup');
+        // Clear the plan from localStorage to avoid persistence issues
+        localStorage.removeItem('selectedPlan');
+      } catch (error) {
+        console.error('Error parsing saved plan:', error);
+      }
+    }
 
-    if (planId && planName && price && hash === '#signup') {
-      setSelectedPlan({
-        id: planId,
-        name: planName,
-        price: price,
-        billingCycle: billingCycle || 'monthly'
-      });
-      setShowAuth('signup');
-    } else if (location.state?.showSignup) {
+    if (location.state?.showSignup) {
       setShowAuth('signup');
     }
-  }, [location.state, location.search, location.hash]);
+  }, [location.state]);
+
+  // Listen for custom signup events from pricing navigation
+  useEffect(() => {
+    const handleShowSignup = (event: CustomEvent) => {
+      setSelectedPlan(event.detail);
+      setShowAuth('signup');
+    };
+
+    window.addEventListener('showSignup', handleShowSignup as EventListener);
+    return () => {
+      window.removeEventListener('showSignup', handleShowSignup as EventListener);
+    };
+  }, []);
 
   const handleFooterLinkClick = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const handleSignupClick = (planInfo?: any) => {
+    if (planInfo) {
+      setSelectedPlan(planInfo);
+    }
+    setShowAuth('signup');
   };
 
   // Show loading state while checking authentication
@@ -79,8 +98,6 @@ const LandingPage: React.FC = () => {
               onClick={() => {
                 setShowAuth(null);
                 setSelectedPlan(null);
-                // Clear URL parameters
-                window.history.replaceState({}, '', '/');
               }}
               className="text-slate-400 hover:text-white text-sm"
             >
@@ -327,7 +344,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section id="pricing" className="py-12 sm:py-16 lg:py-20">
-        <PricingSection onSignupClick={() => setShowAuth('signup')} />
+        <PricingSection onSignupClick={handleSignupClick} />
       </section>
 
       <section className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-r from-blue-600 to-emerald-600">
@@ -421,3 +438,5 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
+}
