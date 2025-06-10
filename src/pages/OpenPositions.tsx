@@ -463,5 +463,3 @@ const OpenPositions: React.FC = () => {
 };
 
 export default OpenPositions;
-
-}
