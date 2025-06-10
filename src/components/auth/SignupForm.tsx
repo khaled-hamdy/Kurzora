@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -7,12 +7,19 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Mail, Lock, User, Github, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import PlanIndicator from './PlanIndicator';
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
+  selectedPlan?: {
+    id: string;
+    name: string;
+    price: string;
+    billingCycle?: string;
+  };
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }) => {
   const { signup, loading } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
@@ -20,6 +27,35 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     password: '',
     confirmPassword: ''
   });
+  const [planInfo, setPlanInfo] = useState(selectedPlan || null);
+
+  useEffect(() => {
+    // Check URL parameters for plan info
+    const urlParams = new URLSearchParams(window.location.search);
+    const planId = urlParams.get('plan');
+    const planName = urlParams.get('name');
+    const price = urlParams.get('price');
+    const billingCycle = urlParams.get('billing') || 'monthly';
+
+    if (planId && planName && price) {
+      setPlanInfo({
+        id: planId,
+        name: planName,
+        price: price,
+        billingCycle: billingCycle
+      });
+    } else {
+      // Check localStorage as backup
+      const savedPlan = localStorage.getItem('selectedPlan');
+      if (savedPlan) {
+        try {
+          setPlanInfo(JSON.parse(savedPlan));
+        } catch (error) {
+          console.error('Error parsing saved plan:', error);
+        }
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +67,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     
     try {
       await signup(formData.email, formData.password, formData.name);
+      
+      // Store plan selection for post-signup flow
+      if (planInfo) {
+        localStorage.setItem('selectedPlan', JSON.stringify(planInfo));
+        localStorage.setItem('showWelcome', 'true');
+      }
+      
       toast.success('Account created successfully! Welcome to Kurzora.');
     } catch (error) {
       toast.error('Signup failed. Please try again.');
@@ -56,6 +99,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <PlanIndicator 
+          planId={planInfo?.id}
+          planName={planInfo?.name}
+          price={planInfo?.price}
+          billingCycle={planInfo?.billingCycle}
+        />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-slate-300">Full Name</Label>
@@ -136,7 +186,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 Creating account...
               </>
             ) : (
-              'Create Account'
+              planInfo ? `Start ${planInfo.name} Trial` : 'Create Account'
             )}
           </Button>
         </form>

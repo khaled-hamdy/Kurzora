@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import WinRateGauge from '../components/dashboard/WinRateGauge';
 import PortfolioPerformanceChart from '../components/dashboard/PortfolioPerformanceChart';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
+import WelcomeBanner from '../components/dashboard/WelcomeBanner';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { TrendingUp, DollarSign, Target, Bell, Briefcase, Zap } from 'lucide-react';
 
@@ -14,18 +15,62 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
   useEffect(() => {
     if (!user) {
       navigate('/');
+      return;
+    }
+
+    // Check if we should show welcome banner
+    const shouldShowWelcome = localStorage.getItem('showWelcome');
+    const savedPlan = localStorage.getItem('selectedPlan');
+    
+    if (shouldShowWelcome === 'true') {
+      setShowWelcome(true);
+      if (savedPlan) {
+        try {
+          setSelectedPlan(JSON.parse(savedPlan));
+        } catch (error) {
+          console.error('Error parsing selected plan:', error);
+        }
+      }
     }
   }, [user, navigate]);
+
+  const handleDismissWelcome = () => {
+    setShowWelcome(false);
+    localStorage.removeItem('showWelcome');
+    localStorage.removeItem('selectedPlan');
+  };
+
+  const handleExploreFeatures = () => {
+    navigate('/signals');
+    handleDismissWelcome();
+  };
+
+  const handleCompleteSetup = () => {
+    navigate('/settings');
+    handleDismissWelcome();
+  };
 
   if (!user) return null;
 
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Banner */}
+        {showWelcome && (
+          <WelcomeBanner
+            planName={selectedPlan?.name}
+            onDismiss={handleDismissWelcome}
+            onExploreFeatures={handleExploreFeatures}
+            onCompleteSetup={handleCompleteSetup}
+          />
+        )}
+
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -146,7 +191,6 @@ const Dashboard: React.FC = () => {
           </Card>
         </div>
 
-        {/* Main Dashboard Grid - Win Rate and Portfolio Performance */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
           <div className="lg:col-span-2">
             <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
@@ -156,7 +200,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Signal Heatmap */}
         <div className="mb-8">
           <SignalHeatmap />
         </div>

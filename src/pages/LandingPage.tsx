@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -16,13 +17,29 @@ const LandingPage: React.FC = () => {
   const location = useLocation();
   const [showAuth, setShowAuth] = useState<'login' | 'signup' | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
-  // Check if we should show signup from navigation state
+  // Check if we should show signup from navigation state or URL params
   useEffect(() => {
-    if (location.state?.showSignup) {
+    const urlParams = new URLSearchParams(location.search);
+    const planId = urlParams.get('plan');
+    const planName = urlParams.get('name');
+    const price = urlParams.get('price');
+    const billingCycle = urlParams.get('billing');
+    const hash = location.hash;
+
+    if (planId && planName && price && hash === '#signup') {
+      setSelectedPlan({
+        id: planId,
+        name: planName,
+        price: price,
+        billingCycle: billingCycle || 'monthly'
+      });
+      setShowAuth('signup');
+    } else if (location.state?.showSignup) {
       setShowAuth('signup');
     }
-  }, [location.state]);
+  }, [location.state, location.search, location.hash]);
 
   const handleFooterLinkClick = () => {
     window.scrollTo({
@@ -52,11 +69,19 @@ const LandingPage: React.FC = () => {
           {showAuth === 'login' ? (
             <LoginForm onSwitchToSignup={() => setShowAuth('signup')} />
           ) : (
-            <SignupForm onSwitchToLogin={() => setShowAuth('login')} />
+            <SignupForm 
+              onSwitchToLogin={() => setShowAuth('login')} 
+              selectedPlan={selectedPlan}
+            />
           )}
           <div className="text-center mt-4">
             <button
-              onClick={() => setShowAuth(null)}
+              onClick={() => {
+                setShowAuth(null);
+                setSelectedPlan(null);
+                // Clear URL parameters
+                window.history.replaceState({}, '', '/');
+              }}
               className="text-slate-400 hover:text-white text-sm"
             >
               ← Back to home
@@ -82,14 +107,12 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
             
-            {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-4 lg:space-x-6">
               <a href="#features" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">{t('landing.features')}</a>
               <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">Testimonials</a>
               <a href="#pricing" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">{t('landing.pricing')}</a>
             </div>
             
-            {/* Desktop Actions */}
             <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
               <LanguageToggle />
               <Button 
@@ -109,7 +132,6 @@ const LandingPage: React.FC = () => {
               </Button>
             </div>
 
-            {/* Mobile menu button */}
             <div className="md:hidden flex items-center space-x-2">
               <LanguageToggle />
               <Button
@@ -123,7 +145,6 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-blue-800/30 py-4">
               <div className="space-y-4">
@@ -177,11 +198,9 @@ const LandingPage: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="max-w-4xl mx-auto">
-            {/* New Kurzora Tagline */}
             <div className="mb-4 sm:mb-6">
               <span className="text-blue-400 text-base sm:text-lg lg:text-xl font-semibold tracking-wide">KURZORA</span>
               <p className="text-emerald-400 text-lg sm:text-xl lg:text-2xl font-medium mt-1">AI Signals. Smarter Trades.</p>
@@ -224,7 +243,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-12 sm:py-16 lg:py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
@@ -285,7 +303,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-slate-950/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('landing.trustedBy')}</h2>
@@ -293,12 +310,10 @@ const LandingPage: React.FC = () => {
         <TestimonialCarousel />
       </section>
 
-      {/* Pricing Section */}
       <section id="pricing" className="py-12 sm:py-16 lg:py-20">
         <PricingSection onSignupClick={() => setShowAuth('signup')} />
       </section>
 
-      {/* CTA Section */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-r from-blue-600 to-emerald-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Check, Star, Zap, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -79,13 +78,21 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const navigate = useNavigate();
 
-  const handleSubscribe = (tierId: string) => {
+  const handleSubscribe = (tier: PricingTier) => {
+    const price = tier.price.replace('$', '');
+    
     if (onSignupClick) {
-      // If we're on the landing page, show signup form directly
+      // If we're on the landing page, show signup form directly with plan info
+      localStorage.setItem('selectedPlan', JSON.stringify({
+        id: tier.id,
+        name: tier.name,
+        price: price,
+        billingCycle
+      }));
       onSignupClick();
     } else {
-      // If we're on the pricing page, navigate to home and show signup
-      navigate('/', { state: { showSignup: true } });
+      // If we're on the pricing page, navigate with URL parameters
+      navigate(`/?plan=${tier.id}&price=${price}&name=${encodeURIComponent(tier.name)}&billing=${billingCycle}#signup`);
     }
   };
 
@@ -186,7 +193,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
               </ul>
               
               <Button
-                onClick={() => handleSubscribe(tier.id)}
+                onClick={() => handleSubscribe(tier)}
                 className={`w-full ${
                   tier.popular
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
