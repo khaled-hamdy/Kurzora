@@ -61,11 +61,16 @@ const PositionCloseDialog: React.FC<PositionCloseDialogProps> = ({
 
   if (!position) return null;
 
-  // Fixed P&L calculation: (close_price - entry_price) * shares
+  // P&L calculation: (close_price - entry_price) * shares
   const closePriceNum = parseFloat(closePrice);
   const estimatedPnL = !isNaN(closePriceNum) && closePriceNum > 0 
     ? (closePriceNum - position.entryPrice) * position.shares 
     : 0;
+
+  // Debug logging
+  console.log('Position data:', position);
+  console.log('Close price:', closePriceNum);
+  console.log('Estimated P&L calculation:', `(${closePriceNum} - ${position.entryPrice}) * ${position.shares} = ${estimatedPnL}`);
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
