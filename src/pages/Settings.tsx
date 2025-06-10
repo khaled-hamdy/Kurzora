@@ -39,15 +39,11 @@ const Settings: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
+  // Only include languages that are actually supported in LanguageContext
   const languages = [
     { code: 'en' as Language, label: 'English', flag: '🇺🇸' },
-    { code: 'es' as Language, label: 'Español', flag: '🇪🇸' },
-    { code: 'fr' as Language, label: 'Français', flag: '🇫🇷' },
-    { code: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' },
     { code: 'ar' as Language, label: 'العربية', flag: '🇸🇦' },
-    { code: 'zh' as Language, label: '中文', flag: '🇨🇳' },
-    { code: 'ja' as Language, label: '日本語', flag: '🇯🇵' },
-    { code: 'hi' as Language, label: 'हिन्दी', flag: '🇮🇳' }
+    { code: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' }
   ];
 
   const currencies = [
@@ -501,3 +497,5 @@ const Settings: React.FC = () => {
 };
 
 export default Settings;
+
+</edits_to_apply>
