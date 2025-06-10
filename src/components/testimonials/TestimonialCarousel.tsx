@@ -41,7 +41,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 3,
-    quote: "SignalPro's alerts helped me catch the NVDA breakout early. Their technical analysis is spot-on and saved me from major losses.",
+    quote: "Kurzora's alerts helped me catch the NVDA breakout early. Their technical analysis is spot-on and saved me from major losses.",
     author: "Jessica R.",
     role: "Swing Trader",
     stats: "Elite user since 2023",
@@ -103,7 +103,7 @@ const TestimonialCarousel: React.FC = () => {
     <div className="max-w-6xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-white mb-4">Trusted by Successful Traders</h2>
-        <p className="text-slate-400 text-lg">See how SignalPro is transforming trading careers worldwide</p>
+        <p className="text-slate-400 text-lg">See how Kurzora is transforming trading careers worldwide</p>
       </div>
 
       <div className="relative">
