@@ -7,6 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Mail, Lock, User, Github, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import PlanIndicator from './PlanIndicator';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import PaymentForm from './PaymentForm';
+
+// Initialize Stripe (replace with your publishable key)
+const stripePromise = loadStripe('pk_test_YOUR_PUBLISHABLE_KEY');
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
@@ -27,6 +33,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     confirmPassword: ''
   });
   const [planInfo, setPlanInfo] = useState(selectedPlan || null);
+  const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     // Check URL parameters for plan info
@@ -73,9 +82,31 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       toast.error('Passwords do not match');
       return;
     }
+
+    // If plan is selected but no payment method, show error
+    if (planInfo && !paymentMethodId) {
+      toast.error('Please enter your payment information');
+      return;
+    }
     
     try {
+      setIsProcessingPayment(true);
+      
+      // First create the user account
       await signup(formData.email, formData.password, formData.name);
+      
+      // If there's a plan and payment method, create subscription
+      if (planInfo && paymentMethodId) {
+        // TODO: Connect to backend logic via /src/backend-functions/CreateSubscription.ts
+        console.log('Creating subscription with payment method:', paymentMethodId);
+        console.log('Plan info:', planInfo);
+        
+        // Store subscription info for later processing
+        localStorage.setItem('pendingSubscription', JSON.stringify({
+          planId: planInfo.id,
+          paymentMethodId: paymentMethodId
+        }));
+      }
       
       // Store plan selection for post-signup flow
       if (planInfo) {
@@ -89,6 +120,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       toast.success('Account created successfully! Welcome to Kurzora.');
     } catch (error) {
       toast.error('Signup failed. Please try again.');
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -109,11 +142,28 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     window.location.href = '/pricing';
   };
 
+  const handlePaymentSuccess = (paymentMethodId: string) => {
+    setPaymentMethodId(paymentMethodId);
+    setPaymentError(null);
+    toast.success('Payment method added successfully');
+  };
+
+  const handlePaymentError = (error: string) => {
+    setPaymentError(error);
+    setPaymentMethodId(null);
+  };
+
   const getButtonText = () => {
-    if (planInfo) {
-      return loading ? 'Starting Trial...' : 'Start Free Trial';
+    if (isProcessingPayment) {
+      return 'Setting up your subscription...';
     }
-    return loading ? 'Creating account...' : 'Continue to Payment';
+    if (loading) {
+      return planInfo ? 'Creating account...' : 'Creating account...';
+    }
+    if (planInfo) {
+      return 'Start Free Trial';
+    }
+    return 'Create Account';
   };
 
   const getPlanIcon = () => {
@@ -259,25 +309,29 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
 
           {/* Payment Information Section */}
           {planInfo && (
-            <div className="mt-6 p-4 bg-gray-800/30 rounded-lg">
-              <h4 className="font-medium mb-3 text-white">Payment Information</h4>
-              <p className="text-xs text-gray-400 mb-4">
-                🔒 Your card won't be charged for 7 days
-              </p>
-              {/* Stripe Card Element will go here */}
-              <div id="card-element" className="p-3 bg-gray-900/50 rounded border border-gray-700"></div>
+            <div className="mt-6">
+              <Elements stripe={stripePromise}>
+                <PaymentForm
+                  onPaymentSuccess={handlePaymentSuccess}
+                  onPaymentError={handlePaymentError}
+                  loading={loading || isProcessingPayment}
+                />
+              </Elements>
+              {paymentError && (
+                <p className="text-sm text-red-400 mt-2">{paymentError}</p>
+              )}
             </div>
           )}
           
           <Button 
             type="submit" 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={loading}
+            disabled={loading || isProcessingPayment || (planInfo && !paymentMethodId)}
           >
-            {loading ? (
+            {(loading || isProcessingPayment) ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {planInfo ? 'Starting Trial...' : 'Creating account...'}
+                {getButtonText()}
               </>
             ) : (
               getButtonText()
