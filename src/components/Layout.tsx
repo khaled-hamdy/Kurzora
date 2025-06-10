@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
-import { LogOut, Shield, User, Settings } from 'lucide-react';
+import { LogOut, Shield, User, Settings, TrendingUp } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -43,11 +42,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex justify-between items-center h-20 lg:h-24">
               <div className="flex items-center">
                 <div className="logo-container">
-                  <img 
-                    src="/lovable-uploads/cd45e587-857f-49d9-9e54-8f7ac9bb5792.png" 
-                    alt="Kurzora Logo" 
-                    className="logo-image"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-8 w-8 chart-element" />
+                    <span className="logo-text text-2xl font-bold">Kurzora</span>
+                  </div>
                 </div>
                 <div className="nav-items hidden lg:flex space-x-2 xl:space-x-3 ml-8">
                   <Link 
