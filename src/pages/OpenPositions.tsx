@@ -186,8 +186,19 @@ const OpenPositions: React.FC = () => {
   };
 
   const handleOpenCloseDialog = (position: Position) => {
-    setSelectedPosition(position);
-    setCloseDialogOpen(true);
+    // Navigate to Orders page with position data instead of opening dialog directly
+    navigate('/orders', {
+      state: {
+        selectedStock: {
+          symbol: position.symbol,
+          name: position.name,
+          price: position.entryPrice, // Use entry price as the reference price
+          change: ((position.currentPrice - position.entryPrice) / position.entryPrice) * 100,
+          signalScore: position.signalScore
+        },
+        existingPosition: position
+      }
+    });
   };
 
   const handleClosePosition = (positionId: string, closePrice: number) => {
@@ -252,9 +263,7 @@ const OpenPositions: React.FC = () => {
                   <TrendingUp className="h-5 w-5 text-emerald-400" />
                   <div>
                     <p className="text-slate-400 text-sm">Total P&L</p>
-                    <p className={`font-bold text-xl ${totalPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(0)} ({totalPnL >= 0 ? '+' : ''}{totalPnLPercent.toFixed(1)}%)
-                    </p>
+                    <p className="text-white font-bold text-xl">{totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(0)} ({totalPnL >= 0 ? '+' : ''}{totalPnLPercent.toFixed(1)}%)</p>
                   </div>
                 </div>
               </CardContent>
@@ -454,3 +463,5 @@ const OpenPositions: React.FC = () => {
 };
 
 export default OpenPositions;
+
+}

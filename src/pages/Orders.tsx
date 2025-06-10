@@ -30,6 +30,9 @@ const Orders: React.FC = () => {
     change: 2.45,
     signalScore: 92
   };
+
+  // Check if this is a position being passed from Open Positions
+  const existingPosition = location.state?.existingPosition;
   
   // Trading parameters
   const riskPercentage = 2;
@@ -39,6 +42,9 @@ const Orders: React.FC = () => {
   const customShareCount = customShares[0];
   const customInvestment = customShareCount * sharePrice;
   const customRiskPercentage = (customInvestment / portfolioBalance) * 100;
+
+  // Use existing position shares if available, otherwise use recommended shares
+  const actualShares = existingPosition?.shares || recommendedShares;
 
   useEffect(() => {
     console.log('Orders page: Auth state - loading:', loading, 'user:', user);
@@ -76,7 +82,7 @@ const Orders: React.FC = () => {
   };
 
   const handleConfirmCloseOrder = (closePrice: number) => {
-    const pnl = (closePrice - selectedStock.price) * recommendedShares;
+    const pnl = (closePrice - selectedStock.price) * actualShares;
     
     // TODO: Connect to backend logic via /src/backend-functions/CloseOrder.ts
     
@@ -94,7 +100,7 @@ const Orders: React.FC = () => {
           name: selectedStock.name,
           entryPrice: selectedStock.price,
           exitPrice: closePrice,
-          shares: recommendedShares,
+          shares: actualShares,
           pnl: pnl,
           pnlPercent: ((closePrice - selectedStock.price) / selectedStock.price) * 100,
           closedDate: new Date().toISOString().split('T')[0]
@@ -254,15 +260,17 @@ const Orders: React.FC = () => {
                     <div className="text-xl font-bold text-white">${formatPrice(sharePrice, selectedStock.symbol)}</div>
                   </div>
                   <div className="bg-emerald-500/10 p-4 rounded-lg border border-emerald-500/20">
-                    <Label className="text-emerald-400">Recommended Shares</Label>
-                    <div className="text-xl font-bold text-emerald-400">{recommendedShares} shares</div>
+                    <Label className="text-emerald-400">
+                      {existingPosition ? 'Current Shares' : 'Recommended Shares'}
+                    </Label>
+                    <div className="text-xl font-bold text-emerald-400">{actualShares} shares</div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <Label className="text-slate-400">Total Investment</Label>
-                    <div className="text-xl font-bold text-white">${(recommendedShares * sharePrice).toLocaleString()}</div>
+                    <div className="text-xl font-bold text-white">${(actualShares * sharePrice).toLocaleString()}</div>
                   </div>
                   <div>
                     <Label className="text-slate-400">Risk Amount</Label>
@@ -275,51 +283,58 @@ const Orders: React.FC = () => {
                     <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
-                    <span className="text-emerald-400 font-medium">Position size follows 2% risk rule</span>
+                    <span className="text-emerald-400 font-medium">
+                      {existingPosition ? 'Existing position' : 'Position size follows 2% risk rule'}
+                    </span>
                   </div>
                   <p className="text-slate-300">
-                    Calculation: ${maxRisk.toFixed(0)} ÷ ${formatPrice(sharePrice, selectedStock.symbol)} = {recommendedShares} shares
+                    {existingPosition 
+                      ? `Current position: ${actualShares} shares worth $${(actualShares * sharePrice).toFixed(0)}`
+                      : `Calculation: $${maxRisk.toFixed(0)} ÷ $${formatPrice(sharePrice, selectedStock.symbol)} = ${actualShares} shares`
+                    }
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Custom Position Size Card */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Shield className="h-5 w-5 mr-2" />
-                  Custom Position Size
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-slate-400">Shares: {customShareCount}</span>
-                  <span className="text-slate-400">Investment: ${customInvestment.toLocaleString()}</span>
-                </div>
-
-                <Slider
-                  value={customShares}
-                  onValueChange={setCustomShares}
-                  max={1000}
-                  min={1}
-                  step={1}
-                  className="w-full"
-                />
-
-                {customRiskPercentage > 2 && (
-                  <div className="bg-red-500/10 p-4 rounded-lg border border-red-500/20">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <AlertTriangle className="h-5 w-5 text-red-400" />
-                      <span className="text-red-400 font-medium">WARNING: This position risks more than 2% of your capital</span>
-                    </div>
-                    <p className="text-slate-300">
-                      Recommended: {recommendedShares} shares | Your selection: {customShareCount} shares ({customRiskPercentage.toFixed(1)}% risk)
-                    </p>
+            {/* Custom Position Size Card - Only show if not an existing position */}
+            {!existingPosition && (
+              <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <Shield className="h-5 w-5 mr-2" />
+                    Custom Position Size
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-slate-400">Shares: {customShareCount}</span>
+                    <span className="text-slate-400">Investment: ${customInvestment.toLocaleString()}</span>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  <Slider
+                    value={customShares}
+                    onValueChange={setCustomShares}
+                    max={1000}
+                    min={1}
+                    step={1}
+                    className="w-full"
+                  />
+
+                  {customRiskPercentage > 2 && (
+                    <div className="bg-red-500/10 p-4 rounded-lg border border-red-500/20">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <AlertTriangle className="h-5 w-5 text-red-400" />
+                        <span className="text-red-400 font-medium">WARNING: This position risks more than 2% of your capital</span>
+                      </div>
+                      <p className="text-slate-300">
+                        Recommended: {recommendedShares} shares | Your selection: {customShareCount} shares ({customRiskPercentage.toFixed(1)}% risk)
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Order Management Card */}
             <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
@@ -385,13 +400,15 @@ const Orders: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Execute Trade Button */}
-            <Button 
-              onClick={handleExecuteTrade}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-semibold"
-            >
-              Execute Trade ({recommendedShares} shares)
-            </Button>
+            {/* Execute Trade Button - Only show if not an existing position */}
+            {!existingPosition && (
+              <Button 
+                onClick={handleExecuteTrade}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-semibold"
+              >
+                Execute Trade ({actualShares} shares)
+              </Button>
+            )}
           </div>
         </div>
 
@@ -399,7 +416,7 @@ const Orders: React.FC = () => {
           open={closeDialogOpen}
           onOpenChange={setCloseDialogOpen}
           stock={selectedStock}
-          shares={recommendedShares}
+          shares={actualShares}
           onConfirm={handleConfirmCloseOrder}
         />
       </div>
@@ -408,3 +425,5 @@ const Orders: React.FC = () => {
 };
 
 export default Orders;
+
+}
