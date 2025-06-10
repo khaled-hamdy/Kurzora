@@ -8,6 +8,7 @@ import SignalLegend from './SignalLegend';
 import SignalTable from './SignalTable';
 import SignalSummaryStats from './SignalSummaryStats';
 import { Switch } from '../ui/switch';
+import CategoryDropdown from './CategoryDropdown';
 
 interface Signal {
   ticker: string;
@@ -326,6 +327,7 @@ const SignalHeatmap: React.FC = () => {
   const [scoreThreshold, setScoreThreshold] = useState([70]);
   const [sectorFilter, setSectorFilter] = useState('all');
   const [marketFilter, setMarketFilter] = useState('global');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -345,12 +347,30 @@ const SignalHeatmap: React.FC = () => {
     });
   };
 
+  const calculateFinalScore = (signals: Signal['signals']) => {
+    const weighted = (
+      signals['1H'] * 0.4 +
+      signals['4H'] * 0.3 +
+      signals['1D'] * 0.2 +
+      signals['1W'] * 0.1
+    );
+    return Math.round(weighted);
+  };
+
   const filteredSignals = mockSignals.filter(signal => {
     const score = signal.signals[timeFilter as keyof typeof signal.signals];
+    const finalScore = calculateFinalScore(signal.signals);
     const meetsThreshold = score >= scoreThreshold[0];
     const meetsSector = sectorFilter === 'all' || signal.sector === sectorFilter;
     const meetsMarket = marketFilter === 'global' || signal.market === marketFilter;
-    return meetsThreshold && meetsSector && meetsMarket;
+    
+    // Apply category filter based on final weighted score
+    const meetsCategory = categoryFilter === 'all' || 
+      (categoryFilter === 'strong' && finalScore >= 90) ||
+      (categoryFilter === 'valid' && finalScore >= 80 && finalScore < 90) ||
+      (categoryFilter === 'weak' && finalScore >= 70 && finalScore < 80);
+    
+    return meetsThreshold && meetsSector && meetsMarket && meetsCategory;
   });
 
   return (
@@ -383,17 +403,25 @@ const SignalHeatmap: React.FC = () => {
             </div>
           </div>
           
-          <SignalFilters
-            timeFilter={timeFilter}
-            setTimeFilter={setTimeFilter}
-            scoreThreshold={scoreThreshold}
-            setScoreThreshold={setScoreThreshold}
-            sectorFilter={sectorFilter}
-            setSectorFilter={setSectorFilter}
-            marketFilter={marketFilter}
-            setMarketFilter={setMarketFilter}
-            language={language}
-          />
+          <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
+            <CategoryDropdown
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              language={language}
+            />
+            
+            <SignalFilters
+              timeFilter={timeFilter}
+              setTimeFilter={setTimeFilter}
+              scoreThreshold={scoreThreshold}
+              setScoreThreshold={setScoreThreshold}
+              sectorFilter={sectorFilter}
+              setSectorFilter={setSectorFilter}
+              marketFilter={marketFilter}
+              setMarketFilter={setMarketFilter}
+              language={language}
+            />
+          </div>
         </div>
 
         <SignalLegend language={language} />

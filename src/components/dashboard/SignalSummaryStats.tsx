@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface Signal {
@@ -90,14 +89,13 @@ const SignalSummaryStats: React.FC<SignalSummaryStatsProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Strong (90+) */}
         <div 
-          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200 ${
-            highlightedCategory === 'strong' ? 'animate-pulse bg-slate-600/50' : ''
+          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-3 transition-all duration-200 shadow-md hover:shadow-lg ${
+            highlightedCategory === 'strong' ? 'animate-pulse bg-slate-600/50 ring-2 ring-emerald-400/50' : ''
           }`}
           onClick={() => handleCategoryClick('strong')}
           onMouseEnter={() => setHighlightedCategory('strong')}
           onMouseLeave={() => {
             if (highlightedCategory === 'strong') {
-              // Only clear if not in click mode (click sets a timeout)
               setTimeout(() => setHighlightedCategory(null), 100);
             }
           }}
@@ -117,8 +115,8 @@ const SignalSummaryStats: React.FC<SignalSummaryStatsProps> = ({
 
         {/* Valid (80-89) */}
         <div 
-          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200 ${
-            highlightedCategory === 'valid' ? 'animate-pulse bg-slate-600/50' : ''
+          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-3 transition-all duration-200 shadow-md hover:shadow-lg ${
+            highlightedCategory === 'valid' ? 'animate-pulse bg-slate-600/50 ring-2 ring-blue-400/50' : ''
           }`}
           onClick={() => handleCategoryClick('valid')}
           onMouseEnter={() => setHighlightedCategory('valid')}
@@ -143,8 +141,8 @@ const SignalSummaryStats: React.FC<SignalSummaryStatsProps> = ({
 
         {/* Weak (70-79) */}
         <div 
-          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-2 transition-all duration-200 ${
-            highlightedCategory === 'weak' ? 'animate-pulse bg-slate-600/50' : ''
+          className={`text-center cursor-pointer hover:bg-slate-700/30 rounded-lg p-3 transition-all duration-200 shadow-md hover:shadow-lg ${
+            highlightedCategory === 'weak' ? 'animate-pulse bg-slate-600/50 ring-2 ring-yellow-400/50' : ''
           }`}
           onClick={() => handleCategoryClick('weak')}
           onMouseEnter={() => setHighlightedCategory('weak')}
@@ -168,7 +166,7 @@ const SignalSummaryStats: React.FC<SignalSummaryStatsProps> = ({
         </div>
 
         {/* Total Signals */}
-        <div className="text-center">
+        <div className="text-center p-3 rounded-lg shadow-md">
           <div className="text-white text-lg font-bold">
             {filteredSignals.length}
           </div>
