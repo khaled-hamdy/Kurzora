@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -59,7 +58,12 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-2">
-              <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-14 w-auto md:h-16" />
+              <div className="logo-container">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="h-8 w-8 chart-element" />
+                  <span className="logo-text text-2xl font-bold">Kurzora</span>
+                </div>
+              </div>
             </div>
             
             <div className="hidden md:flex space-x-6">
@@ -245,7 +249,12 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-12 w-auto md:h-14" />
+                <div className="logo-container">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-6 w-6 chart-element" />
+                    <span className="logo-text text-lg font-bold">Kurzora</span>
+                  </div>
+                </div>
               </div>
               <p className="text-slate-400 text-sm">
                 Professional AI-powered trading intelligence with institutional-grade analysis.
