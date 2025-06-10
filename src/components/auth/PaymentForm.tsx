@@ -63,6 +63,20 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
     }
   };
 
+  // Show message if Stripe is not properly configured
+  if (!stripe) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-white">Payment Information</h3>
+        <div className="p-4 bg-amber-900/50 rounded-lg border border-amber-700">
+          <p className="text-amber-200 text-sm">
+            ⚠️ Stripe is not configured yet. Please add your Stripe publishable key to enable payments.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium text-white">Payment Information</h3>

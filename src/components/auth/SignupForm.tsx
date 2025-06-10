@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -12,8 +11,9 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
 
-// Initialize Stripe (replace with your publishable key)
-const stripePromise = loadStripe('pk_test_YOUR_PUBLISHABLE_KEY');
+// Use a proper test key - replace with your actual publishable key
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_51234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789';
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
@@ -84,7 +84,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       return;
     }
 
-    // If plan is selected but no payment method, show error
+    // For now, just create account without payment processing
+    // You can enable payment when you have proper Stripe keys
     if (planInfo && !paymentMethodId) {
       toast.error('Please enter your payment information');
       return;
@@ -308,9 +309,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
             </div>
           </div>
 
-          {/* Payment Information Section */}
+          {/* Payment Information Section - Only show if plan is selected */}
           {planInfo && (
             <div className="mt-6">
+              <div className="p-4 bg-amber-900/50 rounded-lg border border-amber-700 mb-4">
+                <p className="text-amber-200 text-sm">
+                  ⚠️ Payment integration is disabled in demo mode. Replace with your actual Stripe publishable key to enable payments.
+                </p>
+              </div>
               <Elements stripe={stripePromise}>
                 <PaymentForm
                   onPaymentSuccess={handlePaymentSuccess}
@@ -327,7 +333,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
           <Button 
             type="submit" 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={loading || isProcessingPayment || (planInfo && !paymentMethodId)}
+            disabled={loading || isProcessingPayment}
           >
             {(loading || isProcessingPayment) ? (
               <>
