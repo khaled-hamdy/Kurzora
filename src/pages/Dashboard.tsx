@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -129,13 +130,12 @@ const Dashboard: React.FC = () => {
                       {trade.result}
                     </div>
                     <div className="text-slate-400 text-sm">{trade.time}</div>
-                    </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );
