@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -84,11 +83,11 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Main Dashboard Grid - Win Rate and Portfolio Performance */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+          <div className="lg:col-span-2">
             <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
           </div>
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <PortfolioPerformanceChart />
           </div>
         </div>
@@ -137,8 +136,9 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-      </Layout>
-    );
-  };
+      </div>
+    </Layout>
+  );
+};
 
-  export default Dashboard;
+export default Dashboard;
