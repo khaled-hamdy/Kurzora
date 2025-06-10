@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -47,13 +46,15 @@ const Orders: React.FC = () => {
   const customInvestment = customShareCount * sharePrice;
   const customRiskPercentage = (customInvestment / portfolioBalance) * 100;
 
-  // Use existing position shares if available, otherwise use recommended shares
-  // Make sure to handle the case where existingPosition exists but shares might be undefined
-  const actualShares = (existingPosition && typeof existingPosition.shares === 'number') ? existingPosition.shares : recommendedShares;
+  // Use existing position shares if available, otherwise use recommended shares or custom shares
+  const actualShares = existingPosition && typeof existingPosition.shares === 'number' 
+    ? existingPosition.shares 
+    : (!existingPosition ? customShareCount : recommendedShares);
   
   console.log('Orders page - actualShares:', actualShares);
   console.log('Orders page - existingPosition.shares:', existingPosition?.shares);
   console.log('Orders page - recommendedShares:', recommendedShares);
+  console.log('Orders page - customShareCount:', customShareCount);
 
   useEffect(() => {
     console.log('Orders page: Auth state - loading:', loading, 'user:', user);
@@ -66,6 +67,8 @@ const Orders: React.FC = () => {
 
   const handleExecuteTrade = () => {
     // TODO: Connect to backend logic via /src/backend-functions/ExecuteTrade.ts
+    
+    console.log('Executing trade with shares:', actualShares);
     
     toast({
       title: "Trade Executed Successfully!",
