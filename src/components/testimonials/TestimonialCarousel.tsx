@@ -57,7 +57,7 @@ const testimonials: Testimonial[] = [
     role: "Options Trader",
     stats: "Pro user since 2024",
     rating: 5,
-    profit: "+203% this quarter",
+    profit: "+40% this quarter",
     verified: true,
     avatar: "🧑‍🚀"
   },
