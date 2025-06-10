@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -54,9 +53,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Link>
                   <Link to="/orders" className={getNavLinkClasses('/orders')}>
                     {t('nav.orders')}
-                  </Link>
-                  <Link to="/performance" className={getNavLinkClasses('/performance')}>
-                    {t('nav.performance')}
                   </Link>
                   <Link to="/how-it-works" className={getNavLinkClasses('/how-it-works')}>
                     How It Works
