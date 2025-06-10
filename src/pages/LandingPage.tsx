@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Navigate, Link, useLocation } from 'react-router-dom';
@@ -10,6 +11,12 @@ import TestimonialCarousel from '../components/testimonials/TestimonialCarousel'
 import PricingSection from '../components/pricing/PricingSection';
 import LanguageToggle from '../components/LanguageToggle';
 import DemoSignalChart from '../components/dashboard/DemoSignalChart';
+import TrustSignalsBar from '../components/landing/TrustSignalsBar';
+import LiveActivityNotification from '../components/landing/LiveActivityNotification';
+import AnimatedStats from '../components/landing/AnimatedStats';
+
+// Lazy load FAQ section for better performance
+const FAQSection = lazy(() => import('../components/landing/FAQSection'));
 
 const LandingPage: React.FC = () => {
   const { user, loading } = useAuth();
@@ -215,6 +222,7 @@ const LandingPage: React.FC = () => {
         </div>
       </nav>
 
+      {/* Hero Section */}
       <section className="pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="max-w-4xl mx-auto">
@@ -228,7 +236,7 @@ const LandingPage: React.FC = () => {
               <span className="text-blue-400 block">Intelligence Platform</span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 mb-6 sm:mb-8 leading-relaxed px-4">
-              Kurzora delivers real-time, multi-strategy signals for retail traders who want clarity, 
+              Join 2,847+ traders achieving 68% win rates with our real-time, multi-strategy signals for retail traders who want clarity, 
               confidence, and edge in every market condition.
             </p>
             
@@ -242,24 +250,16 @@ const LandingPage: React.FC = () => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-16 px-4">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-blue-800/30 rounded-lg p-4 sm:p-6">
-                <div className="text-emerald-400 text-2xl sm:text-3xl font-bold mb-2">{t('landing.accuracy')}</div>
-                <div className="text-slate-300 text-xs sm:text-sm">Win Rate</div>
-              </div>
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-blue-800/30 rounded-lg p-4 sm:p-6">
-                <div className="text-emerald-400 text-2xl sm:text-3xl font-bold mb-2">{t('landing.avgRoi')}</div>
-                <div className="text-slate-300 text-xs sm:text-sm">Per Trade</div>
-              </div>
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-blue-800/30 rounded-lg p-4 sm:p-6">
-                <div className="text-emerald-400 text-2xl sm:text-3xl font-bold mb-2">{t('landing.tradesAnalyzed')}</div>
-                <div className="text-slate-300 text-xs sm:text-sm">Historical Data</div>
-              </div>
-            </div>
+            {/* Trust Signals Bar */}
+            <TrustSignalsBar />
+            
+            {/* Animated Stats */}
+            <AnimatedStats />
           </div>
         </div>
       </section>
 
+      {/* Features Section */}
       <section id="features" className="py-12 sm:py-16 lg:py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
@@ -312,7 +312,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           <div className="flex justify-center mt-8 sm:mt-12">
-            <div className="flex items-center bg-emerald-500/10 backdrop-blur-sm border border-emerald-500/20 rounded-lg px-3 sm:px-4 py-2 space-x-2">
+            <div className="flex items-center bg-emerald-500/10 backdrop-blur-sm border border-emerald-500/20 rounded-lg px-3 sm:px-4 py-2 space-x-2 animate-pulse">
               <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-400" />
               <span className="text-emerald-400 text-xs sm:text-sm font-medium">{t('legal.shariahCompliant')}</span>
             </div>
@@ -320,12 +320,24 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
       <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-slate-950/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('landing.trustedBy')}</h2>
         </div>
         <TestimonialCarousel />
       </section>
+
+      {/* FAQ Section */}
+      <Suspense fallback={
+        <div className="py-12 sm:py-16 lg:py-20 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="text-white">Loading FAQ...</div>
+          </div>
+        </div>
+      }>
+        <FAQSection />
+      </Suspense>
 
       {/* Demo Signal Section */}
       <section className="py-12 sm:py-16 lg:py-20 px-4">
@@ -343,10 +355,12 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
       <section id="pricing" className="py-12 sm:py-16 lg:py-20">
         <PricingSection onSignupClick={handleSignupClick} />
       </section>
 
+      {/* CTA Section */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 bg-gradient-to-r from-blue-600 to-emerald-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6">
@@ -386,7 +400,7 @@ const LandingPage: React.FC = () => {
                 Professional AI-powered trading intelligence with institutional-grade analysis.
               </p>
               <div className="flex items-center mt-4">
-                <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full flex items-center">
+                <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full flex items-center animate-pulse">
                   <Shield className="h-3 w-3 mr-1" />
                   Shariah Compliant
                 </span>
@@ -433,6 +447,9 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Live Activity Notification */}
+      <LiveActivityNotification />
     </div>
   );
 };
