@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -278,10 +277,8 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-white font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Home</a></li>
                 <li><a href="#features" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Signals</a></li>
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Analytics</a></li>
-                <li><a href="#" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">API</a></li>
               </ul>
             </div>
             
