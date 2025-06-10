@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -82,7 +83,7 @@ const Signals: React.FC = () => {
   };
 
   const handleViewDetails = (signal: Signal) => {
-    navigate('/orders-management', { 
+    navigate('/orders', { 
       state: { 
         selectedStock: {
           symbol: signal.symbol,
