@@ -84,9 +84,13 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Main Dashboard Grid - Win Rate and Portfolio Performance */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
-          <PortfolioPerformanceChart />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-1">
+            <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
+          </div>
+          <div className="lg:col-span-2">
+            <PortfolioPerformanceChart />
+          </div>
         </div>
 
         {/* Signal Heatmap */}
