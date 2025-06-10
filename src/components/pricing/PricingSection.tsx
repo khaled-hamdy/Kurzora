@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Check, Star, Zap, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -80,10 +81,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onSignupClick }) => {
 
   const handleSubscribe = (tierId: string) => {
     if (onSignupClick) {
-      // If we're on the landing page, use the callback
+      // If we're on the landing page, show signup form directly
       onSignupClick();
     } else {
-      // If we're on the pricing page, navigate to home with signup form
+      // If we're on the pricing page, navigate to home and show signup
       navigate('/', { state: { showSignup: true } });
     }
   };

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useLocation } from 'react-router-dom';
 import { Shield, TrendingUp, Signal, Zap, Users, Award, BarChart3, ChevronRight, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import LoginForm from '../components/auth/LoginForm';
@@ -13,8 +13,16 @@ import LanguageToggle from '../components/LanguageToggle';
 const LandingPage: React.FC = () => {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
+  const location = useLocation();
   const [showAuth, setShowAuth] = useState<'login' | 'signup' | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check if we should show signup from navigation state
+  useEffect(() => {
+    if (location.state?.showSignup) {
+      setShowAuth('signup');
+    }
+  }, [location.state]);
 
   const handleFooterLinkClick = () => {
     window.scrollTo({
@@ -382,3 +390,5 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
+}
