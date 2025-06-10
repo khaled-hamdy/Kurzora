@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -8,10 +7,12 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { User, Mail, Calendar, Shield, Lock } from 'lucide-react';
+import ChangePasswordDialog from '../components/profile/ChangePasswordDialog';
 
 const Profile: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   React.useEffect(() => {
     console.log('Profile page: Auth state - loading:', loading, 'user:', user);
@@ -43,7 +44,7 @@ const Profile: React.FC = () => {
 
   const handleChangePassword = () => {
     console.log('Opening change password dialog');
-    // TODO: Connect to backend logic via /src/backend-functions/ChangePassword.ts
+    setIsChangePasswordOpen(true);
   };
 
   return (
@@ -128,6 +129,11 @@ const Profile: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      <ChangePasswordDialog 
+        open={isChangePasswordOpen} 
+        onOpenChange={setIsChangePasswordOpen} 
+      />
     </Layout>
   );
 };
