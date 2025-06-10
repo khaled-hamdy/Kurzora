@@ -432,5 +432,3 @@ const Orders: React.FC = () => {
 };
 
 export default Orders;
-
-</edits_to_apply>
