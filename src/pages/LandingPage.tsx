@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -77,7 +78,7 @@ const LandingPage: React.FC = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-4 lg:space-x-6">
               <a href="#features" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">{t('landing.features')}</a>
-              <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">{t('landing.reviews')}</a>
+              <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">Testimonials</a>
               <a href="#pricing" className="text-slate-300 hover:text-white transition-colors text-sm lg:text-base">{t('landing.pricing')}</a>
             </div>
             
@@ -131,7 +132,7 @@ const LandingPage: React.FC = () => {
                   className="block text-slate-300 hover:text-white transition-colors py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {t('landing.reviews')}
+                  Testimonials
                 </a>
                 <a 
                   href="#pricing" 
