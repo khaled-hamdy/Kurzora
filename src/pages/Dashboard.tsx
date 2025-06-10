@@ -1,9 +1,11 @@
+
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import WinRateGauge from '../components/dashboard/WinRateGauge';
+import PortfolioPerformanceChart from '../components/dashboard/PortfolioPerformanceChart';
 import SignalHeatmap from '../components/dashboard/SignalHeatmap';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { TrendingUp, DollarSign, Target, Bell } from 'lucide-react';
@@ -82,8 +84,13 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
-          <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-1">
+            <WinRateGauge winRate={84} totalTrades={127} winningTrades={107} />
+          </div>
+          <div className="lg:col-span-2">
+            <PortfolioPerformanceChart />
+          </div>
         </div>
 
         {/* Signal Heatmap */}
