@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage, Language } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -37,18 +36,18 @@ const Settings: React.FC = () => {
   const [apiKey, setApiKey] = useState('sk-****************************');
   
   // Language & Currency preferences
-  const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
   const languages = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'es', label: 'Español', flag: '🇪🇸' },
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
-    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-    { code: 'ar', label: 'العربية', flag: '🇸🇦' },
-    { code: 'zh', label: '中文', flag: '🇨🇳' },
-    { code: 'ja', label: '日本語', flag: '🇯🇵' },
-    { code: 'hi', label: 'हिन्दी', flag: '🇮🇳' }
+    { code: 'en' as Language, label: 'English', flag: '🇺🇸' },
+    { code: 'es' as Language, label: 'Español', flag: '🇪🇸' },
+    { code: 'fr' as Language, label: 'Français', flag: '🇫🇷' },
+    { code: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'ar' as Language, label: 'العربية', flag: '🇸🇦' },
+    { code: 'zh' as Language, label: '中文', flag: '🇨🇳' },
+    { code: 'ja' as Language, label: '日本語', flag: '🇯🇵' },
+    { code: 'hi' as Language, label: 'हिन्दी', flag: '🇮🇳' }
   ];
 
   const currencies = [
@@ -76,9 +75,12 @@ const Settings: React.FC = () => {
   };
 
   const handleLanguageChange = (langCode: string) => {
-    setSelectedLanguage(langCode);
-    setLanguage(langCode as any);
-    // TODO: Connect to backend logic via /src/backend-functions/UpdateUserPreferences.ts
+    const validLanguage = languages.find(lang => lang.code === langCode);
+    if (validLanguage) {
+      setSelectedLanguage(validLanguage.code);
+      setLanguage(validLanguage.code);
+      // TODO: Connect to backend logic via /src/backend-functions/UpdateUserPreferences.ts
+    }
   };
 
   const handleCurrencyChange = (currencyCode: string) => {
