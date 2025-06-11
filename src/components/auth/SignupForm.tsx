@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -74,16 +75,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
           billingCycle: billingCycle
         });
       }
-    } else {
-      // Check localStorage as backup
-      const savedPlan = localStorage.getItem('selectedPlan');
-      if (savedPlan) {
-        try {
-          setPlanInfo(JSON.parse(savedPlan));
-        } catch (error) {
-          console.error('Error parsing saved plan:', error);
-        }
-      }
+    } else if (!selectedPlan) {
+      // Default to professional plan if no plan specified
+      setPlanInfo({
+        id: 'professional',
+        name: 'Professional',
+        price: '79',
+        billingCycle: 'monthly'
+      });
     }
 
     // Restore form data if available
@@ -95,7 +94,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         console.error('Error parsing saved form data:', error);
       }
     }
-  }, []);
+  }, [selectedPlan]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -211,7 +210,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         <form onSubmit={handleSubmit} className="space-y-4">
           <SignupFormFields formData={formData} onChange={handleChange} />
 
-          {/* Payment Information Section - Only show if plan is selected */}
+          {/* Payment Information Section - Always show if plan is selected */}
           {planInfo && (
             <div className="mt-6">
               <Elements stripe={stripePromise}>
