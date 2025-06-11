@@ -72,8 +72,17 @@ const Contact: React.FC = () => {
                   <MessageCircle className="h-6 w-6 text-emerald-400" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-1">Telegram</h3>
-                  <p className="text-slate-400">@kurzora_alert_bot</p>
+                  <h3 className="text-white font-semibold mb-1">Discord</h3>
+                  <p className="text-slate-400">
+                    <a 
+                      href="https://discord.gg/kurzora-platform" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors"
+                    >
+                      Join our community
+                    </a>
+                  </p>
                 </div>
               </div>
 
