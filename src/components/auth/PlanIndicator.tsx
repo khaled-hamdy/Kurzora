@@ -71,11 +71,12 @@ const PlanIndicator: React.FC<PlanIndicatorProps> = ({
         ${price}/{billingCycle} after 7-day free trial
       </p>
       
-      <div className="mt-3 pt-3 border-t border-blue-500/20">
-        <p className="text-xs text-slate-500">
-          Free trial • No commitment • Cancel anytime
-        </p>
-      </div>
+      <button 
+        onClick={() => window.location.href = '/pricing'}
+        className="text-blue-400 hover:text-blue-300 text-sm underline mt-2 inline-block"
+      >
+        Change plan
+      </button>
     </div>
   );
 };
