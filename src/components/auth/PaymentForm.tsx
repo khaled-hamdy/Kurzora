@@ -137,6 +137,55 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
           </div>
         </div>
       )}
+
+      {/* Trust Elements and Payment Methods Section */}
+      <div className="mt-6 pt-6 border-t border-gray-800">
+        <p className="text-xs text-gray-500 text-center mb-4">
+          Secure payment processing
+        </p>
+        
+        {/* Trust Elements */}
+        <div className="flex items-center justify-center gap-4 md:gap-6 text-xs text-gray-500">
+          <span className="flex items-center gap-1">
+            <span>🔒</span>
+            <span>PCI Compliant</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span>💳</span>
+            <span>Powered by Stripe</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span>↩️</span>
+            <span>Cancel Anytime</span>
+          </span>
+        </div>
+
+        {/* Payment Method Logos */}
+        <div className="flex items-center justify-center gap-4 mt-4 mb-6">
+          {/* Visa Logo */}
+          <svg className="h-8 w-auto opacity-60" viewBox="0 0 48 32" fill="none">
+            <rect width="48" height="32" rx="4" fill="#1A1F71"/>
+            <path d="M20.5 22H16.5L19 10H23L20.5 22Z" fill="white"/>
+            <path d="M30 10L26.5 18.5L26 10H22L21 22H24.5L28.5 13.5L29 22H33L34 10H30Z" fill="white"/>
+            <text x="18" y="20" fill="white" fontSize="8" fontWeight="bold">VISA</text>
+          </svg>
+          
+          {/* Mastercard Logo */}
+          <svg className="h-8 w-auto opacity-60" viewBox="0 0 48 32" fill="none">
+            <rect width="48" height="32" rx="4" fill="#EB001B"/>
+            <circle cx="19" cy="16" r="9" fill="#FF5F00"/>
+            <circle cx="29" cy="16" r="9" fill="#F79E1B"/>
+          </svg>
+          
+          {/* Amex Logo */}
+          <svg className="h-8 w-auto opacity-60" viewBox="0 0 48 32" fill="none">
+            <rect width="48" height="32" rx="4" fill="#006FCF"/>
+            <text x="12" y="20" fill="white" fontSize="6" fontWeight="bold">AMEX</text>
+          </svg>
+          
+          <span className="text-xs text-gray-500">& more</span>
+        </div>
+      </div>
       
       <p className="text-xs text-gray-500">
         You can cancel anytime during your trial. We'll send a reminder email 2 days before your trial ends.
