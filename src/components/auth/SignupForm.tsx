@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -190,7 +191,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     <Card className="w-full max-w-md bg-slate-900/50 backdrop-blur-sm border-blue-800/30">
       <CardHeader className="space-y-1">
         <div className="flex justify-center mb-4">
-          <img src="/lovable-uploads/2ac01661-8ff8-4932-a4f0-d685c8ce2aae.png" alt="Kurzora Logo" className="h-12 w-auto" />
+          <img src="/kurzora-logo.svg" alt="Kurzora Logo" className="h-12 w-auto" />
         </div>
         <CardTitle className="text-2xl text-center text-white">Create account</CardTitle>
         <CardDescription className="text-center text-slate-400">
