@@ -78,10 +78,11 @@ const Contact: React.FC = () => {
                       href="https://discord.gg/kurzora-platform" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-white transition-colors block"
                     >
                       Join our community
                     </a>
+                    <span className="text-sm">@kurzora_alert_bot</span>
                   </p>
                 </div>
               </div>
