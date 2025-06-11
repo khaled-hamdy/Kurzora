@@ -1,12 +1,9 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import PlanIndicator from './PlanIndicator';
 import PlanDisplay from './PlanDisplay';
 import SignupFormFields from './SignupFormFields';
 import SocialAuth from './SocialAuth';
@@ -200,13 +197,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       </CardHeader>
       <CardContent className="space-y-4">
         <PlanDisplay planInfo={planInfo} onChangePlan={handleChangePlan} />
-        
-        <PlanIndicator 
-          planId={planInfo?.id}
-          planName={planInfo?.name}
-          price={planInfo?.price}
-          billingCycle={planInfo?.billingCycle}
-        />
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <SignupFormFields formData={formData} onChange={handleChange} />
