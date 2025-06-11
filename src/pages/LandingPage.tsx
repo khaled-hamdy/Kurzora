@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -451,6 +452,7 @@ const LandingPage: React.FC = () => {
                 <li><Link to="/privacy-policy" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms-of-service" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Terms of Service</Link></li>
                 <li><Link to="/risk-disclosure" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Risk Disclosure</Link></li>
+                <li><Link to="/shariah-compliance" onClick={handleFooterLinkClick} className="hover:text-white transition-colors">Shariah Compliance</Link></li>
               </ul>
             </div>
           </div>
