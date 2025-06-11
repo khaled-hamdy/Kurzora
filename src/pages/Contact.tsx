@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Layout from '../components/Layout';
-import { Mail, MessageCircle, Phone, MapPin } from 'lucide-react';
+import { Mail, MessageCircle, Phone, MapPin, Send } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 
@@ -81,6 +82,25 @@ const Contact: React.FC = () => {
                       className="hover:text-white transition-colors"
                     >
                       Join our community
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-blue-600/20 rounded-lg">
+                  <Send className="h-6 w-6 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">Telegram</h3>
+                  <p className="text-slate-400">
+                    <a 
+                      href="https://t.me/kurzora_alert_bot" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors"
+                    >
+                      @kurzora_alert_bot
                     </a>
                   </p>
                 </div>
