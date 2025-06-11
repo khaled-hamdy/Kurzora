@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -57,6 +56,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isGoogleSignIn, setIsGoogleSignIn] = useState(false);
 
   useEffect(() => {
     // Check URL parameters for plan info
@@ -100,7 +100,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     e.preventDefault();
     setError(null);
     
-    if (formData.password !== formData.confirmPassword) {
+    if (!isGoogleSignIn && formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       toast.error('Passwords do not match');
       return;
@@ -115,8 +115,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     try {
       setIsProcessingPayment(true);
       
-      // First create the user account
-      await signup(formData.email, formData.password, formData.name);
+      // First create the user account (only if not Google sign-in)
+      if (!isGoogleSignIn) {
+        await signup(formData.email, formData.password, formData.name);
+      }
       
       // If there's a plan and payment method, create subscription
       if (planInfo && paymentMethodId) {
@@ -178,6 +180,37 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
     setPaymentMethodId(null);
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setError(null);
+      setIsGoogleSignIn(true);
+      
+      // TODO: Connect to backend logic via /src/backend-functions/GoogleAuth.ts
+      console.log('Attempting Google sign-in...');
+      
+      // Mock Google sign-in for now - replace with actual Firebase implementation
+      const mockUser = {
+        uid: 'google_' + Date.now(),
+        email: 'user@gmail.com',
+        displayName: 'Google User',
+        photoURL: null
+      };
+      
+      // Set form data from Google user
+      setFormData(prev => ({
+        ...prev,
+        name: mockUser.displayName || '',
+        email: mockUser.email || ''
+      }));
+      
+      toast.success('Google sign-in successful! Please complete payment information.');
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      setError('Failed to sign in with Google. Please try again.');
+      setIsGoogleSignIn(false);
+    }
+  };
+
   const getButtonText = () => {
     if (isProcessingPayment) {
       return 'Setting up your subscription...';
@@ -213,7 +246,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
         )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <SignupFormFields formData={formData} onChange={handleChange} />
+          {!isGoogleSignIn && <SignupFormFields formData={formData} onChange={handleChange} />}
+          
+          {isGoogleSignIn && (
+            <div className="space-y-2">
+              <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <p className="text-sm text-green-400">Signed in with Google as {formData.email}</p>
+              </div>
+            </div>
+          )}
 
           {/* Payment Information Section - Always show if plan is selected */}
           {planInfo && (
@@ -231,14 +272,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
               )}
             </div>
           )}
-
-          {/* Trust Element Above Submit Button */}
-          <div className="flex items-center justify-center gap-2 text-sm text-green-400 mb-4">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-            <span>30-day money-back guarantee</span>
-          </div>
           
           <button 
             type="submit"
@@ -256,7 +289,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
           </button>
         </form>
         
-        <SocialAuth />
+        <SocialAuth onGoogleSignIn={handleGoogleSignIn} />
         
         <div className="text-center text-sm">
           <span className="text-slate-400">Already have an account? </span>
