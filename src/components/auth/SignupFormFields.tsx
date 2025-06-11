@@ -68,6 +68,14 @@ const SignupFormFields: React.FC<SignupFormFieldsProps> = ({ formData, onChange 
             required
           />
         </div>
+        <div className="mt-2 text-xs text-gray-500">
+          Password must contain:
+          <ul className="ml-4 mt-1">
+            <li>• At least 8 characters</li>
+            <li>• One uppercase letter</li>
+            <li>• One number</li>
+          </ul>
+        </div>
       </div>
       
       <div className="space-y-2">

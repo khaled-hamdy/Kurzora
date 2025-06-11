@@ -91,24 +91,36 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPaymentSuccess, onPaymentEr
         <span>Your card won't be charged for 7 days</span>
       </div>
       
-      <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-        <CardElement 
-          onChange={handleCardChange}
-          options={{
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#ffffff',
-                '::placeholder': {
-                  color: '#6b7280',
-                },
-                backgroundColor: 'transparent',
-              },
-              invalid: {
-                color: '#ef4444',
-              },
-            },
-          }}
+      {/* Expanded Card Input Fields */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <div className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg">
+              <CardElement 
+                onChange={handleCardChange}
+                options={{
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#ffffff',
+                      '::placeholder': {
+                        color: '#6b7280',
+                      },
+                      backgroundColor: 'transparent',
+                    },
+                    invalid: {
+                      color: '#ef4444',
+                    },
+                  },
+                  hidePostalCode: true,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <input 
+          placeholder="ZIP/Postal Code" 
+          className="w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400"
         />
       </div>
       

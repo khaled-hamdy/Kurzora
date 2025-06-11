@@ -30,6 +30,10 @@ const SocialAuth: React.FC = () => {
           GitHub
         </Button>
       </div>
+
+      <p className="text-center text-sm text-gray-400 mt-6">
+        <span className="font-medium">2,847</span> traders already using Kurzora
+      </p>
     </>
   );
 };

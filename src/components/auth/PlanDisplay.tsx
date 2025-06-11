@@ -62,7 +62,7 @@ const PlanDisplay: React.FC<PlanDisplayProps> = ({ planInfo, onChangePlan }) => 
       <p className="text-gray-400">${planInfo.price}/{planInfo.billingCycle || 'monthly'} after 7-day free trial</p>
       <button 
         onClick={onChangePlan}
-        className="text-blue-400 hover:text-blue-300 text-sm underline mt-2 inline-block"
+        className="mt-3 px-4 py-2 text-sm border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors"
       >
         Change plan
       </button>

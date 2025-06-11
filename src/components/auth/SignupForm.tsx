@@ -55,6 +55,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
   const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check URL parameters for plan info
@@ -96,13 +97,16 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
     if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       toast.error('Passwords do not match');
       return;
     }
 
     if (planInfo && !paymentMethodId) {
+      setError('Please enter your payment information');
       toast.error('Please enter your payment information');
       return;
     }
@@ -137,7 +141,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       
       toast.success('Account created successfully! Welcome to Kurzora.');
     } catch (error) {
-      toast.error('Signup failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Signup failed. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsProcessingPayment(false);
     }
@@ -198,6 +204,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
       <CardContent className="space-y-4">
         <PlanDisplay planInfo={planInfo} onChangePlan={handleChangePlan} />
         
+        {/* Error Message Container */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <SignupFormFields formData={formData} onChange={handleChange} />
 
@@ -217,21 +230,29 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
               )}
             </div>
           )}
+
+          {/* Trust Element Above Submit Button */}
+          <div className="flex items-center justify-center gap-2 text-sm text-green-400 mb-4">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            <span>30-day money-back guarantee</span>
+          </div>
           
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+          <button 
+            type="submit"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed text-white"
             disabled={loading || isProcessingPayment}
           >
             {(loading || isProcessingPayment) ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
                 {getButtonText()}
-              </>
+              </span>
             ) : (
               getButtonText()
             )}
-          </Button>
+          </button>
         </form>
         
         <SocialAuth />
@@ -258,3 +279,5 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, selectedPlan }
 };
 
 export default SignupForm;
+
+}
