@@ -43,8 +43,8 @@ const WinRateGauge: React.FC<WinRateGaugeProps> = ({ winRate, totalTrades, winni
         <CardTitle className="text-lg text-white flex items-center space-x-2">
           <TrendingUp className="h-5 w-5 text-emerald-400" />
           <span>Win Rate</span>
-          {winRate >= 70 && (
-            <Award className="h-5 w-5 text-yellow-400" />
+          {winRate >= 60 && (
+            <Award className="h-5 w-5 text-orange-400" />
           )}
         </CardTitle>
       </CardHeader>
@@ -85,9 +85,9 @@ const WinRateGauge: React.FC<WinRateGaugeProps> = ({ winRate, totalTrades, winni
                 <div className={`text-2xl font-bold ${getGaugeColor(winRate)}`}>
                   {Math.round(animatedWinRate)}%
                 </div>
-                {winRate >= 70 && (
-                  <div className="text-xs text-emerald-400 font-medium">
-                    ≥70% Elite
+                {winRate >= 60 && (
+                  <div className="text-xs text-orange-400 font-medium">
+                    ≥60% Target
                   </div>
                 )}
               </div>
@@ -110,14 +110,14 @@ const WinRateGauge: React.FC<WinRateGaugeProps> = ({ winRate, totalTrades, winni
           </div>
         </div>
 
-        {winRate >= 70 && (
-          <div className="mt-4 p-3 bg-emerald-900/20 border border-emerald-700/50 rounded-lg">
-            <div className="flex items-center space-x-2 text-emerald-300 text-sm">
+        {winRate >= 60 && (
+          <div className="mt-4 p-3 bg-orange-900/20 border border-orange-700/50 rounded-lg">
+            <div className="flex items-center space-x-2 text-orange-300 text-sm">
               <Award className="h-4 w-4" />
-              <span className="font-medium">Elite Performance</span>
+              <span className="font-medium">Target Performance</span>
             </div>
-            <p className="text-emerald-400/80 text-xs mt-1">
-              You're in the top 10% of traders! Keep up the excellent work.
+            <p className="text-orange-400/80 text-xs mt-1">
+              You've reached the target performance level. Keep monitoring signals!
             </p>
           </div>
         )}
