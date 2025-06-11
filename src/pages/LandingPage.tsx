@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -14,7 +13,6 @@ import DemoSignalChart from '../components/dashboard/DemoSignalChart';
 import TrustSignalsBar from '../components/landing/TrustSignalsBar';
 import LiveActivityNotification from '../components/landing/LiveActivityNotification';
 import ProfitStats from '../components/landing/ProfitStats';
-import LivePerformanceTracker from '../components/landing/LivePerformanceTracker';
 
 // Lazy load FAQ section for better performance
 const FAQSection = lazy(() => import('../components/landing/FAQSection'));
@@ -274,9 +272,6 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Live Performance Tracker */}
-      <LivePerformanceTracker />
 
       {/* Features Section */}
       <section id="features" className="py-12 sm:py-16 lg:py-20 px-4">
